@@ -199,7 +199,7 @@ class OBS_controller:
 
 def main():
     my_obs = OBS_controller()
-    # my_obs.get_input_list()
+    my_obs.get_input_list()
     # my_obs.get_input_settings('mySource')
     
     
