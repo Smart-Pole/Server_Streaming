@@ -1,6 +1,6 @@
 import obsws_python as obs
 import json
-
+import time
 class OBS_controller:
     
     def printJsonObject(self,object):
@@ -69,7 +69,7 @@ class OBS_controller:
 
         Returns: None
         """
-        return self.client.set_input_settings(name, settings, overlay)   
+        return self.request_client.set_input_settings(name, settings, overlay)   
     
     def get_scene_item_list(self,name):
         """ 
@@ -101,6 +101,7 @@ class OBS_controller:
         """
         response =  self.request_client.get_stream_service_settings() 
         self.printJsonObject(response.stream_service_settings)
+        print(response.stream_service_type)
         return response
     
     def set_stream_service_settings(self,stream_service_type,stream_service_settings):
@@ -114,8 +115,7 @@ class OBS_controller:
             stream_service_settings (Object): Settings to apply to the service, can use get_stream_service_settings to see an example
         """
         self.request_client.set_stream_service_settings(ss_type = stream_service_type, ss_settings = stream_service_settings)
-        
-    
+                
     def start_stream(self):
         """
         start livestream on OBS
@@ -212,19 +212,81 @@ class OBS_controller:
         }
         self.request_client.set_input_settings(name = source_name, settings =  new_input_settings ,overlay = True)
         return True
+    
+    def set_stream_service_key_server(self,streamkey,server):
+        """
+        Set stream key an server to obs websocket
+
+        Args:
+            streamkey (_type_): _description_
+            server (_type_): _description_
+        """
+        stream_service_type = "rtmp_custom"
+        stream_service_settings = {
+            "bwtest": False,
+            "key": streamkey,
+            "protocol": "RTMP",
+            "server": server,
+            "use_auth": False
+        }
+        self.set_stream_service_settings(stream_service_type,stream_service_settings)
+    
+    
+    def set_input_playlist (self, video_path_list, source_name="mySource"):
+        """
+        Set video list to playlist 
         
+
+        Args:
+            video_path_list (_type_): _description_
+        """
+        playlist = []
+        for idx,video in enumerate(video_path_list):
+            item = {
+                "hidden": False,
+                "selected": True if idx == 0 else False,
+                "value": video
+            }
+            playlist.append(item)
+            
+        settings = {
+            "playback_behavior": "stop_restart",
+            "playlist": playlist,
+            "shuffle": False
+        }
+        
+        self.set_input_settings(name=source_name, settings=settings, overlay= False )
+        
+                    
         
 
 def main():
     my_obs = OBS_controller()
+    stream_key = "live_1044211682_TY4Ox27Da44UXLRX7gOATlO5xyzUh0"
+    server = "rtmp://live.twitch.tv/app"
     # my_obs.get_input_list()
-    my_obs.get_input_settings(None)
+    # my_obs.get_input_settings("mySource")
     # my_obs.get_scene_item_list('scene1')
     
-    
+    my_obs.set_stream_service_key_server(streamkey=stream_key,server=server)
+    my_obs.set_input_playlist(
+        video_path_list = [
+            "C:/Users/NHAN/OneDrive/Desktop/workspace/cms_server/video/bird.mp4",
+            "C:/Users/NHAN/OneDrive/Desktop/workspace/cms_server/video/horse.mp4",
+            "C:/Users/NHAN/OneDrive/Desktop/workspace/cms_server/video/ship.mp4"
+        ]
+    )
+    my_obs.start_stream()
     # my_obs.get_stream_service_settings()
+    # my_obs.get_input_settings(name="mySource")
     # my_obs.add_video_to_playlist("mySource","C:/Users/NHAN/OneDrive/Desktop/workspace/CMS/mp4_videos/ship.mp4")
     # my_obs.remove_a_video_in_playlist("mySource","C:/Users/NHAN/OneDrive/Desktop/workspace/CMS/mp4_videos/ship.mp4")
+    # while True:
+    #     try: 
+    #         time.sleep(1)
+    #     except KeyboardInterrupt:
+    #         my_obs.stop_stream()
+    #         break
     
 if __name__ == "__main__":
     main()
