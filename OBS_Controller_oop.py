@@ -11,7 +11,7 @@ class OBS_controller:
         for object in object_list:
             self.printJsonObject(object)
             
-    def __init__(self, host='localhost', port=4445, password='123456') -> None:
+    def __init__(self, host='localhost', port=4444, password='123456') -> None:
         self.host = host
         self.port = port
         self.password = password
@@ -27,7 +27,7 @@ class OBS_controller:
         Object : response contain field "inputs" (Array<Object>)
         """
         response = self.request_client.get_input_list(kind)
-        # self.printJsonObjectList(response.inputs)
+        self.printJsonObjectList(response.inputs)
         return response
         
     def get_input_settings(self,name):
@@ -45,7 +45,7 @@ class OBS_controller:
         """
         payload = {"inputName": name}
         response =  self.request_client.send("GetInputSettings", payload)
-        # self.printJsonObject(response.input_settings)
+        self.printJsonObject(response.input_settings)
         return response
 
         
@@ -70,6 +70,24 @@ class OBS_controller:
         Returns: None
         """
         return self.client.set_input_settings(name, settings, overlay)   
+    
+    def get_scene_item_list(self,name):
+        """ 
+        get scene item list of an scene
+
+        Args:
+            name (String): Name of the scene
+
+        Returns:
+            Object contain:
+                scene_items (Array<Objest>) : Array of scene items in the scene
+        """
+        payload = {"sceneName": name}
+        response =  self.request_client.send("GetSceneItemList", payload)
+        self.printJsonObject(response.scene_items)
+        return response
+
+
 
     def get_stream_service_settings(self):
         """
@@ -82,7 +100,7 @@ class OBS_controller:
                 + stream_service_settings(Object): Stream service settings
         """
         response =  self.request_client.get_stream_service_settings() 
-        # self.printJsonObject(response.stream_service_settings)
+        self.printJsonObject(response.stream_service_settings)
         return response
     
     def set_stream_service_settings(self,stream_service_type,stream_service_settings):
@@ -199,12 +217,13 @@ class OBS_controller:
 
 def main():
     my_obs = OBS_controller()
-    my_obs.get_input_list()
-    # my_obs.get_input_settings('mySource')
+    # my_obs.get_input_list()
+    my_obs.get_input_settings(None)
+    # my_obs.get_scene_item_list('scene1')
     
     
     # my_obs.get_stream_service_settings()
-    my_obs.add_video_to_playlist("mySource","C:/Users/NHAN/OneDrive/Desktop/workspace/CMS/mp4_videos/ship.mp4")
+    # my_obs.add_video_to_playlist("mySource","C:/Users/NHAN/OneDrive/Desktop/workspace/CMS/mp4_videos/ship.mp4")
     # my_obs.remove_a_video_in_playlist("mySource","C:/Users/NHAN/OneDrive/Desktop/workspace/CMS/mp4_videos/ship.mp4")
     
 if __name__ == "__main__":
