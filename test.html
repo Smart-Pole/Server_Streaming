@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Schedule</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Schedule:</h1>
+    <pre id="schedule-data">heheh</pre>
+    <button id="fetch-schedule">Fetch Schedule</button>
+
+    <script>
+        $(document).ready(function() {
+            $('#fetch-schedule').click(function() {
+                // Make AJAX request to fetch JSON data from the server
+                $.ajax({
+                    url: 'http://localhost:5000/get/schedule',
+                    method: 'GET',
+                    success: function(data) {
+                        // Display JSON data in the <pre> element
+                            console.log(data); // Log the response data to see if it's received
+                            // Display JSON data in the <pre> element
+                            $('#schedule-data').text(JSON.stringify(data, null, 2));
+                            // Show the <pre> element
+                            $('#schedule-data').show();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error fetching schedule JSON:', error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
