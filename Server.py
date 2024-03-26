@@ -111,15 +111,13 @@ def printTaskInfor():
         for task_info in ListTask:
             print(task_info)
 
-def job():
+def daily_task(streamkey, server, videolist):
     print('Hello world')
 
 def oneshot_task(function,streamkey, server, videolist):
     function(streamkey,server,videolist)
     return schedule.CancelJob
 
-def daily_task(function,streamkey, server, videolist):
-    function(streamkey,server,videolist)
 
 def schedule_thread():
     while True:
@@ -143,6 +141,7 @@ def Add_Task_Everydays():
     server = request.args.get('server')
     deadline = None
     global ID_count
+
     print(duration)
     print(duration.isdigit())
     # Cheking parameter
@@ -172,7 +171,9 @@ def Add_Task_Everydays():
     
 
     video_list = list.split(',')
-    print(f"List Video: {video_list}")
+    m_video_list = [f"video/{item}" for item in video_list]
+    print(f"List Video: {m_video_list}")
+
     if not time_start:
         now = datetime.now()
         time_start = now.strftime("%H:%M")
@@ -190,13 +191,13 @@ def Add_Task_Everydays():
     new_task = TaskInformation(ID_count, video_list,duration=duration,until=until,time_start=time_start,time_end=time_end,oneshot=0)
     ID_count += 1
     ListTask.append(new_task)
-    schedule.every(int_duration).days.at(time_start).until(deadline).do(job).tag(f'{new_task.ID}')
+    schedule.every(int_duration).days.at(time_start).until(deadline).do(daily_task,streamkey,server,video_list).tag(f'{new_task.ID}')
     print(schedule.get_jobs())
     saveTask(1)
 
     #for cancel job at time.
     if time_end:
-        schedule.every(int_duration).days.at(time_end).until(deadline).do(job).tag(f'{new_task.ID}')
+        schedule.every(int_duration).days.at(time_end).until(deadline).do(daily_task,streamkey,server,video_list).tag(f'{new_task.ID}')
 
     return jsonify({'success': {'message': 'Create task', 'ID': new_task.ID}}), 200
 
