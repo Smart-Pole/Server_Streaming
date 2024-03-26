@@ -261,22 +261,15 @@ class OBS_controller:
         
 
 def main():
-    my_obs = OBS_controller()
-    stream_key = "live_1044211682_TY4Ox27Da44UXLRX7gOATlO5xyzUh0"
-    server = "rtmp://live.twitch.tv/app"
+    # my_obs = OBS_controller()
+    # stream_key = "live_1044211682_Ol34MomAqRm3Ef7s0jwrKq0KNGj3Ku"
+    # server = "rtmp://live.twitch.tv/app"
     # my_obs.get_input_list()
     # my_obs.get_input_settings("mySource")
     # my_obs.get_scene_item_list('scene1')
     
-    my_obs.set_stream_service_key_server(streamkey=stream_key,server=server)
-    my_obs.set_input_playlist(
-        video_path_list = [
-            "C:/Users/NHAN/OneDrive/Desktop/workspace/cms_server/video/bird.mp4",
-            "C:/Users/NHAN/OneDrive/Desktop/workspace/cms_server/video/horse.mp4",
-            "C:/Users/NHAN/OneDrive/Desktop/workspace/cms_server/video/ship.mp4"
-        ]
-    )
-    my_obs.start_stream()
+    # my_obs.set_stream_service_key_server(streamkey=stream_key,server=server)
+    # my_obs.start_stream()
     # my_obs.get_stream_service_settings()
     # my_obs.get_input_settings(name="mySource")
     # my_obs.add_video_to_playlist("mySource","C:/Users/NHAN/OneDrive/Desktop/workspace/CMS/mp4_videos/ship.mp4")
@@ -287,6 +280,7 @@ def main():
     #     except KeyboardInterrupt:
     #         my_obs.stop_stream()
     #         break
+    pass
     
 if __name__ == "__main__":
     main()

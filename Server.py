@@ -1,18 +1,21 @@
 from flask import Flask, request, jsonify
-from datetime import datetime, timedelta, time
+from datetime import datetime
+from OBS_Controller_oop import OBS_controller
 import threading
 import schedule
 import json
 import inspect
 import re
 import os
+import time
 from flask_cors import CORS
+
 
 def validateTimeformat(time_str):
     pattern = r'^([0-1][0-9]|2[0-3]):[0-5][0-9]$'
     return re.match(pattern, time_str) is not None
 
-
+my_obs = OBS_controller()
 
 app = Flask(__name__)
 CORS(app)
@@ -65,6 +68,13 @@ def init():
         for task_info in ListTask:
             print(task_info)
 
+    stream_key = "live_1044211682_Ol34MomAqRm3Ef7s0jwrKq0KNGj3Ku"
+    server = "rtmp://live.twitch.tv/app"
+    
+
+    my_obs.set_stream_service_key_server(streamkey=stream_key,server=server)
+    my_obs.start_stream()
+
 
 # This function is used to save data to a TXT file. 
 # If type = 0, it is used for saving data after deleting a task or adding many tasks, whereas if type = 1, it is used when adding a new task.
@@ -112,23 +122,20 @@ def printTaskInfor():
             print(task_info)
 
 def daily_task(streamkey, server, videolist):
+    my_obs.set_input_playlist(videolist)
     print('Hello world')
 
 def oneshot_task(function,streamkey, server, videolist):
     function(streamkey,server,videolist)
     return schedule.CancelJob
 
+def job():
+    print('Hello world')
 
 def schedule_thread():
     while True:
-        n = schedule.idle_seconds()
-        if n is None:
-            # no more jobs
-            break
-        elif n > 0:
-            # sleep exactly the right amount of time
-            time.sleep(n)
         schedule.run_pending()
+        time.sleep(1)
 
 @app.route('/schedule/addTask/everydays')
 def Add_Task_Everydays():
@@ -143,7 +150,6 @@ def Add_Task_Everydays():
     global ID_count
 
     print(duration)
-    print(duration.isdigit())
     # Cheking parameter
     if not streamkey:
         return jsonify({'error': {'message': 'Stream key empty'}}), 400
@@ -171,8 +177,8 @@ def Add_Task_Everydays():
     
 
     video_list = list.split(',')
-    m_video_list = [f"video/{item}" for item in video_list]
-    print(f"List Video: {m_video_list}")
+    my_video_list = [f"d:/FINAL PROJECT/SERVER/video/{item}" for item in video_list]
+    print(f"List Video: {my_video_list}")
 
     if not time_start:
         now = datetime.now()
@@ -191,13 +197,13 @@ def Add_Task_Everydays():
     new_task = TaskInformation(ID_count, video_list,duration=duration,until=until,time_start=time_start,time_end=time_end,oneshot=0)
     ID_count += 1
     ListTask.append(new_task)
-    schedule.every(int_duration).days.at(time_start).until(deadline).do(daily_task,streamkey,server,video_list).tag(f'{new_task.ID}')
+    schedule.every(int_duration).days.at(time_start).until(deadline).do(daily_task,streamkey,server,my_video_list).tag(f'{new_task.ID}')
     print(schedule.get_jobs())
     saveTask(1)
 
     #for cancel job at time.
-    if time_end:
-        schedule.every(int_duration).days.at(time_end).until(deadline).do(daily_task,streamkey,server,video_list).tag(f'{new_task.ID}')
+    # if time_end:
+        # schedule.every(int_duration).days.at(time_end).until(deadline).do(daily_task,streamkey,server,video_list).tag(f'{new_task.ID}')
 
     return jsonify({'success': {'message': 'Create task', 'ID': new_task.ID}}), 200
 
@@ -261,13 +267,13 @@ def Add_Task_Oneshot():
     new_task = TaskInformation(ID_count, video_list,duration=duration,until=until,time_start=time_start,time_end=time_end,oneshot=1)
     ID_count += 1
     ListTask.append(new_task)
-    schedule.every(int_duration).days.at(time_start).do(job).tag(f'{new_task.ID}') 
+    schedule.every(int_duration).days.at(time_start).do().tag(f'{new_task.ID}') 
     print(schedule.get_jobs())
     saveTask(1)
 
     #for cancel job at time.
     if time_end:
-        schedule.every(int_duration).days.at(time_end).until(deadline).do(job).tag(f'{new_task.ID}')
+        schedule.every(int_duration).days.at(time_end).until(deadline).do().tag(f'{new_task.ID}')
 
     return jsonify({'success': {'message': 'Create task', 'ID': new_task.ID}}), 200
 
@@ -307,7 +313,7 @@ def Delete_Task():
 
 
 def testing():
-    # schedule.every().days.at("08:50").do(job)
+    schedule.every(3).seconds.do(job)
     print(schedule.get_jobs())
 
 
@@ -316,9 +322,14 @@ def testing():
 if __name__ == '__main__':
     init()
 
-    # Create thread for scheduler
     schedule_thread = threading.Thread(target=schedule_thread)
     schedule_thread.start()
+    # my_obs.get_input_list()
+    # my_obs.get_input_settings("mySource")
+    # my_obs.get_scene_item_list('scene1')
+    
     # testing()
     # Running app
-    app.run(debug=True)
+    app.run(debug=False)
+
+
