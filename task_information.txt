@@ -1,3 +1,4 @@
-ID:2;Video Name:abc,bca
-ID:4;Video Name:abc,bca
-ID:5;Video Name:abc,bca
+ID:1;Video Name:abc,bca;Time start:09:36;Time end:None;Until:2024-09-04;Duration:2;One shot:0
+ID:2;Video Name:abc,bca;Time start:09:36;Time end:None;Until:2024-09-04;Duration:2;One shot:0
+ID:3;Video Name:abc,bca;Time start:02:22;Time end:None;Until:2024-09-04;Duration:2;One shot:0
+ID:4;Video Name:abc,bca;Time start:02:22;Time end:None;Until:2024-09-04;Duration:2;One shot:1
