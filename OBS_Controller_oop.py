@@ -16,6 +16,7 @@ class OBS_controller:
         self.port = port
         self.password = password
         self.request_client = obs.ReqClient(host = self.host,port = self.port,password = self.password)
+
         
     def get_input_list(self,kind=None):
         """
@@ -133,6 +134,37 @@ class OBS_controller:
         toggle Livestream on OBS
         """
         self.request_client.toggle_stream()
+        
+    def get_stream_status(self):
+        """
+        Gets the status of the stream output.
+        Returns:
+            Object: 
+            -attr:
+                + output_active (Bool): Whether the output is active
+                + output_bytes (Boolean): Whether the output is active
+                + output_timecode (String): Current formatted timecode string for the output
+                + utput_duration (Number): Current duration in milliseconds for the output
+                + output_congestion (Number): Congestion of the output
+                + output_reconnecting (Number): Number of bytes sent by the output
+                + output_skipped_frames (Number): Number of frames skipped by the output's process
+                + output_total_frames (Number): Total number of frames delivered by the output's process
+        """
+        request = self.request_client.get_stream_status()
+        print("Stream Status")
+        print(f"\t output active: {request.output_active}")
+        print(f"\t output bytes: {request.output_bytes}")
+        print(f"\t output congestion: {request.output_congestion}")
+        print(f"\t output duration: {request.output_duration}")
+        print(f"\t output reconnecting: {request.output_reconnecting}")
+        print(f"\t output skipped frames: {request.output_skipped_frames}")
+        print(f"\t output timecode:{request.output_timecode}")
+        print(f"\t output total frames:{request.output_total_frames}")
+        return request
+    
+    def check_stream_is_active(self):
+        response = self.get_stream_status()
+        return response.output_active
     
     def is_exited_in_playlist(self,source_name,video_path):
         """
@@ -261,7 +293,6 @@ class OBS_controller:
         
 
 def main():
-    # my_obs = OBS_controller()
     # stream_key = "live_1044211682_Ol34MomAqRm3Ef7s0jwrKq0KNGj3Ku"
     # server = "rtmp://live.twitch.tv/app"
     # my_obs.get_input_list()
@@ -282,6 +313,19 @@ def main():
     #         break
     pass
     
+     
+def test():
+    my_obs = OBS_controller()
+    my_obs.get_stream_status()
+    print(f"stream is active : {my_obs.check_stream_is_active()}")
+    while True:
+        try: 
+            time.sleep(1)
+        except KeyboardInterrupt:
+            # my_obs.stop_stream()
+            break
+    
+    
 if __name__ == "__main__":
-    main()
+    test()
         
