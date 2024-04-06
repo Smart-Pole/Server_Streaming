@@ -5,7 +5,6 @@ This API provides endpoints for managing tasks related to streaming, such as ret
 
 ## Install
 
-    bundle install
 
 ## Run the app
 
@@ -32,8 +31,5 @@ The REST API to the example app is described below.
         "ship.mp4"
     ]
 
-    Date: Thu, 24 Feb 2011 12:36:33 GMT
-    Status: 204 No Content
-    Connection: close
 
 
