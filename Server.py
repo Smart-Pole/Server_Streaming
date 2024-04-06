@@ -37,13 +37,16 @@ class TaskInformation:
         return json.dumps(self, default=lambda o: o.__dict__, indent=4)
 
 FilePath = "task_information.txt"
+VideoPath = "d:/FINAL PROJECT/SERVER/video/"
 FolderVideoPath = "video"
 ID_count = 1
 ListTask = []
 FlagLive = 0
 CurrentVideo = []
+FlagSetStreamKey = 0
 
 mutex = threading.Lock()
+mutex_setstreamkey = threading.Lock()
 
 def set_flag_live(value):
     global FlagLive
@@ -58,6 +61,21 @@ def get_flag_live():
     mutex.acquire()
     value = FlagLive
     mutex.release()
+
+    return value
+
+def set_flag_streamkey(value):
+    global FlagSetStreamKey
+    mutex_setstreamkey.acquire()
+    FlagSetStreamKey = value
+    mutex_setstreamkey.release()
+
+def get_flag_streamkey():
+    global FlagSetStreamKey
+    value  = 0
+    mutex_setstreamkey.acquire()
+    value = FlagSetStreamKey
+    mutex_setstreamkey.release()
 
     return value
 
@@ -88,12 +106,11 @@ def init():
         for task_info in ListTask:
             print(task_info)
 
-    stream_key = "live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk"
-    server = "rtmp://live.twitch.tv/app"
+    if not my_obs.check_stream_is_active():
+        my_obs.start_stream()
     
-
-    my_obs.set_stream_service_key_server(streamkey=stream_key,server=server)
-    my_obs.start_stream()
+    if my_obs.check_stream_is_active():
+        set_flag_streamkey(1)
 
 
 # This function is used to save data to a TXT file. 
@@ -109,7 +126,8 @@ def saveTask(type = 0):
                 file.write(f"ID:{ListTask[len(ListTask) - 1].ID};Video Name:{','.join(ListTask[len(ListTask) - 1].video_name)};Time start:{ListTask[len(ListTask) - 1].time_start};Time end:{ListTask[len(ListTask) - 1].time_end};Until:{ListTask[len(ListTask) - 1].until};Duration:{ListTask[len(ListTask) - 1].duration};One shot:{ListTask[len(ListTask) - 1].oneshot}\n")
 
 def get_link_video(list_video):
-    my_video_list = [f"d:/FINAL PROJECT/SERVER/video/{item}" for item in list_video]
+    global VideoPath
+    my_video_list = [f"{VideoPath}{item}" for item in list_video]
     print(f"List Video: {my_video_list}")
     return my_video_list
 
@@ -232,9 +250,91 @@ def schedule_thread():
             schedule.run_pending()
         time.sleep(1)
 
+def get_video_name():
+    file_list = []
+    for file_name in os.listdir(FolderVideoPath):
+        if os.path.isfile(os.path.join(FolderVideoPath, file_name)):
+            file_list.append(file_name)
+    return file_list
+
+def check_video_list(my_list):
+    file_list = get_video_name()
+    for item in my_list:
+        if item not in file_list:
+            return False
+    return True
+###########################################################################
+
+@app.route('/get/video')
+def Get_files_in_folder():
+    file_list = get_video_name()
+    return jsonify({'Video name': file_list}), 200
+
+@app.route('/get/schedule')
+def Get_schedule():
+    schedule_dict = {"Schedule": [task.__dict__ for task in ListTask]}
+    json_string = json.dumps(schedule_dict, indent=4)
+    return json_string
+
+@app.route('/get/streamkey')
+def Get_streamkey():
+    stream_key = my_obs.get_stream_service_settings().stream_service_settings.get("key")
+    print(stream_key)
+    return jsonify({'Stream key': stream_key}), 200
+
+@app.route('/setstreamkey')
+def Set_Stream_Parameter():
+    stream_key = request.args.get('streamkey')
+    server = None
+    
+
+    if not stream_key:
+        return jsonify({'error': {'message': 'Empty stream key'}}), 400
+    
+    if not server or server == "twitch" :
+        server = "rtmp://live.twitch.tv/app"
+
+    if my_obs.check_stream_is_active():
+        my_obs.stop_stream()
+        time.sleep(1)
+    
+
+    my_obs.set_stream_service_key_server(streamkey=stream_key,server=server)
+    set_flag_streamkey(1)
+    if not my_obs.check_stream_is_active():
+        my_obs.start_stream()
+
+    return jsonify({'success': {'message': 'Set stream key success'}}), 200
+
+@app.route('/live')
+def Live_Steam():
+    if not get_flag_streamkey():
+        return jsonify({'error': {'message': 'Empty stream key'}}), 400
+    
+    list = request.args.get('list')
+    if not list:
+        return jsonify({'error': {'message': 'List empty'}}), 400
+    
+    
+    listvideo = list.split(',')
+    if not check_video_list(listvideo):
+        return jsonify({'error': {'message': 'Wrong file name'}}), 400
+    
+    live(listvideo)
+    set_flag_live(1)
+    return jsonify({'success': {'message': 'Live stream'}}), 200
+
+@app.route('/stoplive')
+def Stop_Live_Steam():
+    set_flag_live(0)
+    stop_live()
+    return jsonify({'success': {'message': 'Stop live stream'}}), 200
 
 @app.route('/schedule/addTask/everydays')
 def Add_Task_Everydays():
+    if not get_flag_streamkey():
+        return jsonify({'error': {'message': 'Empty stream key'}}), 400
+    
     time_start = request.args.get('timestart')
     time_end = request.args.get('timeend')
     list = request.args.get('list')
@@ -256,9 +356,6 @@ def Add_Task_Everydays():
         int_duration = int(duration)
     else:
         return jsonify({'error': {'message': 'Wrong duration'}}), 400
-        
-    if not list:
-        return jsonify({'error': {'message': 'List empty'}}), 400
     
     if not until:
         my_year = 2100
@@ -271,10 +368,13 @@ def Add_Task_Everydays():
         my_day = int(until.split('-')[2])
         deadline = datetime(year=my_year,month=my_month,day=my_day,hour=23,minute=59,second=59)
     
-
+    if not list:
+        return jsonify({'error': {'message': 'List empty'}}), 400
+    
     video_list = list.split(',')
 
-
+    if not check_video_list(video_list):
+        return jsonify({'error': {'message': 'Wrong file name'}}), 400
     print(f"List Video: {video_list}")
 
     if not time_start:
@@ -302,25 +402,12 @@ def Add_Task_Everydays():
 
     return jsonify({'success': {'message': 'Create task', 'ID': new_task.ID}}), 200
 
-@app.route('/Live')
-def Live_Steam():
-    list = request.args.get('list')
-    if not list:
-        return jsonify({'error': {'message': 'List empty'}}), 400
-    set_flag_live(1)
-    listvideo = list.split(',')
-    live(listvideo)
-    return jsonify({'success': {'message': 'Live stream'}}), 200
-
-@app.route('/StopLive')
-def Stop_Live_Steam():
-    set_flag_live(0)
-    stop_live()
-    return jsonify({'success': {'message': 'Stop live stream'}}), 200
 
 
 @app.route('/schedule/addTask/oneshot')
 def Add_Task_Oneshot():
+    if not get_flag_streamkey():
+        return jsonify({'error': {'message': 'Empty stream key'}}), 400
     time_start = request.args.get('timestart')
     time_end = request.args.get('timeend')
     list = request.args.get('list')
@@ -336,8 +423,8 @@ def Add_Task_Oneshot():
         return jsonify({'error': {'message': 'List empty'}}), 400
     
     video_list = list.split(',')
-
-
+    if not check_video_list(video_list):
+        return jsonify({'error': {'message': 'Wrong file name'}}), 400
 
     print(f"List Video: {video_list}")
 
@@ -366,19 +453,6 @@ def Add_Task_Oneshot():
 
     return jsonify({'success': {'message': 'Create task', 'ID': new_task.ID}}), 200
 
-@app.route('/get/video')
-def Get_files_in_folder():
-    file_list = []
-    for file_name in os.listdir(FolderVideoPath):
-        if os.path.isfile(os.path.join(FolderVideoPath, file_name)):
-            file_list.append(file_name)
-    return jsonify({'Video name': file_list}), 200
-
-@app.route('/get/schedule')
-def Get_schedule():
-    schedule_dict = {"Schedule": [task.__dict__ for task in ListTask]}
-    json_string = json.dumps(schedule_dict, indent=4)
-    return json_string
 
 @app.route('/schedule/deleteTask')
 def Delete_Task():
