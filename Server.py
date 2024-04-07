@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from datetime import datetime
+from datetime import datetime,date
 from OBS_Controller_oop import OBS_controller
 import threading
 import schedule
@@ -20,14 +20,15 @@ my_obs = OBS_controller()
 app = Flask(__name__)
 CORS(app)
 class TaskInformation:
-    def __init__(self, ID, video_name,duration,until, time_start, time_end ,oneshot = 0):
+    def __init__(self, ID, video_name,duration,start_date,until, start_time, end_time ,onetime = 0):
         self.ID = ID
         self.video_name = video_name
         self.duration = duration
+        self.start_date = start_date
         self.until = until
-        self.time_start  = time_start
-        self.time_end = time_end
-        self.oneshot = oneshot
+        self.start_time  = start_time
+        self.end_time = end_time
+        self.onetime = onetime
 
 
     def __str__(self):
@@ -44,9 +45,11 @@ ListTask = []
 FlagLive = 0
 CurrentVideo = []
 FlagSetStreamKey = 0
+FlagTaskRunning = 0
 
 mutex = threading.Lock()
 mutex_setstreamkey = threading.Lock()
+mutex_taskrunning = threading.Lock()
 
 def set_flag_live(value):
     global FlagLive
@@ -61,7 +64,6 @@ def get_flag_live():
     mutex.acquire()
     value = FlagLive
     mutex.release()
-
     return value
 
 def set_flag_streamkey(value):
@@ -76,27 +78,42 @@ def get_flag_streamkey():
     mutex_setstreamkey.acquire()
     value = FlagSetStreamKey
     mutex_setstreamkey.release()
-
     return value
 
+def set_flag_taskrunning(value):
+    global FlagTaskRunning
+    mutex_taskrunning.acquire()
+    FlagTaskRunning = value
+    mutex_taskrunning.release()
+
+def get_flag_taskrunning():
+    global FlagTaskRunning
+    value  = 0
+    mutex_taskrunning.acquire()
+    value = FlagTaskRunning
+    mutex_taskrunning.release()
+    return value
+###################################################################################
 def init():
     global ID_count
     with open(FilePath, 'r') as file:
 
         for line in file:
+            
             data = line.strip().split(';')
             ID = int(data[0].split(':')[1])
             video_name = data[1].split(':')[1].split(',')
-            time_start = ':'.join([data[2].split(':')[1],data[2].split(':')[2]])
+            start_time = ':'.join([data[2].split(':')[1],data[2].split(':')[2]])
             if(data[3].split(':')[1] != "None"):
-                time_end = ':'.join([data[3].split(':')[1],data[3].split(':')[2]])
+                end_time = ':'.join([data[3].split(':')[1],data[3].split(':')[2]])
             else:
-                time_end = None
-            until =  data[4].split(':')[1]
+                end_time = None
+            until =  datetime.strptime(data[4].split(':')[1],"%Y-%m-%d")
             duration = data[5].split(':')[1]
-            oneshot = data[6].split(':')[1]
-            
-            task_info = TaskInformation(ID, video_name=video_name,time_start=time_start,time_end=time_end,until=until,duration=duration,oneshot=oneshot)
+            onetime = data[6].split(':')[1]
+            start_date = datetime.strptime(data[7].split(':')[1],"%Y-%m-%d")
+
+            task_info = TaskInformation(ID=ID, video_name=video_name,start_time=start_time,end_time=end_time,start_date=start_date,until=until,duration=duration,onetime=onetime)
             ListTask.append(task_info)
     if len(ListTask) == 0:
         print('No task')
@@ -108,8 +125,10 @@ def init():
 
     if not my_obs.check_stream_is_active():
         my_obs.start_stream()
-    
+        time.sleep(5)
+   
     if my_obs.check_stream_is_active():
+        print("INIT: SET FLAG STREAM KEY ")
         set_flag_streamkey(1)
 
 
@@ -120,10 +139,10 @@ def saveTask(type = 0):
         open(FilePath, "w").close()
         with open(FilePath, 'w') as file:
             for task_info in ListTask:
-                file.write(f"ID:{task_info.ID};Video Name:{','.join(task_info.video_name)};Time start:{task_info.time_start};Time end:{task_info.time_end};Until:{task_info.until};Duration:{task_info.duration};One shot:{task_info.oneshot}\n")
+                file.write(f"ID:{task_info.ID};Video Name:{','.join(task_info.video_name)};Start time:{task_info.start_time};End time:{task_info.end_time};Until:{task_info.until.year}-{task_info.until.month}-{task_info.until.day};Duration:{task_info.duration};One Time:{task_info.onetime};Start date:{task_info.start_date.year}-{task_info.start_date.month}-{task_info.start_date.day}")
     elif type == 1:
         with open(FilePath, 'a') as file:
-                file.write(f"ID:{ListTask[len(ListTask) - 1].ID};Video Name:{','.join(ListTask[len(ListTask) - 1].video_name)};Time start:{ListTask[len(ListTask) - 1].time_start};Time end:{ListTask[len(ListTask) - 1].time_end};Until:{ListTask[len(ListTask) - 1].until};Duration:{ListTask[len(ListTask) - 1].duration};One shot:{ListTask[len(ListTask) - 1].oneshot}\n")
+                file.write(f"ID:{ListTask[len(ListTask) - 1].ID};Video Name:{','.join(ListTask[len(ListTask) - 1].video_name)};Start time:{ListTask[len(ListTask) - 1].start_time};End time:{ListTask[len(ListTask) - 1].end_time};Until:{ListTask[len(ListTask) - 1].until.year}-{ListTask[len(ListTask) - 1].until.month}-{ListTask[len(ListTask) - 1].until.day};Duration:{ListTask[len(ListTask) - 1].duration};One Time:{ListTask[len(ListTask) - 1].onetime};Start date:{ListTask[len(ListTask) - 1].start_date.year}-{ListTask[len(ListTask) - 1].start_date.month}-{ListTask[len(ListTask) - 1].start_date.day}\n")
 
 def get_link_video(list_video):
     global VideoPath
@@ -164,91 +183,122 @@ def printTaskInfor():
         for task_info in ListTask:
             print(task_info)
 
-def is_time_valid(time_start,time_end):
+def is_time_valid(start_time,end_time):
     # Check if the end time is later than the start time
-    if not time_end or time_end == "None":
-        start_time = datetime.strptime(time_start, "%H:%M")
+    if not end_time or end_time == "None":
+        start_time = datetime.strptime(start_time, "%H:%M")
 
         for i, Task in enumerate(ListTask):
-            if Task.time_end:
-                if (datetime.strptime(Task.time_end, "%H:%M") >=  start_time and datetime.strptime(Task.time_start, "%H:%M") <=  start_time):
+            if Task.end_time:
+                if (datetime.strptime(Task.end_time, "%H:%M") >=  start_time and datetime.strptime(Task.start_time, "%H:%M") <=  start_time):
                     print("1")
                     return False
         return True
     else:
-        start_time = datetime.strptime(time_start, "%H:%M")
-        end_time = datetime.strptime(time_end, "%H:%M")
+        start_time = datetime.strptime(start_time, "%H:%M")
+        end_time = datetime.strptime(end_time, "%H:%M")
         if end_time < start_time:
             print("4")
             return False
         for i, Task in enumerate(ListTask):
-            if Task.time_end or Task.time_end != "None":
-                if (datetime.strptime(Task.time_start, "%H:%M") <= end_time and datetime.strptime(Task.time_start, "%H:%M") >=  start_time):
+            if Task.end_time or Task.end_time != "None":
+                if (datetime.strptime(Task.start_time, "%H:%M") <= end_time and datetime.strptime(Task.start_time, "%H:%M") >=  start_time):
                     print("3")
                     return False
             else:
-                if (datetime.strptime(Task.time_start, "%H:%M") <= end_time and datetime.strptime(Task.time_end, "%H:%M") >= end_time):
+                if (datetime.strptime(Task.start_time, "%H:%M") <= end_time and datetime.strptime(Task.end_time, "%H:%M") >= end_time):
                     print("2")
                     return False
-                if(datetime.strptime(Task.time_start, "%H:%M") <= start_time and datetime.strptime(Task.time_end, "%H:%M") >= start_time):
+                if(datetime.strptime(Task.start_time, "%H:%M") <= start_time and datetime.strptime(Task.end_time, "%H:%M") >= start_time):
                     print("5")
                     return False
-                if(datetime.strptime(Task.time_start, "%H:%M") >= start_time and datetime.strptime(Task.time_start, "%H:%M") <= end_time):
+                if(datetime.strptime(Task.start_time, "%H:%M") >= start_time and datetime.strptime(Task.start_time, "%H:%M") <= end_time):
                     print("5")
                     return False
-                if(datetime.strptime(Task.time_end, "%H:%M") >= start_time and datetime.strptime(Task.time_end, "%H:%M") <= end_time):
+                if(datetime.strptime(Task.end_time, "%H:%M") >= start_time and datetime.strptime(Task.end_time, "%H:%M") <= end_time):
                     print("5")
                     return False
         return True
 
 
-def cancel_task(oneshot):
+def cancel_task(start_date,repeatDuration):
+    if not get_flag_taskrunning():
+        return False
+    if(datetime.now() < start_date):
+        print("NOT RUN NOW")
+        return False
+    if repeatDuration:
+        if (abs(datetime.now() - start_date).days) % repeatDuration != 0:
+            return False
     global CurrentVideo
     CurrentVideo = []
     cancle_link = get_link_video(["idle.mp4"])
     my_obs.set_input_playlist(cancle_link)
-
-    if oneshot:
-        print("Cancel task oneshot")
+    set_flag_taskrunning(0)
+    if repeatDuration == 0:
+        print("Cancel task onetime")
         return schedule.CancelJob
+    
+    return True
 def live(videolist):
     myvideolist = get_link_video(videolist)
     my_obs.set_input_playlist(myvideolist)
     print('LIVE')
+    set_flag_live(1)
 
 def stop_live():
     global CurrentVideo
+    set_flag_live(0)
     if not CurrentVideo:
         cancle_link = get_link_video(["idle.mp4"])
         my_obs.set_input_playlist(cancle_link)
     else:
         my_obs.set_input_playlist(CurrentVideo)
 
-def daily_task(streamkey, server, videolist):
+def daily_task(taskinfor):
     global CurrentVideo
-    myvideolist = get_link_video(videolist)
+    if get_flag_taskrunning():
+        print(f"Task id: {taskinfor.ID} has been BLOCKED")
+        return False
+    if(datetime.now() < taskinfor.start_date):
+        print("NOT RUN NOW")
+        return False
+    if taskinfor.duration:
+        if (abs(datetime.now() - taskinfor.start_date).days) % taskinfor.duration != 0:
+            return False
+    myvideolist = get_link_video(taskinfor.video_name)
     CurrentVideo = myvideolist
     my_obs.set_input_playlist(myvideolist)
     print('Daily_task')
+    set_flag_taskrunning(1)
+    if taskinfor.end_time and taskinfor.end_time != "None":
+        schedule.every().days.at(taskinfor.end_time).until(taskinfor.until).do(cancel_task,taskinfor.start_date,taskinfor.duration).tag(f'{taskinfor.ID}')
 
-def oneshot_task(streamkey, server, videolist,id):
+
+
+def onetime_task(taskinfor):
+    if get_flag_taskrunning():
+        print(f"Task id: {taskinfor.ID} has been BLOCKED")
+        return False
+    if(datetime.now() < taskinfor.start_date):
+        print("NOT RUN NOW")
+        return False
     global CurrentVideo
     removeTask(id)
-    myvideolist = get_link_video(videolist)
+    myvideolist = get_link_video(taskinfor.video_name)
     CurrentVideo = myvideolist
     my_obs.set_input_playlist(myvideolist)
-    print('Oneshot_task')
+    print('onetime_task')
+    set_flag_taskrunning(1)
+    if taskinfor.end_time and taskinfor.end_time != "None":
+        schedule.every().days.at(taskinfor.end_time).until(taskinfor.until).do(cancel_task,taskinfor.start_date,taskinfor.duration).tag(f'{taskinfor.ID}')
     return schedule.CancelJob
 
 def job():
     print('Hello world')
     print(schedule.get_jobs())
 
-def schedule_thread():
-    while True:
-        if not get_flag_live():
-            schedule.run_pending()
-        time.sleep(1)
+
 
 def get_video_name():
     file_list = []
@@ -263,7 +313,12 @@ def check_video_list(my_list):
         if item not in file_list:
             return False
     return True
-###########################################################################
+def schedule_thread():
+    while True:
+        if not get_flag_live():
+            schedule.run_pending()
+        time.sleep(1)
+################################################################################################################################################################
 
 @app.route('/get/video')
 def Get_files_in_folder():
@@ -321,22 +376,23 @@ def Live_Steam():
         return jsonify({'error': {'message': 'Wrong file name'}}), 400
     
     live(listvideo)
-    set_flag_live(1)
+    
     return jsonify({'success': {'message': 'Live stream'}}), 200
 
 @app.route('/stoplive')
 def Stop_Live_Steam():
-    set_flag_live(0)
+
     stop_live()
     return jsonify({'success': {'message': 'Stop live stream'}}), 200
 
-@app.route('/schedule/addTask/everydays')
+@app.route('/schedule/addTask/daily')
 def Add_Task_Everydays():
     if not get_flag_streamkey():
         return jsonify({'error': {'message': 'Empty stream key'}}), 400
     
-    time_start = request.args.get('timestart')
-    time_end = request.args.get('timeend')
+    start_time = request.args.get('starttime')
+    end_time = request.args.get('endtime')
+    start_date = request.args.get('startdate')
     list = request.args.get('list')
     duration = request.args.get('duration')
     until = request.args.get('until')
@@ -346,12 +402,10 @@ def Add_Task_Everydays():
     global ID_count
 
     print(duration)
-    # Cheking parameter
-    if not streamkey:
-        return jsonify({'error': {'message': 'Stream key empty'}}), 400
-    
+
     if not duration:
         int_duration = 1
+        duration = 1
     elif duration.isdigit():
         int_duration = int(duration)
     else:
@@ -367,58 +421,60 @@ def Add_Task_Everydays():
         my_month = int(until.split('-')[1])
         my_day = int(until.split('-')[2])
         deadline = datetime(year=my_year,month=my_month,day=my_day,hour=23,minute=59,second=59)
+
     
     if not list:
         return jsonify({'error': {'message': 'List empty'}}), 400
     
+    if not start_date:
+        start_date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    else:
+        start_date = datetime.strptime(start_date,"%Y-%m-%d")
+
     video_list = list.split(',')
 
     if not check_video_list(video_list):
         return jsonify({'error': {'message': 'Wrong file name'}}), 400
     print(f"List Video: {video_list}")
 
-    if not time_start:
+    if not start_time:
         now = datetime.now()
-        time_start = now.strftime("%H:%M")
-        print("Current Time =", time_start)
+        start_time = now.strftime("%H:%M")
+        print("Current Time =", start_time)
     else:
-        if validateTimeformat(time_start) == False:
+        if validateTimeformat(start_time) == False:
              return jsonify({'error': 'Wrong time format'}) ,400
-        print(time_start)
+        print(start_time)
 
 
-    if is_time_valid(time_start,time_end) == False :
-        return jsonify({'error': 'Wrong time format'}) ,400
+    # if is_time_valid(start_time,end_time) == False :
+    #     return jsonify({'error': 'Wrong time format'}) ,400
     
-    new_task = TaskInformation(ID_count, video_list,duration=duration,until=until,time_start=time_start,time_end=time_end,oneshot=0)
+    new_task = TaskInformation(ID_count, video_list,start_date=start_date,duration=int(duration),until=deadline,start_time=start_time,end_time=end_time,onetime=0)
     ID_count += 1
     ListTask.append(new_task)
-    schedule.every(int_duration).days.at(time_start).until(deadline).do(daily_task,streamkey,server,video_list).tag(f'{new_task.ID}')
+    schedule.every().days.at(start_time).until(deadline).do(daily_task, new_task).tag(f'{new_task.ID}')
     print(schedule.get_jobs())
     saveTask(1)
-
-    if time_end:
-        schedule.every(int_duration).days.at(time_end).until(deadline).do(cancel_task,0).tag(f'{new_task.ID}')
 
     return jsonify({'success': {'message': 'Create task', 'ID': new_task.ID}}), 200
 
 
 
-@app.route('/schedule/addTask/oneshot')
-def Add_Task_Oneshot():
+@app.route('/schedule/addTask/onetime')
+def Add_Task_onetime():
     if not get_flag_streamkey():
         return jsonify({'error': {'message': 'Empty stream key'}}), 400
-    time_start = request.args.get('timestart')
-    time_end = request.args.get('timeend')
+    start_time = request.args.get('starttime')
+    end_time = request.args.get('endtime')
+    start_date = request.args.get('startdate')
     list = request.args.get('list')
     streamkey = request.args.get('streamkey')
     server = request.args.get('server')
     global ID_count
 
     # Cheking parameter
-    if not streamkey:
-        return jsonify({'error': {'message': 'Stream key empty'}}), 400
-    
+
     if not list:
         return jsonify({'error': {'message': 'List empty'}}), 400
     
@@ -428,28 +484,33 @@ def Add_Task_Oneshot():
 
     print(f"List Video: {video_list}")
 
-    if not time_start:
-        now = datetime.now()
-        time_start = now.strftime("%H:%M")
-        print("Current Time =", time_start)
+    if not start_date:
+        start_date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
     else:
-        if validateTimeformat(time_start) == False:
+        start_date = datetime.strptime(start_date,"%Y-%m-%d")
+
+    if not start_time:
+        now = datetime.now()
+        start_time = now.strftime("%H:%M")
+        print("Current Time =", start_time)
+    else:
+        if validateTimeformat(start_time) == False:
              return jsonify({'error': 'Wrong time format'}) ,400
-        print(time_start)
+        print(start_time)
 
 
-    if is_time_valid(time_start,time_end) == False :
-        return jsonify({'error': 'Wrong time format'}) ,400
+    # if is_time_valid(start_time,end_time) == False :
+    #     return jsonify({'error': 'Wrong time format'}) ,400
     
-    new_task = TaskInformation(ID_count, video_list,duration=0,until=0,time_start=time_start,time_end=time_end,oneshot=1)
+    new_task = TaskInformation(ID_count, video_list,duration=0,start_date=start_date,until=datetime.now(),start_time=start_time,end_time=end_time,onetime=1)
     ID_count += 1
     ListTask.append(new_task)
-    schedule.every().days.at(time_start).do(oneshot_task,streamkey,server,video_list,new_task.ID).tag(f'{new_task.ID}')
+    schedule.every().days.at(start_time).do(onetime_task,new_task).tag(f'{new_task.ID}')
     print(schedule.get_jobs())
     saveTask(1)
 
-    if time_end:
-        schedule.every().days.at(time_end).do(cancel_task,1).tag(f'{new_task.ID}')
+    # if end_time:
+    #     schedule.every().days.at(end_time).do(cancel_task,start_date,0).tag(f'{new_task.ID}')
 
     return jsonify({'success': {'message': 'Create task', 'ID': new_task.ID}}), 200
 

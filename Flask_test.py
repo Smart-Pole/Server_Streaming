@@ -1,39 +1,15 @@
-from flask import Flask
-import threading
-import time
-import schedule
+from datetime import datetime, timedelta
 
-app = Flask(__name__)
-def job():
-    print('Hello world')
+def calculate_time_difference(datetime1, datetime2):
+    difference = abs(datetime2 - datetime1).days
+    a = difference - 1
+    return a
 
+# Tạo các đối tượng datetime
+datetime1 = datetime(2024, 4, 1, 10, 30)  # 10:30 AM ngày 1 tháng 4 năm 2024
+datetime2 = datetime(2024, 4, 4, 12, 45)  # 12:45 PM ngày 4 tháng 4 năm 2024
 
-
-def schedule_thread():
-
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
-
-@app.route('/hello')
-def hello():
-    schedule.every(5).seconds.do(job).tag('hourly-tasks', 'friend')
-    return "Hello, world from Flask!"
-
-@app.route('/get_all_schedule')
-def get_all_schedule():
-    print (schedule.get_jobs())
-    return "Hello, world from Flask!"
-
-@app.route('/delete_task/<task_id>')
-def delete_task(task_id):
-    schedule.clear(task_id)
-    return f'DELETE {task_id}'
-
-if __name__ == '__main__':
-    # Tạo một luồng cho schedule
-    schedule_thread = threading.Thread(target=schedule_thread)
-    schedule_thread.start()
-
-    # Chạy Flask trong chính luồng chính
-    app.run(debug=True)
+# Tính toán khoảng cách thời gian giữa hai thời điểm
+time_difference = calculate_time_difference(datetime1, datetime2)
+print(datetime1)
+print("Khoảng cách thời gian:", time_difference)
