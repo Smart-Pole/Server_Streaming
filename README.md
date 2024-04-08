@@ -81,12 +81,7 @@ Retrieves the stream key used for streaming.
 ### Response
 Success: Returns a JSON object containing the stream key.
 
-    "Video name": [
-        "bird.mp4",
-        "horse.mp4",
-        "idle.mp4",
-        "ship.mp4"
-    ]
+    "Stream key": "live_1039732177_vlmsO93WolB9ky25idCbI6fnEBMnX233"
 
 ## Set Stream Key
 Sets the stream key for streaming.
