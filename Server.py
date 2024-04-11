@@ -20,8 +20,9 @@ my_obs = OBS_controller()
 app = Flask(__name__)
 CORS(app)
 class TaskInformation:
-    def __init__(self, ID, video_name,duration,start_date,until, start_time, end_time ,onetime = 0):
+    def __init__(self, ID,lable, video_name,duration,start_date,until, start_time, end_time ,onetime = 0 ):
         self.ID = ID
+        self.lable = lable
         self.video_name = video_name
         self.duration = duration
         self.start_date = start_date
@@ -29,6 +30,7 @@ class TaskInformation:
         self.start_time  = start_time
         self.end_time = end_time
         self.onetime = onetime
+        
 
 
     def __str__(self):
@@ -115,8 +117,9 @@ def init():
             duration = data[5].split(':')[1]
             onetime = data[6].split(':')[1]
             start_date = datetime.strptime(data[7].split(':')[1],"%Y-%m-%d")
+            lable = data[8].split(':')[1]
 
-            task_info = TaskInformation(ID=ID, video_name=video_name,start_time=start_time,end_time=end_time,start_date=start_date,until=until,duration=duration,onetime=onetime)
+            task_info = TaskInformation(ID=ID,lable=lable, video_name=video_name,start_time=start_time,end_time=end_time,start_date=start_date,until=until,duration=duration,onetime=onetime)
             ListTask.append(task_info)
     if len(ListTask) == 0:
         print('No task')
@@ -142,10 +145,10 @@ def saveTask(type = 0):
         open(FilePath, "w").close()
         with open(FilePath, 'w') as file:
             for task_info in ListTask:
-                file.write(f"ID:{task_info.ID};Video Name:{','.join(task_info.video_name)};Start time:{task_info.start_time};End time:{task_info.end_time};Until:{task_info.until.year}-{task_info.until.month}-{task_info.until.day};Duration:{task_info.duration};One Time:{task_info.onetime};Start date:{task_info.start_date.year}-{task_info.start_date.month}-{task_info.start_date.day}")
+                file.write(f"ID:{task_info.ID};Video Name:{','.join(task_info.video_name)};Start time:{task_info.start_time};End time:{task_info.end_time};Until:{task_info.until.year}-{task_info.until.month}-{task_info.until.day};Duration:{task_info.duration};One Time:{task_info.onetime};Start date:{task_info.start_date.year}-{task_info.start_date.month}-{task_info.start_date.day};Lable:{task_info.lable}")
     elif type == 1:
         with open(FilePath, 'a') as file:
-                file.write(f"ID:{ListTask[len(ListTask) - 1].ID};Video Name:{','.join(ListTask[len(ListTask) - 1].video_name)};Start time:{ListTask[len(ListTask) - 1].start_time};End time:{ListTask[len(ListTask) - 1].end_time};Until:{ListTask[len(ListTask) - 1].until.year}-{ListTask[len(ListTask) - 1].until.month}-{ListTask[len(ListTask) - 1].until.day};Duration:{ListTask[len(ListTask) - 1].duration};One Time:{ListTask[len(ListTask) - 1].onetime};Start date:{ListTask[len(ListTask) - 1].start_date.year}-{ListTask[len(ListTask) - 1].start_date.month}-{ListTask[len(ListTask) - 1].start_date.day}\n")
+                file.write(f"ID:{ListTask[len(ListTask) - 1].ID};Video Name:{','.join(ListTask[len(ListTask) - 1].video_name)};Start time:{ListTask[len(ListTask) - 1].start_time};End time:{ListTask[len(ListTask) - 1].end_time};Until:{ListTask[len(ListTask) - 1].until.year}-{ListTask[len(ListTask) - 1].until.month}-{ListTask[len(ListTask) - 1].until.day};Duration:{ListTask[len(ListTask) - 1].duration};One Time:{ListTask[len(ListTask) - 1].onetime};Start date:{ListTask[len(ListTask) - 1].start_date.year}-{ListTask[len(ListTask) - 1].start_date.month}-{ListTask[len(ListTask) - 1].start_date.day};Lable:{ListTask[len(ListTask) - 1].lable}\n")
 
 def get_link_video(list_video):
     global VideoPath
@@ -438,6 +441,7 @@ def Add_Task_Everydays():
     list = request.args.get('list')
     duration = request.args.get('duration')
     until = request.args.get('until')
+    lable = request.args.get('lable')
     deadline = None
     global ID_count
 
@@ -486,11 +490,13 @@ def Add_Task_Everydays():
              return jsonify({'error': 'Wrong time format'}) ,400
         print(start_time)
 
+    if not lable:
+        lable = ID_count
 
     # if is_time_valid(start_time,end_time) == False :
     #     return jsonify({'error': 'Wrong time format'}) ,400
     
-    new_task = TaskInformation(ID_count, video_list,start_date=start_date,duration=int(duration),until=deadline,start_time=start_time,end_time=end_time,onetime=0)
+    new_task = TaskInformation(ID=ID_count,lable=lable, video_name=video_list,start_date=start_date,duration=int(duration),until=deadline,start_time=start_time,end_time=end_time,onetime=0)
     ID_count += 1
     ListTask.append(new_task)
     schedule.every().days.at(start_time).until(deadline).do(daily_task, new_task).tag(f'{new_task.ID}')
@@ -509,8 +515,7 @@ def Add_Task_onetime():
     end_time = request.args.get('endtime')
     start_date = request.args.get('startdate')
     list = request.args.get('list')
-    streamkey = request.args.get('streamkey')
-    server = request.args.get('server')
+    lable = request.args.get('lable')
     global ID_count
 
     # Cheking parameter
@@ -538,11 +543,12 @@ def Add_Task_onetime():
              return jsonify({'error': 'Wrong time format'}) ,400
         print(start_time)
 
-
+    if not lable:
+        lable = ID_count
     # if is_time_valid(start_time,end_time) == False :
     #     return jsonify({'error': 'Wrong time format'}) ,400
     
-    new_task = TaskInformation(ID_count, video_list,duration=0,start_date=start_date,until=datetime.now(),start_time=start_time,end_time=end_time,onetime=1)
+    new_task = TaskInformation(ID=ID_count,lable=lable ,video_name=video_list,duration=0,start_date=start_date,until=datetime.now(),start_time=start_time,end_time=end_time,onetime=1)
     ID_count += 1
     ListTask.append(new_task)
     schedule.every().days.at(start_time).do(onetime_task,new_task).tag(f'{new_task.ID}')

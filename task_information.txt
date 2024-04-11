@@ -1,9 +1,1 @@
-ID:1;Video Name:bird.mp4;Start time:09:22;End time:15:00;Until:2024-4-11;Duration:0;One Time:1;Start date:2024-4-11
-ID:2;Video Name:ship.mp4;Start time:10:16;End time:15:00;Until:2024-4-11;Duration:0;One Time:1;Start date:2024-4-11
-ID:3;Video Name:bird.mp4;Start time:10:31;End time:13:00;Until:2024-4-16;Duration:2;One Time:0;Start date:2024-4-10
-ID:4;Video Name:bird.mp4;Start time:10:32;End time:13:00;Until:2024-4-16;Duration:2;One Time:0;Start date:2024-4-9
-ID:5;Video Name:ship.mp4;Start time:10:33;End time:13:00;Until:2024-4-16;Duration:2;One Time:0;Start date:2024-4-9
-ID:6;Video Name:ship.mp4;Start time:10:33;End time:13:00;Until:2024-4-16;Duration:2;One Time:0;Start date:2024-4-9
-ID:7;Video Name:ship.mp4;Start time:10:43;End time:13:00;Until:2024-4-16;Duration:2;One Time:0;Start date:2024-4-9
-ID:8;Video Name:ship.mp4;Start time:10:47;End time:13:00;Until:2024-4-16;Duration:2;One Time:0;Start date:2024-4-9
-ID:9;Video Name:ship.mp4;Start time:10:49;End time:13:00;Until:2024-4-16;Duration:2;One Time:0;Start date:2024-4-9
+ID:1;Video Name:ship.mp4;Start time:10:49;End time:13:00;Until:2024-4-16;Duration:2;One Time:0;Start date:2024-4-9;Lable:VIPVCL
