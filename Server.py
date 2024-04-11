@@ -41,7 +41,7 @@ class TaskInformation:
         return json.dumps(self, default=lambda o: o.__dict__, indent=4)
 
 FilePath = "task_information.txt"
-VideoPath = "d:/FINAL PROJECT/SERVER/video/"
+VideoPath = ""
 FolderVideoPath = "video"
 ID_count = 1
 ListTask = []
@@ -102,6 +102,17 @@ def get_flag_taskrunning():
 ###################################################################################
 def init():
     global ID_count
+    global VideoPath
+    with open('config.txt', 'r') as file:
+        # Đọc từng dòng trong file
+        for line in file:
+            # Tách chuỗi thành hai phần, phần bên trái là key, phần bên phải là value
+            key, value = line.strip().split('-')
+            # Nếu key là 'VIDEO PATH', lưu giá trị vào biến videopath và thoát vòng lặp
+            if key.strip() == 'VIDEO PATH':
+                VideoPath = value
+                break
+
     with open(FilePath, 'r') as file:
 
         for line in file:

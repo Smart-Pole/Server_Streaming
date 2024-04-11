@@ -13,9 +13,23 @@ class OBS_controller:
         for object in object_list:
             self.printJsonObject(object)
             
-    def __init__(self, host='localhost', port=4444, password='123456') -> None:
+    def __init__(self, host='localhost', port=4455, password='123456') -> None:
+        flag = False
+        # Đọc file config.txt
+        with open('config.txt', 'r') as file:
+            # Đọc từng dòng trong file
+            for line in file:
+                # Tách chuỗi thành hai phần, phần bên trái là key, phần bên phải là value
+                key, value = line.strip().split('-')
+                # Nếu key là 'VIDEO PATH', lưu giá trị vào biến videopath và thoát vòng lặp
+                if key.strip() == 'PORT':
+                    self.port = value
+                    flag = True
+                    break
+        if not flag:
+            self.port = port
+
         self.host = host
-        self.port = port
         self.password = password
         self.request_client = obs.ReqClient(host = self.host,port = self.port,password = self.password)
 
