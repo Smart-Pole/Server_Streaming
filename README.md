@@ -83,6 +83,32 @@ Success: Returns a JSON object containing the stream key.
 
     "Stream key": "live_1039732177_vlmsO93WolB9ky25idCbI6fnEBMnX233"
 
+## Get Current Task
+Retrieves information about the current task.
+### Request
+
+`GET /get/currentTask`
+
+    localhost:5000//get/currentTask
+
+### Response
+Success: Returns a JSON object containing information about the current task.
+
+    {
+        "Current Task": {
+        "ID": 9,
+        "video_name": [
+        "ship.mp4"
+        ],
+        "duration": 2,
+        "start_date": "2024-04-09 00:00:00",
+        "until": "2024-04-16 23:59:59",
+        "start_time": "10:49",
+        "end_time": "13:00",
+        "onetime": 0
+        }
+    }
+
 ## Set Stream Key
 Sets the stream key for streaming.
 ### Request
