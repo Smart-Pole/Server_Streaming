@@ -332,7 +332,7 @@ def test_for_failed_streamkey():
     my_obs.start_stream()
     time.sleep(5)
     my_obs.get_stream_status()
-    
+    my_obs.set_input_playlist("d:/FINAL PROJECT/SERVER/video/bird.mp4")
     
     
     # print(f"stream is active : {my_obs.check_stream_is_active()}")
@@ -346,4 +346,6 @@ def test_for_failed_streamkey():
     
     
 if __name__ == "__main__":
-    test_for_failed_streamkey()
+    # test_for_failed_streamkey()
+    my_obs = OBS_controller()
+    my_obs.get_input_settings("mySource")

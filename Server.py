@@ -245,6 +245,7 @@ def cancel_task(start_date,repeatDuration):
 def live(videolist):
     myvideolist = get_link_video(videolist)
     my_obs.set_input_playlist(myvideolist)
+    my_obs.get_input_settings("mySource")
     print('LIVE')
     set_flag_live(1)
 
@@ -293,7 +294,7 @@ def onetime_task(taskinfor):
     print('onetime_task')
     set_flag_taskrunning(1)
     if taskinfor.end_time and taskinfor.end_time != "None":
-        schedule.every().days.at(taskinfor.end_time).until(taskinfor.until).do(cancel_task,taskinfor.start_date,taskinfor.duration).tag(f'{taskinfor.ID}')
+        schedule.every().days.at(taskinfor.end_time).do(cancel_task,taskinfor.start_date,taskinfor.duration).tag(f'{taskinfor.ID}')
     return schedule.CancelJob
 
 def job():
