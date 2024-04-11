@@ -8,6 +8,7 @@ import inspect
 import re
 import os
 import time
+import copy
 from flask_cors import CORS
 
 
@@ -347,7 +348,7 @@ def Get_Current_Task():
     if not CurrentTask:
         return jsonify({'Current Task': "None"}), 200
     # Convert datetime objects to strings
-    task = CurrentTask
+    task = copy.deepcopy(CurrentTask)
     if task:
         task.start_date = task.start_date.strftime("%Y-%m-%d %H:%M:%S")
         task.until = task.until.strftime("%Y-%m-%d %H:%M:%S") if task.until and task.until != "None" else None
@@ -365,13 +366,13 @@ def Get_Current_Task():
 def Get_schedule():
     # Convert datetime objects to strings
     global ListTask
-    mylist = ListTask
+    mylist = copy.deepcopy(ListTask)
     for task in mylist:
         task.start_date = task.start_date.strftime("%Y-%m-%d %H:%M:%S")
         task.until = task.until.strftime("%Y-%m-%d %H:%M:%S") if task.until and task.until != "None" else None
 
     # Create dictionary
-    schedule_dict = {"Schedule": [task.__dict__ for task in ListTask]}
+    schedule_dict = {"Schedule": [task.__dict__ for task in mylist]}
     
     # Convert dictionary to JSON string
     json_string = json.dumps(schedule_dict, indent=4)
