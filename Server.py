@@ -344,12 +344,14 @@ def Get_files_in_folder():
 @app.route('/get/currentTask')
 def Get_Current_Task():
     global CurrentTask
-    
+    if not CurrentTask:
+        return jsonify({'Current Task': "None"}), 200
     # Convert datetime objects to strings
     task = CurrentTask
-    task.start_date = task.start_date.strftime("%Y-%m-%d %H:%M:%S")
-    task.until = task.until.strftime("%Y-%m-%d %H:%M:%S") if task.until and task.until != "None" else None
-    
+    if task:
+        task.start_date = task.start_date.strftime("%Y-%m-%d %H:%M:%S")
+        task.until = task.until.strftime("%Y-%m-%d %H:%M:%S") if task.until and task.until != "None" else None
+        
     # Create dictionary
     task_dict = {"Current Task": task.__dict__}
     
