@@ -43,33 +43,49 @@ Retrieves the schedule of streaming tasks.
 ### Response
 Success: Returns a JSON object containing the schedule details.
 
-    "Schedule": [
     {
-    "ID": 1,
-    "video_name": [
-    "bird.mp4"
-    ],
-    "duration": 2,
-    "start_date": "2024-04-12 00:00:00",
-    "until": "2024-04-15 23:59:59",
-    "start_time": "14:00",
-    "end_time": "15:00",
-    "onetime": 0
-    },
-    {
-    "ID": 2,
-    "video_name": [
-    "bird.mp4"
-    ],
-    "duration": 0,
-    "start_date": "2024-04-12 00:00:00",
-    "until": "2024-04-08 15:11:11",
-    "start_time": "14:00",
-    "end_time": "15:00",
-    "onetime": 1
+        "Schedule": [
+            {
+            "ID": 1,
+            "lable": "VIPVCL",
+            "video_name": [
+            "ship.mp4"
+            ],
+            "duration": "2",
+            "start_date": "2024-04-09 00:00:00",
+            "until": "2024-04-16 00:00:00",
+            "start_time": "10:49",
+            "end_time": "13:00",
+            "onetime": "0"
+            },
+            {
+            "ID": 2,
+            "lable": "VIDEOLIST3",
+            "video_name": [
+            "ship.mp4"
+            ],
+            "duration": 2,
+            "start_date": "2024-04-09 00:00:00",
+            "until": "2024-04-16 23:59:59",
+            "start_time": "10:49",
+            "end_time": "13:00",
+            "onetime": 0
+            },
+            {
+            "ID": 3,
+            "lable": "VIDEOLIST2",
+            "video_name": [
+            "ship.mp4"
+            ],
+            "duration": 2,
+            "start_date": "2024-04-09 00:00:00",
+            "until": "2024-04-16 23:59:59",
+            "start_time": "10:49",
+            "end_time": "13:00",
+            "onetime": 0
+            }
+        ]
     }
-    ]
-
 ## Get Stream Key
 Retrieves the stream key used for streaming.
 ### Request
@@ -96,16 +112,17 @@ Success: Returns a JSON object containing information about the current task.
 
     {
         "Current Task": {
-        "ID": 9,
-        "video_name": [
-        "ship.mp4"
-        ],
-        "duration": 2,
-        "start_date": "2024-04-09 00:00:00",
-        "until": "2024-04-16 23:59:59",
-        "start_time": "10:49",
-        "end_time": "13:00",
-        "onetime": 0
+            "ID": 4,
+            "lable": "VIDEOLIST2",
+            "video_name": [
+            "ship.mp4"
+            ],
+            "duration": 2,
+            "start_date": "2024-04-09 00:00:00",
+            "until": "2024-04-16 23:59:59",
+            "start_time": "12:14",
+            "end_time": "13:00",
+            "onetime": 0
         }
     }
 
@@ -169,11 +186,12 @@ Adds a daily recurring streaming task.
 | Parameter| Requirement | Description |
 | --- | --- | --- |
 | `list` | required | Comma-separated list of video names. |
-| `duration` | optional, default: current time | Interval in days between each live stream occurrence. |
+| `duration` | optional, default: 1 | Interval in days between each live stream occurrence. |
 | `starttime` | optional, default: current time | Start time of the task (format: HH:MM). |
 | `endtime` | optional | End time of the task (format: HH:MM). |
 | `startdate` | optional, default: current time | Start date of the task (format: YYYY-MM-DD). |
 | `until` | optional | End date for the recurring task (optional, format: YYYY-MM-DD). |
+| `lable` | optional, default: ID| Name of this task. |
 
 ### Request
 
@@ -201,6 +219,7 @@ Adds a one-time streaming task.
 | `starttime` | optional, default: current time | Start time of the task (format: HH:MM). |
 | `endtime` | optional | End time of the task (format: HH:MM). |
 | `startdate` | optional, default: current time | Start date of the task (format: YYYY-MM-DD). |
+| `lable` | optional, default: ID| Name of this task. |
 
 ### Request
 
