@@ -43,7 +43,8 @@ FolderVideoPath = "video"
 ID_count = 1
 ListTask = []
 FlagLive = 0
-CurrentVideo = []
+CurrentVideo = None
+CurrentTask = None
 FlagSetStreamKey = 0
 FlagTaskRunning = 0
 exitapp = False
@@ -223,25 +224,7 @@ def is_time_valid(start_time,end_time):
         return True
 
 
-def cancel_task(start_date,repeatDuration):
-    if not get_flag_taskrunning():
-        return False
-    if(datetime.now() < start_date):
-        print("NOT RUN NOW")
-        return False
-    if repeatDuration:
-        if (abs(datetime.now() - start_date).days) % repeatDuration != 0:
-            return False
-    global CurrentVideo
-    CurrentVideo = []
-    cancle_link = get_link_video(["idle.mp4"])
-    my_obs.set_input_playlist(cancle_link)
-    set_flag_taskrunning(0)
-    if repeatDuration == 0:
-        print("Cancel task onetime")
-        return schedule.CancelJob
-    
-    return True
+
 def live(videolist):
     myvideolist = get_link_video(videolist)
     my_obs.set_input_playlist(myvideolist)
@@ -260,6 +243,7 @@ def stop_live():
 
 def daily_task(taskinfor):
     global CurrentVideo
+
     if get_flag_taskrunning():
         print(f"Task id: {taskinfor.ID} has been BLOCKED")
         return False
@@ -274,6 +258,8 @@ def daily_task(taskinfor):
     my_obs.set_input_playlist(myvideolist)
     print('Daily_task')
     set_flag_taskrunning(1)
+    global CurrentTask
+    CurrentTask = taskinfor
     if taskinfor.end_time and taskinfor.end_time != "None":
         schedule.every().days.at(taskinfor.end_time).until(taskinfor.until).do(cancel_task,taskinfor.start_date,taskinfor.duration).tag(f'{taskinfor.ID}')
 
@@ -293,10 +279,33 @@ def onetime_task(taskinfor):
     my_obs.set_input_playlist(myvideolist)
     print('onetime_task')
     set_flag_taskrunning(1)
+    global CurrentTask
+    CurrentTask = taskinfor
     if taskinfor.end_time and taskinfor.end_time != "None":
         schedule.every().days.at(taskinfor.end_time).do(cancel_task,taskinfor.start_date,taskinfor.duration).tag(f'{taskinfor.ID}')
     return schedule.CancelJob
 
+def cancel_task(start_date,repeatDuration):
+    if not get_flag_taskrunning():
+        return False
+    if(datetime.now() < start_date):
+        print("NOT RUN NOW")
+        return False
+    if repeatDuration:
+        if (abs(datetime.now() - start_date).days) % repeatDuration != 0:
+            return False
+    global CurrentVideo
+    CurrentVideo = []
+    cancle_link = get_link_video(["idle.mp4"])
+    my_obs.set_input_playlist(cancle_link)
+    set_flag_taskrunning(0)
+    global CurrentTask
+    CurrentTask = None
+    if repeatDuration == 0:
+        print("Cancel task onetime")
+        return schedule.CancelJob
+    
+    return True
 def job():
     print('Hello world')
     print(schedule.get_jobs())
@@ -329,6 +338,23 @@ def schedule_thread1():
 def Get_files_in_folder():
     file_list = get_video_name()
     return jsonify({'Video name': file_list}), 200
+@app.route('/get/currentTask')
+def Get_Current_Task():
+    global CurrentTask
+    
+    # Convert datetime objects to strings
+    task = CurrentTask
+    task.start_date = task.start_date.strftime("%Y-%m-%d %H:%M:%S")
+    task.until = task.until.strftime("%Y-%m-%d %H:%M:%S") if task.until and task.until != "None" else None
+    
+    # Create dictionary
+    task_dict = {"Current Task": task.__dict__}
+    
+    # Convert dictionary to JSON string
+    json_string = json.dumps(task_dict, indent=4)
+    
+    return json_string
+
 
 @app.route('/get/schedule')
 def Get_schedule():
