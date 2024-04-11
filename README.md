@@ -197,7 +197,7 @@ Adds a daily recurring streaming task.
 
 `GET /schedule/addTask/daily`
 
-    localhost:5000//schedule/addTask/daily?list=bird.mp4&duration=2&starttime=10:00&endtime=13:00&startdate=2024-04-12&until=2024-04-15
+    localhost:5000//schedule/addTask/daily?list=bird.mp4&duration=2&starttime=10:00&endtime=13:00&startdate=2024-04-12&until=2024-04-15&lable=LISTVIDEO1
 
 ### Response
 Success: Returns a success message along with the ID of the created task.
@@ -225,7 +225,7 @@ Adds a one-time streaming task.
 
 `GET /schedule/addTask/onetime`
 
-    localhost:5000//schedule/addTask/onetime?list=bird.mp4&starttime=10:00&endtime=13:00&startdate=2024-04-12
+    localhost:5000//schedule/addTask/onetime?list=bird.mp4&starttime=10:00&endtime=13:00&startdate=2024-04-12&lable=LISTVIDEO2
 
 ### Response
 Success: Returns a success message along with the ID of the created task.
