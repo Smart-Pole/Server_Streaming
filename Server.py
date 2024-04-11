@@ -46,6 +46,8 @@ FlagLive = 0
 CurrentVideo = []
 FlagSetStreamKey = 0
 FlagTaskRunning = 0
+exitapp = False
+
 
 mutex = threading.Lock()
 mutex_setstreamkey = threading.Lock()
@@ -313,11 +315,13 @@ def check_video_list(my_list):
         if item not in file_list:
             return False
     return True
-def schedule_thread():
-    while True:
+def schedule_thread1():
+    global exitapp
+    while not exitapp:
         if not get_flag_live():
             schedule.run_pending()
         time.sleep(1)
+
 ################################################################################################################################################################
 
 @app.route('/get/video')
@@ -327,8 +331,19 @@ def Get_files_in_folder():
 
 @app.route('/get/schedule')
 def Get_schedule():
+    # Convert datetime objects to strings
+    global ListTask
+    mylist = ListTask
+    for task in mylist:
+        task.start_date = task.start_date.strftime("%Y-%m-%d %H:%M:%S")
+        task.until = task.until.strftime("%Y-%m-%d %H:%M:%S") if task.until and task.until != "None" else None
+
+    # Create dictionary
     schedule_dict = {"Schedule": [task.__dict__ for task in ListTask]}
+    
+    # Convert dictionary to JSON string
     json_string = json.dumps(schedule_dict, indent=4)
+
     return json_string
 
 @app.route('/get/streamkey')
@@ -337,7 +352,7 @@ def Get_streamkey():
     print(stream_key)
     return jsonify({'Stream key': stream_key}), 200
 
-@app.route('/setstreamkey')
+@app.route('/set/streamkey')
 def Set_Stream_Parameter():
     stream_key = request.args.get('streamkey')
     server = None
@@ -396,8 +411,6 @@ def Add_Task_Everydays():
     list = request.args.get('list')
     duration = request.args.get('duration')
     until = request.args.get('until')
-    streamkey = request.args.get('streamkey')
-    server = request.args.get('server')
     deadline = None
     global ID_count
 
@@ -542,18 +555,26 @@ def testing():
 
 
 
-
-if __name__ == '__main__':
+def main():
+    
     init()
 
-    schedule_thread = threading.Thread(target=schedule_thread)
+    schedule_thread = threading.Thread(target=schedule_thread1)
     schedule_thread.start()
     # my_obs.get_input_list()
     # my_obs.get_input_settings("mySource")
     # my_obs.get_scene_item_list('scene1')
-    
     testing()
     # Running app
     app.run(debug=False)
+
+
+if __name__ == '__main__':
+    try:
+        main()
+    except KeyboardInterrupt:
+        exitapp = True
+        raise
+        
 
 
