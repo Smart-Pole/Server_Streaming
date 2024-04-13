@@ -1,5 +1,3 @@
-ID:1;Video Name:ship.mp4;Start time:10:49;End time:13:00;Until:2024-4-16;Duration:2;One Time:0;Start date:2024-4-9;Lable:VIPVCL
-ID:2;Video Name:ship.mp4;Start time:10:49;End time:13:00;Until:2024-4-16;Duration:2;One Time:0;Start date:2024-4-9;Lable:VIDEOLIST3
-ID:3;Video Name:ship.mp4;Start time:10:49;End time:13:00;Until:2024-4-16;Duration:2;One Time:0;Start date:2024-4-9;Lable:VIDEOLIST2
-ID:4;Video Name:ship.mp4;Start time:12:14;End time:13:00;Until:2024-4-16;Duration:2;One Time:0;Start date:2024-4-9;Lable:VIDEOLIST2
-ID:5;Video Name:ship.mp4;Start time:12:14;End time:13:00;Until:2024-4-16;Duration:2;One Time:0;Start date:2024-4-9;Lable:5
+ID:1;Video Name:ship.mp4;Start time:15:54;End time:15:55;Until:2024-4-15;Duration:2;Type task:weekly;Start date:2024-4-5;Lable:LISTVIDEO1;Days:sat,mon
+ID:2;Video Name:ship.mp4;Start time:15:54;End time:15:55;Until:2024-4-15;Duration:2;Type task:daily;Start date:2024-4-5;Lable:LISTVIDEO1;Days:
+ID:3;Video Name:ship.mp4;Start time:15:54;End time:15:55;Until:2024-4-13;Duration:0;Type task:onetime;Start date:2024-4-5;Lable:LISTVIDEO1;Days:
