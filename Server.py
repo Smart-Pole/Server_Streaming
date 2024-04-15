@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify
-from datetime import datetime,date
+from datetime import datetime, time, timedelta
 from OBS_Controller_oop import OBS_controller
 from mqtt import MyMQTTClient
+from database import TaskDatabase
 import threading
 import schedule
 import json
@@ -22,9 +23,9 @@ my_obs = OBS_controller()
 app = Flask(__name__)
 CORS(app)
 class TaskInformation:
-    def __init__(self, ID , lable , days, video_name,duration,start_date,until, start_time, end_time ,typetask ):
+    def __init__(self, ID , label , days, video_name,duration,start_date,until, start_time, end_time ,typetask ):
         self.ID = ID
-        self.lable = lable
+        self.label = label
         self.video_name = video_name
         self.duration = duration
         self.start_date = start_date
@@ -55,6 +56,7 @@ FlagTaskRunning = 0
 exitapp = False
 StreamKey = "live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk"
 StreamLink = "https://www.twitch.tv/gutsssssssss9"
+task_db = TaskDatabase('task_infor.db')
 
 ################## begin MQTT
 
@@ -145,10 +147,10 @@ def init():
             duration = data[5].split(':')[1]
             typetask = data[6].split(':')[1]
             start_date = datetime.strptime(data[7].split(':')[1],"%Y-%m-%d")
-            lable = data[8].split(':')[1]
+            label = data[8].split(':')[1]
             days = data[9].split(':')[1].split(',')
 
-            task_info = TaskInformation(ID=ID,lable=lable,days=days, video_name=video_name,start_time=start_time,end_time=end_time,start_date=start_date,until=until,duration=duration,typetask=typetask)
+            task_info = TaskInformation(ID=ID,label=label,days=days, video_name=video_name,start_time=start_time,end_time=end_time,start_date=start_date,until=until,duration=duration,typetask=typetask)
             ListTask.append(task_info)
     if len(ListTask) == 0:
         print('No task')
@@ -178,24 +180,19 @@ def saveTask(type = 0):
         open(FilePath, "w").close()
         with open(FilePath, 'w') as file:
             for task_info in ListTask:
-                file.write(f"ID:{task_info.ID};Video Name:{','.join(task_info.video_name)};Start time:{task_info.start_time};End time:{task_info.end_time};Until:{task_info.until.year}-{task_info.until.month}-{task_info.until.day};Duration:{task_info.duration};Type task:{task_info.typetask};Start date:{task_info.start_date.year}-{task_info.start_date.month}-{task_info.start_date.day};Lable:{task_info.lable};Days:{','.join(task_info.days)}")
+                file.write(f"ID:{task_info.ID};Video Name:{','.join(task_info.video_name)};Start time:{task_info.start_time};End time:{task_info.end_time};Until:{task_info.until.year}-{task_info.until.month}-{task_info.until.day};Duration:{task_info.duration};Type task:{task_info.typetask};Start date:{task_info.start_date.year}-{task_info.start_date.month}-{task_info.start_date.day};label:{task_info.label};Days:{','.join(task_info.days)}")
     elif type == 1:
         with open(FilePath, 'a') as file:
-                file.write(f"ID:{ListTask[len(ListTask) - 1].ID};Video Name:{','.join(ListTask[len(ListTask) - 1].video_name)};Start time:{ListTask[len(ListTask) - 1].start_time};End time:{ListTask[len(ListTask) - 1].end_time};Until:{ListTask[len(ListTask) - 1].until.year}-{ListTask[len(ListTask) - 1].until.month}-{ListTask[len(ListTask) - 1].until.day};Duration:{ListTask[len(ListTask) - 1].duration};Type task:{ListTask[len(ListTask) - 1].typetask};Start date:{ListTask[len(ListTask) - 1].start_date.year}-{ListTask[len(ListTask) - 1].start_date.month}-{ListTask[len(ListTask) - 1].start_date.day};Lable:{ListTask[len(ListTask) - 1].lable};Days:{','.join(ListTask[len(ListTask) - 1].days)}\n")
+                file.write(f"ID:{ListTask[len(ListTask) - 1].ID};Video Name:{','.join(ListTask[len(ListTask) - 1].video_name)};Start time:{ListTask[len(ListTask) - 1].start_time};End time:{ListTask[len(ListTask) - 1].end_time};Until:{ListTask[len(ListTask) - 1].until.year}-{ListTask[len(ListTask) - 1].until.month}-{ListTask[len(ListTask) - 1].until.day};Duration:{ListTask[len(ListTask) - 1].duration};Type task:{ListTask[len(ListTask) - 1].typetask};Start date:{ListTask[len(ListTask) - 1].start_date.year}-{ListTask[len(ListTask) - 1].start_date.month}-{ListTask[len(ListTask) - 1].start_date.day};label:{ListTask[len(ListTask) - 1].label};Days:{','.join(ListTask[len(ListTask) - 1].days)}\n")
 
-def get_link_video(list_video):
-    global VideoPath
-    my_video_list = [f"{VideoPath}{item}" for item in list_video]
-    print(f"List Video: {my_video_list}")
-    return my_video_list
 
-def removeTask(target_id):
+def removeTask_byid(target_id):
     index_to_remove = None
     for i, task_info in enumerate(ListTask):
         if task_info.ID == target_id:
             index_to_remove = i
             break
-
+        
     if index_to_remove is not None:
         del ListTask[index_to_remove]
         print(f"Deleted at index {target_id}")
@@ -210,7 +207,26 @@ def removeTask(target_id):
     else:
         print(f"Cannot find ID {target_id}")
         return False
+    
+def removeTask_bylabel(label):
+    indices_to_remove = [] 
+    for i, task_info in enumerate(ListTask):
+        if task_info.label == label:
+            indices_to_remove.append(i)
 
+    if len(indices_to_remove) == 0:
+        return False
+    
+    for index in reversed(indices_to_remove):
+        del ListTask[index]
+
+    return True
+        
+def get_link_video(list_video):
+    global VideoPath
+    my_video_list = [f"{VideoPath}{item}" for item in list_video]
+    print(f"List Video: {my_video_list}")
+    return my_video_list
 
 def printTaskInfor():
 
@@ -300,7 +316,7 @@ def task(taskinfor):
     set_flag_taskrunning(1)
     CurrentTask = taskinfor
     if taskinfor.end_time and taskinfor.end_time != "None":
-        schedule.every().days.at(taskinfor.end_time).until(taskinfor.until).do(cancel_task,taskinfor.start_date,0).tag(f'{taskinfor.ID}',f'{taskinfor.lable}')
+        schedule.every().days.at(taskinfor.end_time).until(taskinfor.until).do(cancel_task,taskinfor.start_date,0).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
 
 def weekly_task(taskinfor):
     days_mapping = {
@@ -316,7 +332,7 @@ def weekly_task(taskinfor):
     print(taskinfor.days)
     for day in taskinfor.days:
         if day in days_mapping:
-            days_mapping[day.lower()].at(taskinfor.start_time).until(taskinfor.until).do(task,taskinfor).tag(f'{taskinfor.ID}',f'{taskinfor.lable}')
+            days_mapping[day.lower()].at(taskinfor.start_time).until(taskinfor.until).do(task,taskinfor).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
 
 def daily_task(taskinfor):
     global CurrentVideo
@@ -338,7 +354,7 @@ def daily_task(taskinfor):
     global CurrentTask
     CurrentTask = taskinfor
     if taskinfor.end_time and taskinfor.end_time != "None":
-        schedule.every().days.at(taskinfor.end_time).until(taskinfor.until).do(cancel_task,taskinfor.start_date,0).tag(f'{taskinfor.ID}',f'{taskinfor.lable}')
+        schedule.every().days.at(taskinfor.end_time).until(taskinfor.until).do(cancel_task,taskinfor.start_date,0).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
 
 
 
@@ -349,8 +365,8 @@ def onetime_task(taskinfor):
     if(datetime.now() < taskinfor.start_date):
         print("NOT RUN NOW")
         return False
+    
     global CurrentVideo
-    removeTask(id)
     myvideolist = get_link_video(taskinfor.video_name)
     CurrentVideo = myvideolist
     my_obs.set_input_playlist(myvideolist)
@@ -359,7 +375,7 @@ def onetime_task(taskinfor):
     global CurrentTask
     CurrentTask = taskinfor
     if taskinfor.end_time and taskinfor.end_time != "None":
-        schedule.every().days.at(taskinfor.end_time).do(cancel_task,taskinfor.start_date,taskinfor.duration).tag(f'{taskinfor.ID}',f'{taskinfor.lable}')
+        schedule.every().days.at(taskinfor.end_time).do(cancel_task,taskinfor.start_date,taskinfor.duration).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
     return schedule.CancelJob
 
 def cancel_task(start_date,repeatDuration):
@@ -423,8 +439,8 @@ def Get_Current_Task():
     # Convert datetime objects to strings
     task = copy.deepcopy(CurrentTask)
     if task:
-        task.start_date = task.start_date.strftime("%Y-%m-%d %H:%M:%S")
-        task.until = task.until.strftime("%Y-%m-%d %H:%M:%S") if task.until and task.until != "None" else None
+        task.start_date = task.start_date.strftime("%Y-%m-%d")
+        task.until = task.until.strftime("%Y-%m-%d") if task.until and task.until != "None" else None
         
     # Create dictionary
     task_dict = {"Current Task": task.__dict__}
@@ -441,8 +457,8 @@ def Get_schedule():
     global ListTask
     mylist = copy.deepcopy(ListTask)
     for task in mylist:
-        task.start_date = task.start_date.strftime("%Y-%m-%d %H:%M:%S")
-        task.until = task.until.strftime("%Y-%m-%d %H:%M:%S") if task.until and task.until != "None" else None
+        task.start_date = task.start_date.strftime("%Y-%m-%d")
+        task.until = task.until.strftime("%Y-%m-%d") if task.until and task.until != "None" else None
 
     # Create dictionary
     schedule_dict = {"Schedule": [task.__dict__ for task in mylist]}
@@ -517,7 +533,7 @@ def Add_Task_Everyweeks():
     list = request.args.get('list')
     duration = request.args.get('duration')
     until = request.args.get('until')
-    lable = request.args.get('lable')
+    label = request.args.get('label')
     days = request.args.get('days')
 
     deadline = None
@@ -577,20 +593,21 @@ def Add_Task_Everyweeks():
             if day not in list_days:
                 return jsonify({'error': 'Wrong date'}) ,400
 
-    if not lable:
-        lable = ID_count
+    if not label:
+        return jsonify({'error': 'Empty label'}) ,400
 
     # if is_time_valid(start_time,end_time) == False :
     #     return jsonify({'error': 'Wrong time format'}) ,400
     
-    new_task = TaskInformation(ID=ID_count,lable=lable,days=days, video_name=video_list,start_date=start_date,duration=int(duration),until=deadline,start_time=start_time,end_time=end_time,typetask="weekly")
-    ID_count += 1
+    new_task = TaskInformation(ID=None,label=label,days=days, video_name=video_list,start_date=start_date,duration=int(duration),until=deadline,start_time=start_time,end_time=end_time,typetask="weekly")
+    new_ID = task_db.add_task(new_task)
+    new_task.ID = new_ID
     ListTask.append(new_task)
+    saveTask(1)
 
     weekly_task(new_task)
 
     print(schedule.get_jobs())
-    saveTask(1)
 
     return jsonify({'success': {'message': 'Create task', 'ID': new_task.ID}}), 200
 
@@ -605,7 +622,7 @@ def Add_Task_Everydays():
     list = request.args.get('list')
     duration = request.args.get('duration')
     until = request.args.get('until')
-    lable = request.args.get('lable')
+    label = request.args.get('label')
     deadline = None
     global ID_count
 
@@ -654,18 +671,19 @@ def Add_Task_Everydays():
              return jsonify({'error': 'Wrong time format'}) ,400
         print(start_time)
 
-    if not lable:
-        lable = ID_count
+    if not label:
+        return jsonify({'error': 'Empty label'}) ,400
 
     # if is_time_valid(start_time,end_time) == False :
     #     return jsonify({'error': 'Wrong time format'}) ,400
     
-    new_task = TaskInformation(ID=ID_count,lable=lable,days = [], video_name=video_list,start_date=start_date,duration=int(duration),until=deadline,start_time=start_time,end_time=end_time,typetask="daily")
-    ID_count += 1
+    new_task = TaskInformation(ID=None,label=label,days = [], video_name=video_list,start_date=start_date,duration=int(duration),until=deadline,start_time=start_time,end_time=end_time,typetask="daily")
+    new_ID = task_db.add_task(new_task)
+    new_task.ID = new_ID
     ListTask.append(new_task)
-    schedule.every().days.at(start_time).until(deadline).do(daily_task, new_task).tag(f'{new_task.ID}',f'{new_task.lable}')
-    print(schedule.get_jobs())
     saveTask(1)
+    schedule.every().days.at(start_time).until(deadline).do(daily_task, new_task).tag(f'{new_task.ID}',f'{new_task.label}')
+    print(schedule.get_jobs())
 
     return jsonify({'success': {'message': 'Create task', 'ID': new_task.ID}}), 200
 
@@ -679,8 +697,9 @@ def Add_Task_onetime():
     end_time = request.args.get('endtime')
     start_date = request.args.get('startdate')
     list = request.args.get('list')
-    lable = request.args.get('lable')
-    global ID_count
+    label = request.args.get('label')
+    global ID_count    
+    until = None
 
     # Cheking parameter
 
@@ -703,19 +722,35 @@ def Add_Task_onetime():
         start_time = now.strftime("%H:%M")
         print("Current Time =", start_time)
     else:
+
         if validateTimeformat(start_time) == False:
              return jsonify({'error': 'Wrong time format'}) ,400
         print(start_time)
 
-    if not lable:
-        lable = ID_count
+    if end_time:
+        if validateTimeformat(start_time) == False:
+             return jsonify({'error': 'Wrong time format'}) ,400
+        print(end_time)
+        end_time = datetime.strptime(end_time, "%H:%M")
+    else:
+        return jsonify({'error': 'Empty end time'}) ,400
+    
+
+    if end_time.time() <= datetime.strptime(start_time, "%H:%M").time():
+        until = datetime.combine(start_date.date() + timedelta(days=1), end_time.time())
+    else:
+        until = datetime.combine(start_date.date(), end_time.time())
+
+    if not label:
+        return jsonify({'error': 'Empty label'}) ,400
     # if is_time_valid(start_time,end_time) == False :
     #     return jsonify({'error': 'Wrong time format'}) ,400
     
-    new_task = TaskInformation(ID=ID_count,lable=lable ,video_name=video_list,duration=0,start_date=start_date,until=datetime.now(),start_time=start_time,end_time=end_time,typetask="onetime",days=[])
-    ID_count += 1
+    new_task = TaskInformation(ID=None,label=label ,video_name=video_list,duration=0,start_date=start_date,until=until,start_time=start_time,end_time=end_time,typetask="onetime",days=[])
+    new_ID = task_db.add_task(new_task)
+    new_task.ID = new_ID
     ListTask.append(new_task)
-    schedule.every().days.at(start_time).do(onetime_task,new_task).tag(f'{new_task.ID}',f'{new_task.lable}')
+    schedule.every().days.at(start_time).do(onetime_task,new_task).tag(f'{new_task.ID}',f'{new_task.label}')
     print(schedule.get_jobs())
     saveTask(1)
 
@@ -728,24 +763,35 @@ def Add_Task_onetime():
 @app.route('/schedule/deleteTask')
 def Delete_Task():
     id = request.args.get('id')
+    label = request.args.get('label')
+    flag = 0
     print(id)
-    if not id:
-        return jsonify({'error': {'message': 'ID empty'}}), 400
-    elif id == "all":
+    if not id and not label:
+        return jsonify({'error': {'message': 'ID and label empty'}}), 400
+    
+    if id == "all":
         schedule.clear()
+        task_db.delete_all_tasks()
         print(schedule.get_jobs())
         return jsonify({'success': {'message': 'Delete all task', 'ID': 'all'}}), 200
-    else:
-        if removeTask(int(id)):
+    elif id:
+        if removeTask_byid(int(id)):
+            task_db.delete_task(ID=id)
             schedule.clear(id)
             print(schedule.get_jobs())
-            return jsonify({'success': {'message': 'Delete task', 'ID': id}}), 200
-        else:
-            return jsonify({'error': {'message': 'Cannot find ID', 'ID': id}}), 400
+            flag = 1
 
+    if label:
+        if removeTask_bylabel(label=label):
+            task_db.delete_task(label=label)
+            schedule.clear(label)
+            print(schedule.get_jobs())
+            flag = 1
 
-
-
+    if not flag:
+        return jsonify({'error': {'message': 'Cannot deleta'}}), 400
+    else:
+        return jsonify({'success': {'message': 'Delete task', 'ID': f'{id}'}}), 200
 def testing():
     schedule.every(10).seconds.do(job)
     print(schedule.get_jobs())
