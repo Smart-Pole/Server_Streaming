@@ -300,7 +300,7 @@ def task(taskinfor):
     set_flag_taskrunning(1)
     CurrentTask = taskinfor
     if taskinfor.end_time and taskinfor.end_time != "None":
-        schedule.every().days.at(taskinfor.end_time).until(taskinfor.until).do(cancel_task,taskinfor.start_date,0).tag(f'{taskinfor.ID}')
+        schedule.every().days.at(taskinfor.end_time).until(taskinfor.until).do(cancel_task,taskinfor.start_date,0).tag(f'{taskinfor.ID}',f'{taskinfor.lable}')
 
 def weekly_task(taskinfor):
     days_mapping = {
@@ -316,7 +316,7 @@ def weekly_task(taskinfor):
     print(taskinfor.days)
     for day in taskinfor.days:
         if day in days_mapping:
-            days_mapping[day.lower()].at(taskinfor.start_time).until(taskinfor.until).do(task,taskinfor).tag(f'{taskinfor.ID}')
+            days_mapping[day.lower()].at(taskinfor.start_time).until(taskinfor.until).do(task,taskinfor).tag(f'{taskinfor.ID}',f'{taskinfor.lable}')
 
 def daily_task(taskinfor):
     global CurrentVideo
@@ -338,7 +338,7 @@ def daily_task(taskinfor):
     global CurrentTask
     CurrentTask = taskinfor
     if taskinfor.end_time and taskinfor.end_time != "None":
-        schedule.every().days.at(taskinfor.end_time).until(taskinfor.until).do(cancel_task,taskinfor.start_date,0).tag(f'{taskinfor.ID}')
+        schedule.every().days.at(taskinfor.end_time).until(taskinfor.until).do(cancel_task,taskinfor.start_date,0).tag(f'{taskinfor.ID}',f'{taskinfor.lable}')
 
 
 
@@ -359,7 +359,7 @@ def onetime_task(taskinfor):
     global CurrentTask
     CurrentTask = taskinfor
     if taskinfor.end_time and taskinfor.end_time != "None":
-        schedule.every().days.at(taskinfor.end_time).do(cancel_task,taskinfor.start_date,taskinfor.duration).tag(f'{taskinfor.ID}')
+        schedule.every().days.at(taskinfor.end_time).do(cancel_task,taskinfor.start_date,taskinfor.duration).tag(f'{taskinfor.ID}',f'{taskinfor.lable}')
     return schedule.CancelJob
 
 def cancel_task(start_date,repeatDuration):
@@ -663,7 +663,7 @@ def Add_Task_Everydays():
     new_task = TaskInformation(ID=ID_count,lable=lable,days = [], video_name=video_list,start_date=start_date,duration=int(duration),until=deadline,start_time=start_time,end_time=end_time,typetask="daily")
     ID_count += 1
     ListTask.append(new_task)
-    schedule.every().days.at(start_time).until(deadline).do(daily_task, new_task).tag(f'{new_task.ID}')
+    schedule.every().days.at(start_time).until(deadline).do(daily_task, new_task).tag(f'{new_task.ID}',f'{new_task.lable}')
     print(schedule.get_jobs())
     saveTask(1)
 
@@ -715,7 +715,7 @@ def Add_Task_onetime():
     new_task = TaskInformation(ID=ID_count,lable=lable ,video_name=video_list,duration=0,start_date=start_date,until=datetime.now(),start_time=start_time,end_time=end_time,typetask="onetime",days=[])
     ID_count += 1
     ListTask.append(new_task)
-    schedule.every().days.at(start_time).do(onetime_task,new_task).tag(f'{new_task.ID}')
+    schedule.every().days.at(start_time).do(onetime_task,new_task).tag(f'{new_task.ID}',f'{new_task.lable}')
     print(schedule.get_jobs())
     saveTask(1)
 
