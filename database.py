@@ -1,14 +1,15 @@
 import sqlite3
 
 class TaskDatabase:
-    def __init__(self, db_name):
+    def __init__(self, db_name, table_name="tasks"):
         self.db_name = db_name
+        self.table_name = table_name
         self.conn = sqlite3.connect(db_name, check_same_thread=False)
         self.cursor = self.conn.cursor()
         self.create_table()
 
     def create_table(self):
-        self.cursor.execute('''CREATE TABLE IF NOT EXISTS tasks (
+        self.cursor.execute(f'''CREATE TABLE IF NOT EXISTS {self.table_name} (
                               ID INTEGER PRIMARY KEY,
                               label TEXT,
                               days TEXT,
@@ -57,7 +58,7 @@ class TaskDatabase:
 
 def main():
     # Sử dụng lớp TaskDatabase để tạo cơ sở dữ liệu và thêm dữ liệu
-    task_db = TaskDatabase('task_infor.db')
+    task_db = TaskDatabase('task_infor.db',"aa")
 
     # task1 = TaskInformation(1, 'Study', 'Monday, Wednesday, Friday', 'Math', 60, '2024-04-15', '2024-05-15', '08:00', '09:00', 'Regular')
     # # task2 = TaskInformation(2, 'Exercise', 'Tuesday, Thursday', 'Yoga', 30, '2024-04-15', '2024-05-15', '07:00', '07:30', 'Regular')

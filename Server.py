@@ -67,7 +67,7 @@ Stop_Schedule = schedule.Scheduler()
 ################## begin MQTT
 
 AIO_USERNAME = "GutD"
-AIO_KEY = ""
+AIO_KEY = "aio_ylYf65J1E1PHtUIuXc70qDfe3i6N"
 AIO_FEED_ID = ["live-stream"]
 mqtt_client = MyMQTTClient(AIO_USERNAME, AIO_KEY, AIO_FEED_ID)
 
@@ -368,6 +368,9 @@ def onetime_task(taskinfor):
     if get_flag_taskrunning():
         print(f"Task id: {taskinfor.ID} has been BLOCKED")
         return False
+    if(datetime.now() > taskinfor.start_date):
+        print(f"DELETE TASK: {taskinfor.ID}")
+        return schedule.CancelJob
     if(datetime.now() < taskinfor.start_date):
         print("NOT RUN NOW")
         return False
