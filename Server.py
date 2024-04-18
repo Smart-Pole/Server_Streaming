@@ -58,10 +58,16 @@ StreamKey = "live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk"
 StreamLink = "https://www.twitch.tv/gutsssssssss9"
 task_db = TaskDatabase('task_infor.db')
 
+
+################## begin Scheduler
+
+Start_Schedule = schedule.Scheduler()
+Stop_Schedule = schedule.Scheduler()
+
 ################## begin MQTT
 
 AIO_USERNAME = "GutD"
-AIO_KEY = "aio_gxKP65XQ5iluEDODVXW4yjZz5dRg"
+AIO_KEY = "aio_ylYf65J1E1PHtUIuXc70qDfe3i6N"
 AIO_FEED_ID = ["live-stream"]
 mqtt_client = MyMQTTClient(AIO_USERNAME, AIO_KEY, AIO_FEED_ID)
 
@@ -316,17 +322,17 @@ def task(taskinfor):
     set_flag_taskrunning(1)
     CurrentTask = taskinfor
     if taskinfor.end_time and taskinfor.end_time != "None":
-        schedule.every().days.at(taskinfor.end_time).until(taskinfor.until).do(cancel_task,taskinfor.start_date,0).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
+        Stop_Schedule.every().days.at(taskinfor.end_time).until(taskinfor.until).do(cancel_task,taskinfor.start_date,0).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
 
 def weekly_task(taskinfor):
     days_mapping = {
-        'mon': schedule.every().monday,
-        'tue': schedule.every().tuesday,
-        'wed': schedule.every().wednesday,
-        'thu': schedule.every().thursday,
-        'fri': schedule.every().friday,
-        'sat': schedule.every().saturday,
-        'sun': schedule.every().sunday
+        'mon': Start_Schedule.every().monday,
+        'tue': Start_Schedule.every().tuesday,
+        'wed': Start_Schedule.every().wednesday,
+        'thu': Start_Schedule.every().thursday,
+        'fri': Start_Schedule.every().friday,
+        'sat': Start_Schedule.every().saturday,
+        'sun': Start_Schedule.every().sunday
     }
     print("WEEKLY TASK")
     print(taskinfor.days)
@@ -354,7 +360,7 @@ def daily_task(taskinfor):
     global CurrentTask
     CurrentTask = taskinfor
     if taskinfor.end_time and taskinfor.end_time != "None":
-        schedule.every().days.at(taskinfor.end_time).until(taskinfor.until).do(cancel_task,taskinfor.start_date,0).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
+        Stop_Schedule.every().days.at(taskinfor.end_time).until(taskinfor.until).do(cancel_task,taskinfor.start_date,0).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
 
 
 
@@ -375,7 +381,7 @@ def onetime_task(taskinfor):
     global CurrentTask
     CurrentTask = taskinfor
     if taskinfor.end_time and taskinfor.end_time != "None":
-        schedule.every().days.at(taskinfor.end_time).do(cancel_task,taskinfor.start_date,taskinfor.duration).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
+        Stop_Schedule.every().days.at(taskinfor.end_time).do(cancel_task,taskinfor.start_date,taskinfor.duration).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
     return schedule.CancelJob
 
 def cancel_task(start_date,repeatDuration):
@@ -400,8 +406,12 @@ def cancel_task(start_date,repeatDuration):
     
     return True
 def job():
-    print('Hello world')
-    print(schedule.get_jobs())
+    print("#######################################")
+    print('Start SCHEDULER')
+    print(Start_Schedule.get_jobs())
+    print('Stop SCHEDULER')
+    print(Stop_Schedule.get_jobs())
+    print("#######################################")
 
 
 
@@ -421,8 +431,9 @@ def check_video_list(my_list):
 def schedule_thread1():
     global exitapp
     while not exitapp:
-        if not get_flag_live():
-            schedule.run_pending()
+        if not get_flag_live() and not get_flag_taskrunning():
+            Start_Schedule.run_pending()
+        Stop_Schedule.run_pending()
         time.sleep(1)
 
 ################################################################################################################################################################
@@ -607,7 +618,7 @@ def Add_Task_Everyweeks():
 
     weekly_task(new_task)
 
-    print(schedule.get_jobs())
+    print(Start_Schedule.get_jobs())
 
     return jsonify({'success': {'message': 'Create task', 'ID': new_task.ID}}), 200
 
@@ -682,8 +693,8 @@ def Add_Task_Everydays():
     new_task.ID = new_ID
     ListTask.append(new_task)
     saveTask(1)
-    schedule.every().days.at(start_time).until(deadline).do(daily_task, new_task).tag(f'{new_task.ID}',f'{new_task.label}')
-    print(schedule.get_jobs())
+    Start_Schedule.every().days.at(start_time).until(deadline).do(daily_task, new_task).tag(f'{new_task.ID}',f'{new_task.label}')
+    print(Start_Schedule.get_jobs())
 
     return jsonify({'success': {'message': 'Create task', 'ID': new_task.ID}}), 200
 
@@ -731,15 +742,15 @@ def Add_Task_onetime():
         if validateTimeformat(start_time) == False:
              return jsonify({'error': 'Wrong time format'}) ,400
         print(end_time)
-        end_time = datetime.strptime(end_time, "%H:%M")
+        str_end_time = datetime.strptime(end_time, "%H:%M")
     else:
         return jsonify({'error': 'Empty end time'}) ,400
     
 
-    if end_time.time() <= datetime.strptime(start_time, "%H:%M").time():
-        until = datetime.combine(start_date.date() + timedelta(days=1), end_time.time())
+    if str_end_time.time() <= datetime.strptime(start_time, "%H:%M").time():
+        until = datetime.combine(start_date.date() + timedelta(days=1), str_end_time.time())
     else:
-        until = datetime.combine(start_date.date(), end_time.time())
+        until = datetime.combine(start_date.date(), str_end_time.time())
 
     if not label:
         return jsonify({'error': 'Empty label'}) ,400
@@ -750,8 +761,8 @@ def Add_Task_onetime():
     new_ID = task_db.add_task(new_task)
     new_task.ID = new_ID
     ListTask.append(new_task)
-    schedule.every().days.at(start_time).do(onetime_task,new_task).tag(f'{new_task.ID}',f'{new_task.label}')
-    print(schedule.get_jobs())
+    Start_Schedule.every().days.at(start_time).do(onetime_task,new_task).tag(f'{new_task.ID}',f'{new_task.label}')
+    print(Start_Schedule.get_jobs())
     saveTask(1)
 
     # if end_time:
@@ -770,31 +781,37 @@ def Delete_Task():
         return jsonify({'error': {'message': 'ID and label empty'}}), 400
     
     if id == "all":
-        schedule.clear()
+        Start_Schedule.clear()
+        Stop_Schedule.clear()
         task_db.delete_all_tasks()
         print(schedule.get_jobs())
         return jsonify({'success': {'message': 'Delete all task', 'ID': 'all'}}), 200
     elif id:
         if removeTask_byid(int(id)):
             task_db.delete_task(ID=id)
-            schedule.clear(id)
-            print(schedule.get_jobs())
+            Start_Schedule.clear(id)
+            Stop_Schedule.clear(id)
+            print(Start_Schedule.get_jobs())
+            print(Stop_Schedule.get_jobs())
             flag = 1
 
     if label:
         if removeTask_bylabel(label=label):
             task_db.delete_task(label=label)
-            schedule.clear(label)
-            print(schedule.get_jobs())
+            Start_Schedule.clear(label)
+            Stop_Schedule.clear(label)
+            print(Start_Schedule.get_jobs())
+            print(Stop_Schedule.get_jobs())
             flag = 1
 
     if not flag:
         return jsonify({'error': {'message': 'Cannot deleta'}}), 400
     else:
         return jsonify({'success': {'message': 'Delete task', 'ID': f'{id}'}}), 200
+    
 def testing():
-    schedule.every(10).seconds.do(job)
-    print(schedule.get_jobs())
+    Stop_Schedule.every(10).seconds.do(job)
+    print(Stop_Schedule.get_jobs())
 
 
 
