@@ -243,7 +243,7 @@ class StreamScheduler:
         taskinfor.ID = new_ID
         self.ListTask.append(taskinfor)
         self.saveTask(1)
-        self.__Start_Schedule.every().days.at(taskinfor.start_time).until(taskinfor.deadline).do(self.__daily_task, taskinfor).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
+        self.__Start_Schedule.every().days.at(taskinfor.start_time).until(taskinfor.until).do(self.__daily_task, taskinfor).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
         print(self.__Start_Schedule.get_jobs())
 
 
@@ -251,10 +251,10 @@ class StreamScheduler:
         if self.__get_flag_taskrunning():
             print(f"Task id: {taskinfor.ID} has been BLOCKED")
             return False
-        if(datetime.now() > taskinfor.start_date):
+        if((datetime.now() - taskinfor.start_date).days > 0):
             print(f"DELETE TASK: {taskinfor.ID}")
             return schedule.CancelJob
-        if(datetime.now() < taskinfor.start_date):
+        if((datetime.now() - taskinfor.start_date).days < 0):
             print("NOT RUN NOW")
             return False
         

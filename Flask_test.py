@@ -55,7 +55,6 @@ mqtt_client = MyMQTTClient(AIO_USERNAME, AIO_KEY, AIO_FEED_ID)
 def publish_livestream(link):
     mqtt_client.publish_data("live_stream",link)
 
-#################
 
 ###################################################################################
 def init():
@@ -181,6 +180,10 @@ def Add_Task_Everyweeks():
         my_month = int(until.split('-')[1])
         my_day = int(until.split('-')[2])
         deadline = datetime(year=my_year,month=my_month,day=my_day,hour=23,minute=59,second=59)
+        if(deadline < datetime.now()):
+            return jsonify({'error': {'message': 'until in the past'}}), 400
+        
+
 
     
     if not list:
@@ -258,6 +261,9 @@ def Add_Task_Everydays():
         my_month = int(until.split('-')[1])
         my_day = int(until.split('-')[2])
         deadline = datetime(year=my_year,month=my_month,day=my_day,hour=23,minute=59,second=59)
+        if(deadline < datetime.now()):
+            return jsonify({'error': {'message': 'until in the past'}}), 400
+        
 
     
     if not list:
