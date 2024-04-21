@@ -15,7 +15,7 @@ This API provides endpoints for managing tasks related to streaming, such as ret
 The REST API to the example app is described below.
 
 ## Get list of Video
-Retrieves a list of video names available for streaming.
+Retrieves a list of video names availabel for streaming.
 ### Request
 
 `GET /get/video`
@@ -34,11 +34,17 @@ Success: Returns a JSON object containing the schedule details.
 
 ## Get Schedule
 Retrieves the schedule of streaming tasks.
+
+### Query Parameters:
+
+| Parameter| Requirement | Description |
+| --- | --- | --- |
+| `stream` | required, defaul = 1 | Choose a streaming channel. |
 ### Request
 
 `GET /get/schedule`
 
-    localhost:5000//get/schedule
+    localhost:5000//get/schedule?stream=1
 
 ### Response
 Success: Returns a JSON object containing the schedule details.
@@ -47,7 +53,7 @@ Success: Returns a JSON object containing the schedule details.
         "Schedule": [
             {
             "ID": 1,
-            "lable": "VIPVCL",
+            "label": "VIPVCL",
             "video_name": [
             "ship.mp4"
             ],
@@ -60,7 +66,7 @@ Success: Returns a JSON object containing the schedule details.
             },
             {
             "ID": 2,
-            "lable": "VIDEOLIST3",
+            "label": "VIDEOLIST3",
             "video_name": [
             "ship.mp4"
             ],
@@ -73,7 +79,7 @@ Success: Returns a JSON object containing the schedule details.
             },
             {
             "ID": 3,
-            "lable": "VIDEOLIST2",
+            "label": "VIDEOLIST2",
             "video_name": [
             "ship.mp4"
             ],
@@ -88,11 +94,17 @@ Success: Returns a JSON object containing the schedule details.
     }
 ## Get Stream Key
 Retrieves the stream key used for streaming.
+### Query Parameters:
+
+| Parameter| Requirement | Description |
+| --- | --- | --- |
+| `stream` | required, defaul = 1 | Choose a streaming channel. |
+
 ### Request
 
 `GET /get/streamkey`
 
-    localhost:5000//get/streamkey
+    localhost:5000//get/streamkey?stream=1
 
 ### Response
 Success: Returns a JSON object containing the stream key.
@@ -101,11 +113,16 @@ Success: Returns a JSON object containing the stream key.
 
 ## Get Current Task
 Retrieves information about the current task.
+### Query Parameters:
+
+| Parameter| Requirement | Description |
+| --- | --- | --- |
+| `stream` | required, defaul = 1 | Choose a streaming channel. |
 ### Request
 
 `GET /get/currentTask`
 
-    localhost:5000//get/currentTask
+    localhost:5000//get/currentTask?stream=1
 
 ### Response
 Success: Returns a JSON object containing information about the current task.
@@ -113,7 +130,7 @@ Success: Returns a JSON object containing information about the current task.
     {
         "Current Task": {
             "ID": 4,
-            "lable": "VIDEOLIST2",
+            "label": "VIDEOLIST2",
             "video_name": [
             "ship.mp4"
             ],
@@ -148,11 +165,12 @@ Initiates a live stream with provided video list
 | Parameter| Requirement | Description |
 | --- | --- | --- |
 | `list` | required | Comma-separated list of video names. |
+| `stream` | required, defaul = 1 | Choose a streaming channel. |
 ### Request
 
 `GET /live?{list_video}`
 
-    localhost:5000//live?list=bird.mp4,ship.mp4
+    localhost:5000//live?list=bird.mp4,ship.mp4&stream=1
 
 ### Response
 Success: Returns a JSON object containing the stream key.
@@ -168,7 +186,7 @@ Stops the ongoing live stream.
 
 `GET /stoplive`
 
-    localhost:5000//stoplive
+    localhost:5000//stoplive?stream=1
 
 ### Response
 Success: Returns a JSON object containing the stream key.
@@ -176,7 +194,37 @@ Success: Returns a JSON object containing the stream key.
     "success": {
         "message": "Stop live stream"
     }
+## Add One Weekly Task.
 
+Adds a one-time streaming task.
+
+### Query Parameters:
+
+| Parameter| Requirement | Description |
+| --- | --- | --- |
+| `stream` | required, defaul = 1 | Choose a streaming channel. |
+| `list` | required | Comma-separated list of video names. |
+| `duration` | optional, default: 1 | Interval in days between each live stream occurrence. |
+| `starttime` | optional, default: current time | Start time of the task (format: HH:MM). |
+| `endtime` | optional | End time of the task (format: HH:MM). |
+| `startdate` | optional, default: current time | Start date of the task (format: YYYY-MM-DD). |
+| `until` | optional | End date for the recurring task (optional, format: YYYY-MM-DD). |
+| `label` | required| Name of this task. |
+| `days` | required, value: ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]| Names of the days of the week. |
+
+### Request
+
+`GET /schedule/addTask/weekly`
+
+    localhost:5000//schedule/addTask/weekly?stream=1&list=bird.mp4&starttime=10:00&endtime=13:00&startdate=2024-04-12&until=2024-04-15&label=LISTVIDEO2&days=mon,tue
+
+### Response
+Success: Returns a success message along with the ID of the created task.
+    
+    "success": {
+       "message": "Create task",
+       "ID": 3
+     }
 ## Add Daily Task.
 
 Adds a daily recurring streaming task.
@@ -185,19 +233,21 @@ Adds a daily recurring streaming task.
 
 | Parameter| Requirement | Description |
 | --- | --- | --- |
+| `stream` | required, defaul = 1 | Choose a streaming channel. |
 | `list` | required | Comma-separated list of video names. |
 | `duration` | optional, default: 1 | Interval in days between each live stream occurrence. |
 | `starttime` | optional, default: current time | Start time of the task (format: HH:MM). |
 | `endtime` | optional | End time of the task (format: HH:MM). |
 | `startdate` | optional, default: current time | Start date of the task (format: YYYY-MM-DD). |
 | `until` | optional | End date for the recurring task (optional, format: YYYY-MM-DD). |
-| `lable` | optional, default: ID| Name of this task. |
+| `label` | required| Name of this task. |
+
 
 ### Request
 
 `GET /schedule/addTask/daily`
 
-    localhost:5000//schedule/addTask/daily?list=bird.mp4&duration=2&starttime=10:00&endtime=13:00&startdate=2024-04-12&until=2024-04-15&lable=LISTVIDEO1
+    localhost:5000//schedule/addTask/daily?stream=1&list=bird.mp4&duration=2&starttime=10:00&endtime=13:00&startdate=2024-04-12&until=2024-04-15&label=LISTVIDEO1
 
 ### Response
 Success: Returns a success message along with the ID of the created task.
@@ -215,17 +265,18 @@ Adds a one-time streaming task.
 
 | Parameter| Requirement | Description |
 | --- | --- | --- |
+| `stream` | required, defaul = 1 | Choose a streaming channel. |
 | `list` | required | Comma-separated list of video names. |
 | `starttime` | optional, default: current time | Start time of the task (format: HH:MM). |
 | `endtime` | optional | End time of the task (format: HH:MM). |
 | `startdate` | optional, default: current time | Start date of the task (format: YYYY-MM-DD). |
-| `lable` | optional, default: ID| Name of this task. |
+| `label` |required| Name of this task. |
 
 ### Request
 
 `GET /schedule/addTask/onetime`
 
-    localhost:5000//schedule/addTask/onetime?list=bird.mp4&starttime=10:00&endtime=13:00&startdate=2024-04-12&lable=LISTVIDEO2
+    localhost:5000//schedule/addTask/onetime?stream=1&list=bird.mp4&starttime=10:00&endtime=13:00&startdate=2024-04-12&label=LISTVIDEO2
 
 ### Response
 Success: Returns a success message along with the ID of the created task.
@@ -243,13 +294,15 @@ Deletes a streaming task by ID.
 
 | Parameter| Requirement | Description |
 | --- | --- | --- |
-| `id` | required | ID of the task to delete, or "all" to delete all tasks. |
+| `id` | optional | ID of the task to delete, or "all" to delete all tasks. |
+| `label` | optional| Name of this task. |
 
+* This request requires at least 1 parameter.
 ### Request
 
 `GET /schedule/deleteTask`
 
-    localhost:5000//schedule/deleteTask?id=1
+    localhost:5000//schedule/deleteTask?id=1&label=VIDEO1
 
 ### Response
 Success: Returns a success message along with the ID of the created task.
