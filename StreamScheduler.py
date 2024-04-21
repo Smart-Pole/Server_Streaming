@@ -31,11 +31,18 @@ class StreamScheduler:
         self.StreamLink=StreamLink
         self.FileLog = FileLog
         self.VideoPath = VideoPath
-
+        self.ListTask = self.__task_db.get_all_tasks()
         if not self.__my_obs.check_stream_is_active():
+            self.__my_obs.set_stream_service_key_server(streamkey=self.StreamKey,server=self.StreamServer)
             self.__my_obs.start_stream()
             time.sleep(5)
-   
+        else:
+            self.__my_obs.stop_stream()
+            time.sleep(2)
+            self.__my_obs.set_stream_service_key_server(streamkey=self.StreamKey,server=self.StreamServer)
+            time.sleep(2)
+            self.__my_obs.start_stream()
+
         if self.__my_obs.check_stream_is_active():
             print("INIT: SET FLAG STREAM KEY ")
             self.__set_flag_streamkey(1)
@@ -152,18 +159,17 @@ class StreamScheduler:
         if repeatDuration:
             if (abs(datetime.now() - start_date).days) % repeatDuration != 0:
                 return False
-        global CurrentVideo
-        CurrentVideo = []
+        self.CurrentVideo = []
         cancle_link = self.get_link_video(["idle.mp4"])
         self.__my_obs.set_input_playlist(cancle_link)
         self.__set_flag_taskrunning(0)
-        global CurrentTask
-        CurrentTask = None
+        self.CurrentTask = None
         if repeatDuration == 0:
             print("Cancel task onetime")
             return schedule.CancelJob
         
         return True
+    
     def __task(self,taskinfor):
         if self.__get_flag_taskrunning():
             print(f"Task id: {taskinfor.ID} has been BLOCKED")
@@ -178,6 +184,13 @@ class StreamScheduler:
             if value % taskinfor.duration != 0:
                 return False
             
+        if datetime.strptime(taskinfor.end_time, "%H:%M").time() > datetime.strptime(taskinfor.start_time, "%H:%M").time():
+            if datetime.now().time() >= datetime.strptime(taskinfor.end_time, "%H:%M").time():
+                print(f"DELETE TASK: {taskinfor.ID}")
+                return False
+        else:
+            pass
+        
         self.CurrentVideo
         self.CurrentTask
         myvideolist = self.get_link_video(taskinfor.video_name)
@@ -215,7 +228,6 @@ class StreamScheduler:
         print(self.Start_Schedule.get_jobs())
 
     def __daily_task(self,taskinfor):
-        global CurrentVideo
 
         if self.__get_flag_taskrunning():
             print(f"Task id: {taskinfor.ID} has been BLOCKED")
@@ -226,13 +238,20 @@ class StreamScheduler:
         if taskinfor.duration:
             if (abs(datetime.now() - taskinfor.start_date).days) % taskinfor.duration != 0:
                 return False
+            
+        if datetime.strptime(taskinfor.end_time, "%H:%M").time() > datetime.strptime(taskinfor.start_time, "%H:%M").time():
+            if datetime.now().time() >= datetime.strptime(taskinfor.end_time, "%H:%M".time()):
+                print(f"DELETE TASK: {taskinfor.ID}")
+                return False
+        else:
+            pass
+
         myvideolist = self.get_link_video(taskinfor.video_name)
-        CurrentVideo = myvideolist
+        self.CurrentVideo = myvideolist
         self.__my_obs.set_input_playlist(myvideolist)
         print('Daily_task')
         self.__set_flag_taskrunning(1)
-        global CurrentTask
-        CurrentTask = taskinfor
+        self.CurrentTask = taskinfor
         if taskinfor.end_time and taskinfor.end_time != "None":
             self.__Stop_Schedule.every().days.at(taskinfor.end_time).until(taskinfor.until).do(self.__cancel_task,taskinfor.start_date,0).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
 
@@ -258,6 +277,12 @@ class StreamScheduler:
             print("NOT RUN NOW")
             return False
         
+        if datetime.strptime(taskinfor.end_time, "%H:%M").time() > datetime.strptime(taskinfor.start_time, "%H:%M").time():
+            if datetime.now().time() >= datetime.strptime(taskinfor.end_time, "%H:%M").time():
+                print(f"DELETE TASK 2: {taskinfor.ID}")
+                return schedule.CancelJob
+        else:
+            pass
 
         myvideolist = self.get_link_video(taskinfor.video_name)
         self.CurrentVideo = myvideolist

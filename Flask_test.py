@@ -20,7 +20,6 @@ def validateTimeformat(time_str):
     pattern = r'^([0-1][0-9]|2[0-3]):[0-5][0-9]$'
     return re.match(pattern, time_str) is not None
 
-my_obs = OBS_controller()
 
 app = Flask(__name__)
 CORS(app)
@@ -41,7 +40,8 @@ FolderVideoPath = "video"
 # StreamLink = "https://www.twitch.tv/gutsssssssss9"
 # task_db = TaskDatabase('task_infor.db')
 
-my_scheduler = StreamScheduler(FileLog="log_thread1.txt",VideoPath="d:/FINAL PROJECT/SERVER/video/",Database='task_infor.db',DataTable="thread1",OBSPass="123456",OBSPort=4444,StreamKey="live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk",StreamLink = "https://www.twitch.tv/gutsssssssss9")
+my_scheduler1 = StreamScheduler(FileLog="log_thread1.txt",VideoPath="d:/FINAL PROJECT/SERVER/video/",Database='task_infor.db',DataTable="thread1",OBSPass="123456",OBSPort=4444,StreamKey="live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk",StreamLink = "https://www.twitch.tv/gutsssssssss9")
+my_scheduler2 = StreamScheduler(FileLog="log_thread2.txt",VideoPath="d:/FINAL PROJECT/SERVER/video/",Database='task_infor.db',DataTable="thread2",OBSPass="123456",OBSPort=5555,StreamKey="live_1044211682_Ol34MomAqRm3Ef7s0jwrKq0KNGj3Ku",StreamLink = "https://www.twitch.tv/gutsssssssss9")
 
 
 ################## begin MQTT
@@ -60,7 +60,7 @@ def publish_livestream(link):
 def init():
     #start MQTT
     mqtt_client.start()
-    publish_livestream(my_scheduler.StreamLink)
+    # publish_livestream(my_scheduler.StreamLink)
 
 
 def get_video_name():
@@ -86,6 +86,12 @@ def Get_files_in_folder():
 
 @app.route('/get/currentTask')
 def Get_Current_Task():
+    stream  = request.args.get('stream')
+    if not stream or stream == "1":
+        my_scheduler =  my_scheduler1
+    elif stream == "2":
+        my_scheduler = my_scheduler2
+
     if not my_scheduler.CurrentTask:
         return jsonify({'Current Task': "None"}), 200
     # Convert datetime objects to strings
@@ -105,6 +111,11 @@ def Get_Current_Task():
 
 @app.route('/get/schedule')
 def Get_schedule():
+    stream  = request.args.get('stream')
+    if not stream or stream == "1":
+        my_scheduler =  my_scheduler1
+    elif stream == "2":
+        my_scheduler = my_scheduler2
     # Convert datetime objects to strings
     mylist = copy.deepcopy(my_scheduler.ListTask)
     for task in mylist:
@@ -121,6 +132,11 @@ def Get_schedule():
 
 @app.route('/get/streamkey')
 def Get_streamkey():
+    stream  = request.args.get('stream')
+    if not stream or stream == "1":
+        my_scheduler =  my_scheduler1
+    elif stream == "2":
+        my_scheduler = my_scheduler2
     stream_key = my_scheduler.get_stream_key()
     print(stream_key)
     return jsonify({'Stream key': stream_key}), 200
@@ -131,6 +147,12 @@ def Set_Stream_Parameter():
 
 @app.route('/live')
 def Live_Steam():
+    stream  = request.args.get('stream')
+    if not stream or stream == "1":
+        my_scheduler =  my_scheduler1
+    elif stream == "2":
+        my_scheduler = my_scheduler2
+
     list = request.args.get('list')
     if not list:
         return jsonify({'error': {'message': 'List empty'}}), 400
@@ -145,6 +167,12 @@ def Live_Steam():
 
 @app.route('/stoplive')
 def Stop_Live_Steam():
+    stream  = request.args.get('stream')
+    if not stream or stream == "1":
+        my_scheduler =  my_scheduler1
+    elif stream == "2":
+        my_scheduler = my_scheduler2
+        
     my_scheduler.stop_live()
     return jsonify({'success': {'message': 'Stop live stream'}}), 200
 
@@ -161,6 +189,13 @@ def Add_Task_Everyweeks():
 
     deadline = None
 
+    stream  = request.args.get('stream')
+    if not stream or stream == "1":
+        my_scheduler =  my_scheduler1
+    elif stream == "2":
+        my_scheduler = my_scheduler2
+        
+    #CHECK DURATION
     print(duration)
     if not duration:
         int_duration = 1
@@ -170,6 +205,7 @@ def Add_Task_Everyweeks():
     else:
         return jsonify({'error': {'message': 'Wrong duration'}}), 400
     
+    #CHECK UNTIL
     if not until:
         my_year = 2100
         my_month = 12
@@ -182,24 +218,30 @@ def Add_Task_Everyweeks():
         deadline = datetime(year=my_year,month=my_month,day=my_day,hour=23,minute=59,second=59)
         if(deadline < datetime.now()):
             return jsonify({'error': {'message': 'until in the past'}}), 400
-        
+    deadline = deadline.strftime("%Y-%m-%d %H:%M:%S")
 
-
-    
+    #CHECK LIST
     if not list:
         return jsonify({'error': {'message': 'List empty'}}), 400
-    
-    if not start_date:
-        start_date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-    else:
-        start_date = datetime.strptime(start_date,"%Y-%m-%d")
 
     video_list = list.split(',')
 
     if not check_video_list(video_list):
         return jsonify({'error': {'message': 'Wrong file name'}}), 400
     print(f"List Video: {video_list}")
+    
+    # CHECK START DATE
+    if not start_date:
+        start_date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    else:
+        try:
+            start_date = datetime.strptime(start_date, "%Y-%m-%d").replace(hour=0, minute=0, second=0, microsecond=0)
+        except ValueError:
+            return jsonify({'error': {'message': 'Wrong start date format'}}), 400
+        
+    start_date = start_date.strftime("%Y-%m-%d %H:%M:%S")
 
+    #CHECK START TIME
     if not start_time:
         now = datetime.now()
         start_time = now.strftime("%H:%M")
@@ -208,7 +250,18 @@ def Add_Task_Everyweeks():
         if validateTimeformat(start_time) == False:
              return jsonify({'error': 'Wrong time format'}) ,400
         print(start_time)
-
+    #CHECK END TIME
+    if end_time:
+        if validateTimeformat(start_time) == False:
+             return jsonify({'error': 'Wrong time format'}) ,400
+        print(end_time)
+    else:
+        return jsonify({'error': 'Empty end time'}) ,400
+    
+    if(datetime.strptime(end_time, "%H:%M") <= datetime.strptime(start_time, "%H:%M")):
+        return jsonify({'error': 'Start time greater than end time'}) ,400
+    
+    # CHECK DAYS
     if not days:
         return jsonify({'error': 'Empty days'}) ,400
     else:
@@ -218,6 +271,7 @@ def Add_Task_Everyweeks():
             if day not in list_days:
                 return jsonify({'error': 'Wrong date'}) ,400
 
+    #CHECK LABEL
     if not label:
         return jsonify({'error': 'Empty label'}) ,400
 
@@ -243,6 +297,13 @@ def Add_Task_Everydays():
 
     print(duration)
 
+    stream  = request.args.get('stream')
+    if not stream or stream == "1":
+        my_scheduler =  my_scheduler1
+    elif stream == "2":
+        my_scheduler = my_scheduler2
+        
+    # CHECK DURATION 
     if not duration:
         int_duration = 1
         duration = 1
@@ -251,6 +312,7 @@ def Add_Task_Everydays():
     else:
         return jsonify({'error': {'message': 'Wrong duration'}}), 400
     
+    #CHECK UNTIL
     if not until:
         my_year = 2100
         my_month = 12
@@ -264,22 +326,29 @@ def Add_Task_Everydays():
         if(deadline < datetime.now()):
             return jsonify({'error': {'message': 'until in the past'}}), 400
         
+    deadline = deadline.strftime("%Y-%m-%d %H:%M:%S")
 
-    
+    # CHECK LIST
     if not list:
         return jsonify({'error': {'message': 'List empty'}}), 400
     
-    if not start_date:
-        start_date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-    else:
-        start_date = datetime.strptime(start_date,"%Y-%m-%d")
-
     video_list = list.split(',')
 
     if not check_video_list(video_list):
         return jsonify({'error': {'message': 'Wrong file name'}}), 400
     print(f"List Video: {video_list}")
 
+    # CHECK START DATE
+    if not start_date:
+        start_date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    else:
+        try:
+            start_date = datetime.strptime(start_date, "%Y-%m-%d").replace(hour=0, minute=0, second=0, microsecond=0)
+        except ValueError:
+            return jsonify({'error': {'message': 'Wrong start date format'}}), 400
+        
+    start_date = start_date.strftime("%Y-%m-%d %H:%M:%S")
+   # CHECK START TIME 
     if not start_time:
         now = datetime.now()
         start_time = now.strftime("%H:%M")
@@ -288,6 +357,18 @@ def Add_Task_Everydays():
         if validateTimeformat(start_time) == False:
              return jsonify({'error': 'Wrong time format'}) ,400
         print(start_time)
+    #CHECK END TIME
+    if end_time:
+        if validateTimeformat(start_time) == False:
+             return jsonify({'error': 'Wrong time format'}) ,400
+        print(end_time)
+    else:
+        return jsonify({'error': 'Empty end time'}) ,400
+    
+    if(datetime.strptime(end_time, "%H:%M") <= datetime.strptime(start_time, "%H:%M")):
+        return jsonify({'error': 'Start time greater than end time'}) ,400
+    
+    #CHECK LABEL
 
     if not label:
         return jsonify({'error': 'Empty label'}) ,400
@@ -295,6 +376,7 @@ def Add_Task_Everydays():
     # if is_time_valid(start_time,end_time) == False :
     #     return jsonify({'error': 'Wrong time format'}) ,400
     
+    #CREATE NEW TASK
     new_task = TaskInformation(ID=None,label=label,days = [], video_name=video_list,start_date=start_date,duration=int(duration),until=deadline,start_time=start_time,end_time=end_time,typetask="daily")
     my_scheduler.daily_task(new_task)
 
@@ -313,7 +395,13 @@ def Add_Task_onetime():
     until = None
 
     # Cheking parameter
-
+    stream  = request.args.get('stream')
+    if not stream or stream == "1":
+        my_scheduler =  my_scheduler1
+    elif stream == "2":
+        my_scheduler = my_scheduler2
+        
+    #CHECK LIST
     if not list:
         return jsonify({'error': {'message': 'List empty'}}), 400
     
@@ -323,11 +411,17 @@ def Add_Task_onetime():
 
     print(f"List Video: {video_list}")
 
+    #CHECK START DATE
     if not start_date:
         start_date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-    else:
-        start_date = datetime.strptime(start_date,"%Y-%m-%d")
 
+    else:
+        try:
+            start_date = datetime.strptime(start_date, "%Y-%m-%d").replace(hour=0, minute=0, second=0, microsecond=0)
+            
+        except ValueError:
+            return jsonify({'error': {'message': 'Wrong start date format'}}), 400
+    #CHECK START TIME
     if not start_time:
         now = datetime.now()
         start_time = now.strftime("%H:%M")
@@ -338,6 +432,7 @@ def Add_Task_onetime():
              return jsonify({'error': 'Wrong time format'}) ,400
         print(start_time)
 
+    #CHECK END TIME
     if end_time:
         if validateTimeformat(start_time) == False:
              return jsonify({'error': 'Wrong time format'}) ,400
@@ -346,12 +441,17 @@ def Add_Task_onetime():
     else:
         return jsonify({'error': 'Empty end time'}) ,400
     
+    if(datetime.strptime(end_time, "%H:%M") <= datetime.strptime(start_time, "%H:%M")):
+        return jsonify({'error': 'Start time greater than end time'}) ,400
+
 
     if str_end_time.time() <= datetime.strptime(start_time, "%H:%M").time():
         until = datetime.combine(start_date.date() + timedelta(days=1), str_end_time.time())
     else:
         until = datetime.combine(start_date.date(), str_end_time.time())
 
+    start_date = start_date.strftime("%Y-%m-%d %H:%M:%S")
+    until = until.strftime("%Y-%m-%d %H:%M:%S")
     if not label:
         return jsonify({'error': 'Empty label'}) ,400
     # if is_time_valid(start_time,end_time) == False :
@@ -368,6 +468,12 @@ def Add_Task_onetime():
 
 @app.route('/schedule/deleteTask')
 def Delete_Task():
+    stream  = request.args.get('stream')
+    if not stream or stream == "1":
+        my_scheduler =  my_scheduler1
+    elif stream == "2":
+        my_scheduler = my_scheduler2
+        
     id = request.args.get('id')
     label = request.args.get('label')
     print(id)
@@ -384,7 +490,8 @@ def Delete_Task():
 def main():
     
     init()
-    my_scheduler.run()
+    my_scheduler1.run()
+    # my_scheduler2.run()
     # my_obs.get_input_list()
     # my_obs.get_input_settings("mySource")
     # my_obs.get_scene_item_list('scene1')

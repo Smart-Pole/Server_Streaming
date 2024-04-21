@@ -14,21 +14,21 @@ class OBS_controller:
             self.printJsonObject(object)
             
     def __init__(self, host='localhost', port=4455, password='123456') -> None:
-        flag = False
-        # Đọc file config.txt
-        with open('config.txt', 'r') as file:
-            # Đọc từng dòng trong file
-            for line in file:
-                # Tách chuỗi thành hai phần, phần bên trái là key, phần bên phải là value
-                key, value = line.strip().split('-')
-                # Nếu key là 'VIDEO PATH', lưu giá trị vào biến videopath và thoát vòng lặp
-                if key.strip() == 'PORT':
-                    self.port = value
-                    flag = True
-                    break
-        if not flag:
-            self.port = port
-
+        # flag = False
+        # # Đọc file config.txt
+        # with open('config.txt', 'r') as file:
+        #     # Đọc từng dòng trong file
+        #     for line in file:
+        #         # Tách chuỗi thành hai phần, phần bên trái là key, phần bên phải là value
+        #         key, value = line.strip().split('-')
+        #         # Nếu key là 'VIDEO PATH', lưu giá trị vào biến videopath và thoát vòng lặp
+        #         if key.strip() == 'PORT':
+        #             self.port = value
+        #             flag = True
+        #             break
+        # if not flag:
+        #     self.port = port
+        self.port = port
         self.host = host
         self.password = password
         self.request_client = obs.ReqClient(host = self.host,port = self.port,password = self.password)
@@ -337,16 +337,21 @@ def main():
     
      
 def test_for_failed_streamkey():
-    my_obs = OBS_controller()
-    
-    my_obs.set_stream_service_key_server(streamkey="live_1044211682_Ol34MomAqRm3Ef7s0jwrKq0KNGj3Ku",server="rtmp://live.twitch.tv/app")
+    my_obs1 = OBS_controller(port=4444,password="123456")
+    my_obs2 = OBS_controller(port=5555,password="123456")
+    my_obs1.set_stream_service_key_server(streamkey="live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk",server="rtmp://live.twitch.tv/app")
+    my_obs2.set_stream_service_key_server(streamkey="live_1044211682_Ol34MomAqRm3Ef7s0jwrKq0KNGj3Ku",server="rtmp://live.twitch.tv/app")
     # my_obs.set_stream_service_key_server(streamkey="abs",server="rtmp://live.twitch.tv/app")
     time.sleep(5)
-    my_obs.get_stream_service_settings()
-    my_obs.start_stream()
+    my_obs1.get_stream_service_settings()
+    my_obs1.start_stream()
+    my_obs2.get_stream_service_settings()
+    my_obs2.start_stream()
     time.sleep(5)
-    my_obs.get_stream_status()
-    my_obs.set_input_playlist("d:/FINAL PROJECT/SERVER/video/bird.mp4")
+    my_obs1.get_stream_status()
+    my_obs1.set_input_playlist(["d:/FINAL PROJECT/SERVER/video/bird.mp4"])
+    my_obs2.get_stream_status()
+    my_obs2.set_input_playlist("d:/FINAL PROJECT/SERVER/video/bird.mp4")
     
     
     # print(f"stream is active : {my_obs.check_stream_is_active()}")
@@ -354,12 +359,13 @@ def test_for_failed_streamkey():
         try: 
             time.sleep(1)
         except KeyboardInterrupt:
-            if my_obs.check_stream_is_active() :
-                my_obs.stop_stream()
+            if my_obs1.check_stream_is_active() :
+                my_obs1.stop_stream()
+
+            # if my_obs2.check_stream_is_active() :
+            #     my_obs2.stop_stream()
             break
     
     
 if __name__ == "__main__":
-    # test_for_failed_streamkey()
-    my_obs = OBS_controller()
-    my_obs.get_input_settings("mySource")
+    test_for_failed_streamkey()
