@@ -16,10 +16,6 @@ import copy
 from flask_cors import CORS
 
 
-def validateTimeformat(time_str):
-    pattern = r'^([0-1][0-9]|2[0-3]):[0-5][0-9]$'
-    return re.match(pattern, time_str) is not None
-
 
 app = Flask(__name__)
 CORS(app)
@@ -61,6 +57,10 @@ def init():
     #start MQTT
     mqtt_client.start()
     # publish_livestream(my_scheduler.StreamLink)
+    
+def validateTimeformat(time_str):
+    pattern = r'^([0-1][0-9]|2[0-3]):[0-5][0-9]$'
+    return re.match(pattern, time_str) is not None
 
 
 def get_video_name():

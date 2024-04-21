@@ -200,17 +200,17 @@ class StreamScheduler:
         self.__set_flag_taskrunning(1)
         self.CurrentTask = taskinfor
         if taskinfor.end_time and taskinfor.end_time != "None":
-            self.Stop_Schedule.every().days.at(taskinfor.end_time).until(taskinfor.until).do(self.__cancel_task,taskinfor.start_date,0).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
+            self.__Stop_Schedule.every().days.at(taskinfor.end_time).until(taskinfor.until).do(self.__cancel_task,taskinfor.start_date,0).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
 
     def __weekly_task(self,taskinfor):
         days_mapping = {
-            'mon': self.Start_Schedule.every().monday,
-            'tue': self.Start_Schedule.every().tuesday,
-            'wed': self.Start_Schedule.every().wednesday,
-            'thu': self.Start_Schedule.every().thursday,
-            'fri': self.Start_Schedule.every().friday,
-            'sat': self.Start_Schedule.every().saturday,
-            'sun': self.Start_Schedule.every().sunday
+            'mon': self.__Start_Schedule.every().monday,
+            'tue': self.__Start_Schedule.every().tuesday,
+            'wed': self.__Start_Schedule.every().wednesday,
+            'thu': self.__Start_Schedule.every().thursday,
+            'fri': self.__Start_Schedule.every().friday,
+            'sat': self.__Start_Schedule.every().saturday,
+            'sun': self.__Start_Schedule.every().sunday
         }
         print("WEEKLY TASK")
         print(taskinfor.days)
@@ -225,7 +225,7 @@ class StreamScheduler:
         self.ListTask.append(taskinfor)
         self.saveTask(1)
         self.__weekly_task(taskinfor)
-        print(self.Start_Schedule.get_jobs())
+        print(self.__Start_Schedule.get_jobs())
 
     def __daily_task(self,taskinfor):
 
