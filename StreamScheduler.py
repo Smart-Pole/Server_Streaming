@@ -309,6 +309,7 @@ class StreamScheduler:
             self.__Start_Schedule.clear()
             self.__Stop_Schedule.clear()
             self.__task_db.delete_all_tasks()
+            self.ListTask.clear()
             print(schedule.get_jobs())
             return True
         elif id:
