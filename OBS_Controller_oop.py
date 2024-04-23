@@ -312,6 +312,8 @@ class OBS_controller:
         self.set_input_settings(name=source_name, settings=settings, overlay= False )
         
                     
+    def set_current_program_scene(self,scene_name):
+            self.request_client.set_current_program_scene(scene_name)
         
 
 def main():
@@ -338,21 +340,20 @@ def main():
      
 def test_for_failed_streamkey():
     my_obs1 = OBS_controller(port=4444,password="123456")
-    my_obs2 = OBS_controller(port=5555,password="123456")
+
     my_obs1.set_stream_service_key_server(streamkey="live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk",server="rtmp://live.twitch.tv/app")
-    my_obs2.set_stream_service_key_server(streamkey="live_1044211682_Ol34MomAqRm3Ef7s0jwrKq0KNGj3Ku",server="rtmp://live.twitch.tv/app")
     # my_obs.set_stream_service_key_server(streamkey="abs",server="rtmp://live.twitch.tv/app")
     time.sleep(5)
     my_obs1.get_stream_service_settings()
     my_obs1.start_stream()
-    my_obs2.get_stream_service_settings()
-    my_obs2.start_stream()
-    time.sleep(5)
+
+    time.sleep(1)
     my_obs1.get_stream_status()
-    my_obs1.set_input_playlist(["d:/FINAL PROJECT/SERVER/video/bird.mp4"])
-    my_obs2.get_stream_status()
-    my_obs2.set_input_playlist("d:/FINAL PROJECT/SERVER/video/bird.mp4")
-    
+    print("STREAM LINK")
+    # my_obs1.set_input_playlist(["https://live3.thvli.vn/sJrg6YvmzZI2soZYl9hAnA/1713898152/thvli/thvl1-abr/thvl111220/thvl1-1080p/chunks.m3u8"])
+    time.sleep(2)
+    print("HIDDEN")
+    my_obs1.set_current_program_scene("Scene")
     
     # print(f"stream is active : {my_obs.check_stream_is_active()}")
     while True:

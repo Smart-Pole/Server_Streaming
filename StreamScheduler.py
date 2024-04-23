@@ -32,6 +32,7 @@ class StreamScheduler:
         self.FileLog = FileLog
         self.VideoPath = VideoPath
         self.ListTask = self.__task_db.get_all_tasks()
+        self.__my_obs.set_current_program_scene("SCHEDULE")
         if not self.__my_obs.check_stream_is_active():
             self.__my_obs.set_stream_service_key_server(streamkey=self.StreamKey,server=self.StreamServer)
             self.__my_obs.start_stream()
@@ -135,20 +136,23 @@ class StreamScheduler:
         print(f"List Video: {my_video_list}")
         return my_video_list
     
-    def live(self,videolist):
-        myvideolist = self.get_link_video(videolist)
-        self.__my_obs.set_input_playlist(myvideolist)
-        self.__my_obs.get_input_settings("mySource")
-        self.__set_flag_live(1)
+    def live(self,videolist=[],link = 0):
+        if link:
+            self.__my_obs.set_input_playlist([link],source_name="live")
+        else:
+            myvideolist = self.get_link_video(videolist)
+            self.__my_obs.set_input_playlist(myvideolist,source_name="live")
+
+        self.__my_obs.set_current_program_scene("LIVE")
+        self.__my_obs.get_input_settings("live")
+        self.__set_flag_live(0)
         print('LIVE')
 
-    def stop_live(self):
+    def stop_live(self,link = 0):
         self.__set_flag_live(0)
-        if not self.CurrentVideo:
-            cancle_link = self.get_link_video(["idle.mp4"])
-            self.__my_obs.set_input_playlist(cancle_link)
-        else:
-            self.__my_obs.set_input_playlist(self.CurrentVideo)
+        self.__my_obs.set_input_playlist([],source_name="live")
+        self.__my_obs.set_current_program_scene("SCHEDULE")
+        self.__my_obs.get_input_settings("mySource")
 
     def __cancel_task(self,start_date,repeatDuration):
         if not self.__get_flag_taskrunning():
