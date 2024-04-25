@@ -27,3 +27,4 @@ ID:3;Video Name:horse.mp4;Start time:15:26;End time:15:27;Until:2024-4-21;Durati
 ID:1;Video Name:bird.mp4;Start time:10:00;End time:13:00;Until:2024-4-24;Duration:2;Type task:daily;Start date:2024-4-22;label:LISTVIDEO1;Days:
 ID:2;Video Name:bird.mp4;Start time:10:00;End time:13:00;Until:2024-4-22;Duration:1;Type task:weekly;Start date:2024-4-12;label:LISTVIDEO2;Days:mon,tue
 ID:3;Video Name:bird.mp4;Start time:10:00;End time:13:00;Until:2024-4-22;Duration:1;Type task:weekly;Start date:2024-4-12;label:LISTVIDEO2;Days:mon,tue
+ID:1;Video Name:horse.mp4;Start time:15:26;End time:15:27;Until:2024-4-21;Duration:0;Type task:onetime;Start date:2024-4-21;label:LISTVIDEO1;Days:

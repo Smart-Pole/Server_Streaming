@@ -8,7 +8,7 @@ This API provides endpoints for managing tasks related to streaming, such as ret
 
 ## Run the app
 
-    python Server.py
+    start run.bat
 
 # REST API
 
