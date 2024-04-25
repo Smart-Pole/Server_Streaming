@@ -58,6 +58,8 @@ class TaskDatabase:
         tasks = []
         for task_data in tasks_data:
             task = TaskInformation(*task_data)
+            task.video_name = task.video_name.split(',')
+            task.days = task.days.split(',')
             tasks.append(task)
         return tasks
     
@@ -68,7 +70,7 @@ class TaskDatabase:
 
 def main():
     # Sử dụng lớp TaskDatabase để tạo cơ sở dữ liệu và thêm dữ liệu
-    task_db = TaskDatabase('task_infor.db',"tasks")
+    task_db = TaskDatabase('task_infor.db',"thread1")
 
     all_tasks = task_db.get_all_tasks()
     if all_tasks:
