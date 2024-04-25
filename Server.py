@@ -45,7 +45,7 @@ pole_manager = Pole_manager()
 ################## begin MQTT
 
 AIO_USERNAME = "GutD"
-AIO_KEY = "aio_PgQw50qqopzjctjPAKbeq1plM8Rk"
+AIO_KEY = ""
 AIO_FEED_ID = ["live-stream"]
 mqtt_client = MyMQTTClient(AIO_USERNAME, AIO_KEY, AIO_FEED_ID)
 
@@ -162,7 +162,7 @@ def Set_pole_link_area():
     publish_livestream(pole_manager.get_ids_by_area(area),my_scheduler.StreamLink)
 
     return jsonify( {'success': {'message': 'Set stream'}}), 200
-
+################################################################################################
 
 @app.route('/get/video')
 def Get_files_in_folder():
