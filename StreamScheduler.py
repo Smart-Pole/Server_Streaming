@@ -245,7 +245,7 @@ class StreamScheduler:
                 return False
             
         if datetime.strptime(taskinfor.end_time, "%H:%M").time() > datetime.strptime(taskinfor.start_time, "%H:%M").time():
-            if datetime.now().time() >= datetime.strptime(taskinfor.end_time, "%H:%M".time()):
+            if datetime.now().time() >= datetime.strptime(taskinfor.end_time, "%H:%M").time():
                 print(f"DELETE TASK: {taskinfor.ID}")
                 return False
         else:

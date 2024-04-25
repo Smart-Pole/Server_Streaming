@@ -5,6 +5,7 @@ from mqtt import MyMQTTClient
 from database import TaskDatabase
 from TaskInfor import TaskInformation
 from StreamScheduler import StreamScheduler
+from Pole_infor import Pole_manager
 import threading
 import schedule
 import json
@@ -37,26 +38,32 @@ CORS(app)
 FolderVideoPath = "video"
 
 my_scheduler1 = StreamScheduler(Stream=1,FileLog="log_thread1.txt",VideoPath="d:/FINAL PROJECT/SERVER/video/",Database='task_infor.db',DataTable="thread1",OBSPass="123456",OBSPort=4444,StreamKey="live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk",StreamLink = "https://www.twitch.tv/gutsssssssss9")
-my_scheduler2 = StreamScheduler(Stream=2,FileLog="log_thread2.txt",VideoPath="d:/FINAL PROJECT/SERVER/video/",Database='task_infor.db',DataTable="thread2",OBSPass="123456",OBSPort=5555,StreamKey="live_1044211682_Ol34MomAqRm3Ef7s0jwrKq0KNGj3Ku",StreamLink = "https://www.twitch.tv/gutsssssssss9")
+my_scheduler2 = StreamScheduler(Stream=2,FileLog="log_thread2.txt",VideoPath="d:/FINAL PROJECT/SERVER/video/",Database='task_infor.db',DataTable="thread2",OBSPass="123456",OBSPort=5555,StreamKey="live_1071558463_6geWoWQgWadKOjby2mqDj40qeiW9fg",StreamLink = "https://www.twitch.tv/huynhnguyenhieunhan")
 
+pole_manager = Pole_manager()
 
 ################## begin MQTT
 
 AIO_USERNAME = "GutD"
-AIO_KEY = "aio_ylYf65J1E1PHtUIuXc70qDfe3i6N"
+AIO_KEY = "aio_PgQw50qqopzjctjPAKbeq1plM8Rk"
 AIO_FEED_ID = ["live-stream"]
 mqtt_client = MyMQTTClient(AIO_USERNAME, AIO_KEY, AIO_FEED_ID)
 
 
-def publish_livestream(link):
-    mqtt_client.publish_data("live_stream",link)
+def publish_livestream(ID,link):
+    mess = {
+        "ID" : ID,
+        "link" : link
+    }
+    json_mess = json.dumps(mess)
+    mqtt_client.publish_data("live_stream",json_mess)
 
 
 ###################################################################################
 def init():
     #start MQTT
     mqtt_client.start()
-    # publish_livestream(my_scheduler.StreamLink)
+    publish_livestream([1,2,3],my_scheduler1.StreamLink)
     
 def validateTimeformat(time_str):
     pattern = r'^([0-1][0-9]|2[0-3]):[0-5][0-9]$'
@@ -78,6 +85,84 @@ def check_video_list(my_list):
     return True
 
 ################################################################################################################################################################
+@app.route('/get/pole')
+def Get_pole():
+    pole_dict = {"Pole infomation": [pole.__dict__ for pole in pole_manager.pole_infor]}
+    json_string = json.dumps(pole_dict, indent=4)
+    return json_string, 200
+
+@app.route('/set/poleArea')
+def Set_pole_area():
+    pole_id  = request.args.get('ID')
+    area = request.args.get('area')
+
+    pole_id = pole_id.split(',')
+    pole_id = [int(id) for id in pole_id]
+    my_pole_id = {pole.ID for pole in pole_manager.pole_infor}
+
+    for ID in pole_id:
+        if not (ID in my_pole_id):
+            print(f"ID:{ID}")
+            return jsonify({'error': {'message': 'Wrong ID'}}), 400
+        
+    pole_manager.update_area(pole_id,area)
+    return jsonify({'success': {'message': 'Update success'}}), 400
+
+@app.route('/set/poleLink/ID')
+def Set_pole_link_id():
+    pole_id  = request.args.get('ID')
+    stream  = request.args.get('stream')
+
+    pole_id = pole_id.split(',')
+    pole_id = [int(id) for id in pole_id]
+    my_pole_id = {pole.ID for pole in pole_manager.pole_infor}
+    print(my_pole_id)
+
+    if stream == "1":
+        my_scheduler =  my_scheduler1
+    elif stream == "2":
+        my_scheduler = my_scheduler2
+    else:
+        return jsonify({'error': {'message': 'Wrong stream'}}), 400
+    
+    for ID in pole_id:
+        if not (ID in my_pole_id):
+            print(f"ID:{ID}")
+            return jsonify({'error': {'message': 'Wrong ID'}}), 400
+        
+    
+    pole_manager.update_link_by_id(pole_id,my_scheduler.StreamLink)
+    publish_livestream(pole_id,my_scheduler.StreamLink)
+
+    return jsonify( {'success': {'message': 'Set stream'}}), 200
+
+@app.route('/set/poleLink/area')
+def Set_pole_link_area():
+    area  = request.args.get('area')
+    stream  = request.args.get('stream')
+
+
+    print(area)
+    my_area = {pole.area for pole in pole_manager.pole_infor}
+
+    if stream == "1":
+        my_scheduler =  my_scheduler1
+    elif stream == "2":
+        my_scheduler = my_scheduler2
+    else:
+        return jsonify({'error': {'message': 'Wrong stream'}}), 400
+    
+
+    if not (area in my_area):
+        print(f"ID:{area}")
+        return jsonify({'error': {'message': 'Wrong area'}}), 400
+        
+    
+    pole_manager.update_link_by_area(area=area,new_link=my_scheduler.StreamLink)
+    publish_livestream(pole_manager.get_ids_by_area(area),my_scheduler.StreamLink)
+
+    return jsonify( {'success': {'message': 'Set stream'}}), 200
+
 
 @app.route('/get/video')
 def Get_files_in_folder():
@@ -92,6 +177,8 @@ def Get_Current_Task():
         my_scheduler =  my_scheduler1
     elif stream == "2":
         my_scheduler = my_scheduler2
+    else:
+        return jsonify({'error': {'message': 'Wrong stream'}}), 400
 
     if not my_scheduler.CurrentTask:
         return jsonify({'stream' : f'{my_scheduler.stream}' ,'Current Task': "None"}), 200
