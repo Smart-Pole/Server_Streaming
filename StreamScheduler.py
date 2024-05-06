@@ -12,7 +12,7 @@ import time
 import copy
 
 class StreamScheduler:
-    def __init__(self,Stream,FileLog,VideoPath,StreamKey,StreamLink,OBSPort,OBSPass,Database,DataTable):
+    def __init__(self,Stream,FileLog,VideoPath,StreamKey,StreamLink,OBSPort,OBSPass,Database,DataTable,NameStream):
         self.__my_obs = OBS_controller(port=OBSPort,password=OBSPass)
         self.__Start_Schedule = schedule.Scheduler()
         self.__Stop_Schedule = schedule.Scheduler()
@@ -32,6 +32,7 @@ class StreamScheduler:
         self.StreamLink=StreamLink
         self.FileLog = FileLog
         self.VideoPath = VideoPath
+        self.NameStream = NameStream
         self.ListTask = self.__task_db.get_all_tasks()
         self.__my_obs.set_current_program_scene("SCHEDULE")
         if not self.__my_obs.check_stream_is_active():
@@ -379,7 +380,7 @@ class StreamScheduler:
             time.sleep(1)
 
     def run(self):
-        self.__Stop_Schedule.every(10).seconds.do(self.__job)
+        # self.__Stop_Schedule.every(10).seconds.do(self.__job)
         schedule_thread = threading.Thread(target=self.__run)
         schedule_thread.start()
 

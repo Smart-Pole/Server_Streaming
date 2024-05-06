@@ -1,1 +1,2 @@
 ID:1;Video Name:ship.mp4;Start time:14:28;End time:14:29;Until:2024-4-21;Duration:0;Type task:onetime;Start date:2024-4-21;label:LISTVIDEO1;Days:
+ID:2;Video Name:idle.mp4;Start time:02:00;End time:02:05;Until:2024-5-31;Duration:1;Type task:daily;Start date:2024-5-6;label:HONDA;Days:

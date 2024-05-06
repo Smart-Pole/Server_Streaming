@@ -1,11 +1,12 @@
 import sqlite3
 class Pole_Information:
-    def __init__(self, ID, location , infor , area ,link):
+    def __init__(self, ID, location , infor , area ,link,channel):
         self.ID = ID
         self.location = location
         self.infor =  infor
         self.area =  area
         self.link = link
+        self.channel = channel
 
 class Pole_manager:
     def __init__(self, db_name = "pole_infor.db", table_name = "pole"):
@@ -25,7 +26,8 @@ class Pole_manager:
                               location TEXT,
                               information TEXT,
                               area TEXT,
-                              link TEXT 
+                              link TEXT,
+                              channel TEXT 
                               )''')
         self.conn.commit()
 
@@ -55,29 +57,31 @@ class Pole_manager:
         print("Area updated successfully.")
 
 
-    def update_link_by_id(self, pole_ids, new_link):
+    def update_link_by_id(self, pole_ids, new_link,channel):
         # Update in the database
         for pole_id in pole_ids:
-            self.cursor.execute(f"UPDATE {self.table_name} SET link = ? WHERE ID = ?", (new_link, pole_id))
+            self.cursor.execute(f"UPDATE {self.table_name} SET link = ?, channel = ? WHERE ID = ?", (new_link,channel, pole_id))
         self.conn.commit()
         
         # Update in self.pole_infor
         for pole in self.pole_infor:
             if pole.ID in pole_ids:
                 pole.link = new_link
+                pole.channel = channel
                     
         print("Links updated successfully.")
 
-    def update_link_by_area(self, area, new_link):
+    def update_link_by_area(self, area, new_link,channel):
         # Update in the database
-        self.cursor.execute(f"UPDATE {self.table_name} SET link = ? WHERE area = ?", (new_link, area))
+        self.cursor.execute(f"UPDATE {self.table_name} SET link = ?, channel = ? WHERE area = ?", (new_link, channel,area))
         self.conn.commit()
         
         # Update in self.pole_infor
         for pole in self.pole_infor:
             if pole.area == area:
                 pole.link = new_link
-                
+                pole.channel = channel
+
         print("Links updated successfully.")
     def get_ids_by_area(self, area):
         # Tạo một danh sách rỗng để lưu trữ ID
