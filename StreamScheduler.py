@@ -139,15 +139,24 @@ class StreamScheduler:
         return my_video_list
     
     def live(self,videolist=[],link = 0):
+        self.__my_obs.set_input_playlist([""],source_name="live")
+
+        time.sleep(1)
+
         if link:
             self.__my_obs.set_input_playlist([link],source_name="live")
+
+            time.sleep(1)
         else:
             myvideolist = self.get_link_video(videolist)
             self.__my_obs.set_input_playlist(myvideolist,source_name="live")
 
-        self.__my_obs.set_current_program_scene("LIVE")
-        self.__my_obs.get_input_settings("live")
-        self.__set_flag_live(0)
+
+        if not self.__get_flag_live():
+            print("eeeeeeee")
+            self.__my_obs.set_current_program_scene("LIVE")
+            self.__my_obs.get_input_settings("live")
+            self.__set_flag_live(1)
         print('LIVE')
 
     def stop_live(self,link = 0):

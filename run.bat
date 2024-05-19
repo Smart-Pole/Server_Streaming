@@ -1,4 +1,4 @@
 @echo off
 cmd /c "d:\FINAL PROJECT\SERVER\obs.bat"
-timeout /t 5 /nobreak
+timeout /t 2 /nobreak
 python Server.py

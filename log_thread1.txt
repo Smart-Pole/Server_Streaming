@@ -8,8 +8,6 @@ ID:18;Video Name:ship.mp4;Start time:09:04;End time:09:06;Until:2024-4-29;Durati
 ID:19;Video Name:ship.mp4;Start time:09:05;End time:09:06;Until:2024-4-29;Duration:2;Type task:daily;Start date:2024-4-20;label:LISTVIDEO1;Days:
 ID:19;Video Name:ship.mp4;Start time:09:05;End time:09:06;Until:2024-4-20;Duration:2;Type task:daily;Start date:2024-4-20;label:LISTVIDEO1;Days:
 ID:20;Video Name:ship.mp4;Start time:09:05;End time:09:06;Until:2024-4-20;Duration:2;Type task:daily;Start date:2024-4-20;label:LISTVIDEO1;Days:
-ID:21;Video Name:ship.mp4;Start time:09:05;End time:09:06;Until:2024-4-20;Duration:2;Type task:daily;Start date:2024-4-20;label:LISTVIDEO1;Days:
-ID:1;Video Name:ship.mp4;Start time:14:25;End time:14:26;Until:2024-4-21;Duration:0;Type task:onetime;Start date:2024-4-21;label:LISTVIDEO1;Days:
 ID:2;Video Name:ship.mp4;Start time:14:28;End time:14:29;Until:2024-4-21;Duration:0;Type task:onetime;Start date:2024-4-21;label:LISTVIDEO1;Days:
 ID:3;Video Name:horse.mp4;Start time:15:14;End time:15:17;Until:2024-4-21;Duration:0;Type task:onetime;Start date:2024-4-21;label:LISTVIDEO1;Days:
 ID:4;Video Name:ship.mp4;Start time:15:15;End time:15:16;Until:2024-4-21;Duration:0;Type task:onetime;Start date:2024-4-21;label:LISTVIDEO1;Days:
@@ -31,3 +29,27 @@ ID:3;Video Name:bird.mp4;Start time:14:00;End time:14:01;Until:2024-4-30;Duratio
 ID:4;Video Name:horse.mp4;Start time:03:00;End time:04:00;Until:2024-5-29;Duration:0;Type task:onetime;Start date:2024-5-29;label:HONDA;Days:
 ID:5;Video Name:horse.mp4;Start time:07:00;End time:11:35;Until:2024-5-31;Duration:0;Type task:onetime;Start date:2024-5-31;label:HONDA;Days:
 ID:4;Video Name:horse.mp4;Start time:03:00;End time:04:00;Until:2024-5-31;Duration:1;Type task:weekly;Start date:2024-5-29;label:KFC ;Days:tue,wed,thu
+ID:4;Video Name:idle.mp4;Start time:05:00;End time:06:00;Until:2024-5-31;Duration:1;Type task:daily;Start date:2024-5-9;label:HONDA;Days:
+ID:5;Video Name:ship.mp4;Start time:03:00;End time:03:15;Until:2024-5-17;Duration:1;Type task:weekly;Start date:2024-5-9;label:ok;Days:mon,tue,wed,thu,fri,sat,sun
+ID:6;Video Name:idle.mp4;Start time:05:00;End time:06:00;Until:2024-5-31;Duration:1;Type task:daily;Start date:2024-5-11;label:TEST;Days:
+ID:7;Video Name:bird.mp4;Start time:00:00;End time:01:00;Until:2024-5-23;Duration:1;Type task:daily;Start date:2024-5-11;label:cocacola;Days:
+ID:8;Video Name:bird.mp4;Start time:08:00;End time:08:10;Until:2024-5-31;Duration:1;Type task:weekly;Start date:2024-5-14;label:SYM;Days:mon,tue,wed,thu,fri,sat,sun
+ID:9;Video Name:horse.mp4;Start time:08:20;End time:09:00;Until:2024-5-31;Duration:1;Type task:daily;Start date:2024-5-14;label:SYM;Days:
+ID:10;Video Name:idle.mp4;Start time:08:10;End time:08:20;Until:2024-5-31;Duration:1;Type task:daily;Start date:2024-5-14;label:Apple;Days:
+ID:11;Video Name:ship.mp4;Start time:09:00;End time:10:00;Until:2024-5-31;Duration:1;Type task:daily;Start date:2024-5-14;label:CGV;Days:
+ID:12;Video Name:ship.mp4;Start time:09:00;End time:10:00;Until:2024-5-31;Duration:1;Type task:daily;Start date:2024-5-14;label:CGV;Days:
+ID:13;Video Name:ship.mp4;Start time:09:00;End time:10:00;Until:2024-5-31;Duration:1;Type task:daily;Start date:2024-5-14;label:CGV;Days:
+ID:12;Video Name:bird.mp4;Start time:10:00;End time:11:00;Until:2024-5-18;Duration:1;Type task:weekly;Start date:2024-5-14;label:VINAMILK;Days:tue,wed,thu,mon
+ID:13;Video Name:horse.mp4;Start time:11:00;End time:12:00;Until:2024-5-14;Duration:0;Type task:onetime;Start date:2024-5-14;label:MILO;Days:
+ID:14;Video Name:ship.mp4;Start time:09:00;End time:10:00;Until:2024-5-31;Duration:1;Type task:daily;Start date:2024-5-14;label:CGV;Days:
+ID:14;Video Name:bird.mp4;Start time:09:05;End time:10:00;Until:2024-5-15;Duration:1;Type task:daily;Start date:2024-5-14;label:CGV;Days:
+ID:8;Video Name:bird.mp4;Start time:10:05;End time:11:00;Until:2024-5-15;Duration:1;Type task:daily;Start date:2024-5-14;label:VINAMILK;Days:
+ID:9;Video Name:horse.mp4;Start time:11:00;End time:12:00;Until:2024-5-14;Duration:0;Type task:onetime;Start date:2024-5-14;label:MITSUBISHI;Days:
+ID:10;Video Name:ship.mp4;Start time:12:00;End time:13:00;Until:2024-5-14;Duration:0;Type task:onetime;Start date:2024-5-14;label:MILO;Days:
+ID:11;Video Name:bird.mp4;Start time:13:00;End time:14:00;Until:2024-5-31;Duration:1;Type task:daily;Start date:2024-5-10;label:CAFE;Days:
+ID:12;Video Name:horse.mp4;Start time:14:00;End time:15:00;Until:2024-5-18;Duration:1;Type task:weekly;Start date:2024-5-12;label:MILK;Days:mon,tue,wed,thu
+ID:13;Video Name:ship.mp4;Start time:15:00;End time:16:00;Until:2024-5-14;Duration:0;Type task:onetime;Start date:2024-5-14;label:CHICKEN;Days:
+ID:14;Video Name:bird.mp4;Start time:16:00;End time:17:00;Until:2024-5-16;Duration:1;Type task:daily;Start date:2024-5-12;label:ENGLISH;Days:
+ID:15;Video Name:ship.mp4;Start time:17:00;End time:18:00;Until:2024-5-18;Duration:1;Type task:weekly;Start date:2024-5-12;label:REDBULL;Days:mon,tue,wed,thu,fri,sat,sun
+ID:16;Video Name:bird.mp4;Start time:22:48;End time:22:50;Until:2024-5-16;Duration:1;Type task:weekly;Start date:2024-5-16;label:LISTVIDEO2;Days:mon,tue
+ID:17;Video Name:bird.mp4;Start time:22:48;End time:22:50;Until:2024-5-16;Duration:0;Type task:onetime;Start date:2024-5-16;label:LISTVIDEO2;Days:

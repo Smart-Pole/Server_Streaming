@@ -86,6 +86,8 @@ class OBS_controller:
 
         Returns: None
         """
+        print("33333333")
+        print(settings)
         return self.request_client.set_input_settings(name, settings, overlay)   
     
     def get_scene_item_list(self,name):
@@ -301,7 +303,9 @@ class OBS_controller:
                 "selected": True if idx == 0 else False,
                 "value": video
             }
+            print("11111")
             playlist.append(item)
+            print("222222")
             
         settings = {
             "playback_behavior": "stop_restart",
