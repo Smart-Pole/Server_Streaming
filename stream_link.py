@@ -8,7 +8,7 @@ import streamlink.stream
 
 # url = "https://www.twitch.tv/gutsssssssss9"
 # url = "https://www.twitch.tv/huynhnguyenhieunhan"
-url = "https://vieon.vn/truyen-hinh-truc-tuyen/vie-dramas-hd/"
+url = "https://www.youtube.com/watch?v=-mvUkiILTqI"
 stream = streamlink.streams(url)
 # print(stream)
 

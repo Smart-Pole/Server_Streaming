@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, abort
+from flask import Flask, request, jsonify, abort,send_from_directory
 from datetime import datetime, time, timedelta
 from OBS_Controller_oop import OBS_controller
 from mqtt import MyMQTTClient
@@ -22,8 +22,12 @@ import streamlink.stream
 app = Flask(__name__)
 CORS(app)
 
-
 FolderVideoPath = "video"
+
+UPLOAD_FOLDER = FolderVideoPath
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+app.config['UPLOAD_FOLDER'] = FolderVideoPath
 
 my_scheduler1 = StreamScheduler(Stream=1,FileLog="log_thread1.txt",VideoPath="d:/FINAL PROJECT/SERVER/video/",Database='task_infor.db',DataTable="thread1",OBSPass="123456",OBSPort=4444,StreamKey="live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk",StreamLink = "https://www.twitch.tv/gutsssssssss9",NameStream="gutsssssssss9")
 my_scheduler2 = StreamScheduler(Stream=2,FileLog="log_thread2.txt",VideoPath="d:/FINAL PROJECT/SERVER/video/",Database='task_infor.db',DataTable="thread2",OBSPass="123456",OBSPort=5544,StreamKey="live_1071558463_6geWoWQgWadKOjby2mqDj40qeiW9fg",StreamLink = "https://www.twitch.tv/dat_live2",NameStream="dat_live2")
@@ -37,14 +41,14 @@ channel = {
            'Disney 1' : 'https://www.youtube.com/watch?v=WFDbJY0eBGI',
            'Disney 2' : 'https://www.youtube.com/watch?v=x7I9aLJ4hKo',
            'Nat geo WILD' : 'https://www.youtube.com/watch?v=BJ3Yv572V1A',
-           'ABC news' : 'https://www.youtube.com/watch?v=gN0PZCe-kwQ',
+           'ABC news' : 'https://www.youtube.com/watch?v=-mvUkiILTqI',
            'Nasa' : 'https://www.youtube.com/watch?v=0FBiyFpV__g'}
 
 
 ################## begin MQTT
 
 AIO_USERNAME = "GutD"
-AIO_KEY = ""
+AIO_KEY = "aio_TNaU20Pmw9L7x41vHH4ifs3ZKSit"
 AIO_FEED_ID = ["live-stream"]
 mqtt_client = MyMQTTClient(AIO_USERNAME, AIO_KEY, AIO_FEED_ID)
 
@@ -322,7 +326,6 @@ def Live_Steam():
     # listvideo = list.split(',')
     # if not check_video_list(listvideo):
     #     return jsonify({'error': 'Wrong file name'}), 400
-
     streams = streamlink.streams(link)
     best_stream_url = streams.get("best").url if "best" in streams else None
     counter = 0
@@ -679,7 +682,31 @@ def Delete_Task():
     else:
         return jsonify({'stream' : f'{my_scheduler.stream}' ,'success': {'message': 'Delete task', 'ID': f'{id}'}}), 200
     
+#-----------------------------------------------------------
 
+
+
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'video' not in request.files:
+        return 'No video part in the request'
+    
+    file = request.files['video']
+    if file.filename == '':
+        return 'No selected video'
+    
+    if file:
+        filename = file.filename
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+        return f'Video uploaded successfully and saved to {filepath}'
+    
+    return 'Failed to upload video'
+
+@app.route('/videocontent/<filename>')
+def serve_video(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 def main():
     
