@@ -13,7 +13,7 @@ class OBS_controller:
         for object in object_list:
             self.printJsonObject(object)
             
-    def __init__(self, host='localhost', port=4455, password='123456') -> None:
+    def __init__(self, host='10.0.183.53', port=4455, password='123456') -> None:
         # flag = False
         # # Đọc file config.txt
         # with open('config.txt', 'r') as file:

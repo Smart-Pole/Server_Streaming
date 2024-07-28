@@ -2,6 +2,7 @@ from datetime import datetime, time, timedelta
 from OBS_Controller_oop import OBS_controller
 from database import TaskDatabase
 from TaskInfor import TaskInformation
+from pytz import timezone
 import threading
 import schedule
 import json
@@ -9,10 +10,9 @@ import inspect
 import re
 import os
 import time
-import copy
 
 class StreamScheduler:
-    def __init__(self,Stream,FileLog,VideoPath,StreamKey,StreamLink,OBSPort,OBSPass,Database,DataTable,NameStream):
+    def __init__(self,Stream,FileLog,VideoPath,StreamKey,StreamLink,OBSPort,OBSPass,Database,DataTable,NameStream,StreamServer = "rtmp://live.twitch.tv/app"):
         self.__my_obs = OBS_controller(port=OBSPort,password=OBSPass)
         self.__Start_Schedule = schedule.Scheduler()
         self.__Stop_Schedule = schedule.Scheduler()
@@ -27,7 +27,7 @@ class StreamScheduler:
         self.FlagTaskRunning = 0
         self.CurrentVideo = None
         self.CurrentTask = None
-        self.StreamServer = "rtmp://live.twitch.tv/app"
+        self.StreamServer = StreamServer
         self.StreamKey=StreamKey
         self.StreamLink=StreamLink
         self.FileLog = FileLog
@@ -153,7 +153,6 @@ class StreamScheduler:
 
 
         if not self.__get_flag_live():
-            print("eeeeeeee")
             self.__my_obs.set_current_program_scene("LIVE")
             self.__my_obs.get_input_settings("live")
             self.__set_flag_live(1)
@@ -215,7 +214,7 @@ class StreamScheduler:
         self.__set_flag_taskrunning(1)
         self.CurrentTask = taskinfor
         if taskinfor.end_time and taskinfor.end_time != "None":
-            self.__Stop_Schedule.every().days.at(taskinfor.end_time).until(taskinfor.until).do(self.__cancel_task,taskinfor.start_date,0).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
+            self.__Stop_Schedule.every().days.at(taskinfor.end_time, timezone('Asia/Ho_Chi_Minh')).until(taskinfor.until).do(self.__cancel_task,taskinfor.start_date,0).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
 
     def __weekly_task(self,taskinfor):
         days_mapping = {
@@ -231,7 +230,7 @@ class StreamScheduler:
         print(taskinfor.days)
         for day in taskinfor.days:
             if day in days_mapping:
-                days_mapping[day.lower()].at(taskinfor.start_time).until(taskinfor.until).do(self.__task,taskinfor).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
+                days_mapping[day.lower()].at(taskinfor.start_time,timezone('Asia/Ho_Chi_Minh')).until(taskinfor.until).do(self.__task,taskinfor).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
 
     def weekly_task(self,taskinfor):
         # TO DO
@@ -268,7 +267,7 @@ class StreamScheduler:
         self.__set_flag_taskrunning(1)
         self.CurrentTask = taskinfor
         if taskinfor.end_time and taskinfor.end_time != "None":
-            self.__Stop_Schedule.every().days.at(taskinfor.end_time).until(taskinfor.until).do(self.__cancel_task,taskinfor.start_date,0).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
+            self.__Stop_Schedule.every().days.at(taskinfor.end_time,timezone('Asia/Ho_Chi_Minh')).until(taskinfor.until).do(self.__cancel_task,taskinfor.start_date,0).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
 
 
 
@@ -277,7 +276,7 @@ class StreamScheduler:
         taskinfor.ID = new_ID
         self.ListTask.append(taskinfor)
         self.saveTask(1)
-        self.__Start_Schedule.every().days.at(taskinfor.start_time).until(taskinfor.until).do(self.__daily_task, taskinfor).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
+        self.__Start_Schedule.every().days.at(taskinfor.start_time,timezone('Asia/Ho_Chi_Minh')).until(taskinfor.until).do(self.__daily_task, taskinfor).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
         print(self.__Start_Schedule.get_jobs())
 
 
@@ -306,14 +305,14 @@ class StreamScheduler:
         self.__set_flag_taskrunning(1)
         self.CurrentTask = taskinfor
         if taskinfor.end_time and taskinfor.end_time != "None":
-            self.__Stop_Schedule.every().days.at(taskinfor.end_time).do(self.__cancel_task,taskinfor.start_date,taskinfor.duration).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
+            self.__Stop_Schedule.every().days.at(taskinfor.end_time,timezone('Asia/Ho_Chi_Minh')).do(self.__cancel_task,taskinfor.start_date,taskinfor.duration).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
         return schedule.CancelJob
     
     def onetime_task(self,taskinfor):
         new_ID = self.__task_db.add_task(taskinfor)
         taskinfor.ID = new_ID
         self.ListTask.append(taskinfor)
-        self.__Start_Schedule.every().days.at(taskinfor.start_time).do(self.__onetime_task,taskinfor).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
+        self.__Start_Schedule.every().days.at(taskinfor.start_time,timezone('Asia/Ho_Chi_Minh')).do(self.__onetime_task,taskinfor).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
         print(self.__Start_Schedule.get_jobs())
         self.saveTask(1)
 

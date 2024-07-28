@@ -17,7 +17,7 @@ import copy
 from flask_cors import CORS
 import streamlink 
 import streamlink.stream
-
+import sys
 
 app = Flask(__name__)
 CORS(app)
@@ -29,8 +29,9 @@ if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 app.config['UPLOAD_FOLDER'] = FolderVideoPath
 
-my_scheduler1 = StreamScheduler(Stream=1,FileLog="log_thread1.txt",VideoPath="d:/FINAL PROJECT/SERVER/video/",Database='task_infor.db',DataTable="thread1",OBSPass="123456",OBSPort=4444,StreamKey="live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk",StreamLink = "https://www.twitch.tv/gutsssssssss9",NameStream="gutsssssssss9")
-my_scheduler2 = StreamScheduler(Stream=2,FileLog="log_thread2.txt",VideoPath="d:/FINAL PROJECT/SERVER/video/",Database='task_infor.db',DataTable="thread2",OBSPass="123456",OBSPort=5544,StreamKey="live_1071558463_6geWoWQgWadKOjby2mqDj40qeiW9fg",StreamLink = "https://www.twitch.tv/dat_live2",NameStream="dat_live2")
+my_scheduler1 = StreamScheduler(Stream=1,FileLog="log_thread1.txt",VideoPath="d:/FP_ver2/SERVER/video/",Database='task_infor.db',DataTable="thread1",OBSPass="123456",OBSPort=3344,StreamKey="live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk",StreamLink = "https://www.twitch.tv/gutsssssssss9",NameStream="gutsssssssss9")
+my_scheduler2 = StreamScheduler(Stream=2,FileLog="log_thread2.txt",VideoPath="d:/FP_ver2/SERVER/video/",Database='task_infor.db',DataTable="thread2",OBSPass="123456",OBSPort=5544,StreamKey="live_1071558463_6geWoWQgWadKOjby2mqDj40qeiW9fg",StreamLink = "https://www.twitch.tv/dat_live2",NameStream="dat_live2")
+# my_scheduler3 = StreamScheduler(Stream=2,FileLog="log_thread3.txt",VideoPath="d:/FP_ver2/SERVER/video/",Database='task_infor.db',DataTable="thread3",OBSPass="123456",OBSPort=6666,StreamKey="wyeq-3ec1-k41m-1dbk-7bd3",StreamLink = "https://www.twitch.tv/dat_live2",NameStream="dat_live2",StreamServer="rtmp://a.rtmp.youtube.com/live2")
 
 pole_manager = Pole_manager()
 
@@ -47,26 +48,27 @@ channel = {
 
 ################## begin MQTT
 
-AIO_USERNAME = "GutD"
-AIO_KEY = "aio_TNaU20Pmw9L7x41vHH4ifs3ZKSit"
-AIO_FEED_ID = ["live-stream"]
-mqtt_client = MyMQTTClient(AIO_USERNAME, AIO_KEY, AIO_FEED_ID)
+# AIO_USERNAME = "GutD"
+# AIO_KEY = "aio_TNaU20Pmw9L7x41vHH4ifs3ZKSit"
+# AIO_FEED_ID = ["live-stream"]
+# mqtt_client = MyMQTTClient(AIO_USERNAME, AIO_KEY, AIO_FEED_ID)
 
 
-def publish_livestream(ID,link):
-    mess = {
-        "ID" : ID,
-        "link" : link
-    }
-    json_mess = json.dumps(mess)
-    mqtt_client.publish_data("live_stream",json_mess)
+# def publish_livestream(ID,link):
+#     mess = {
+#         "ID" : ID,
+#         "link" : link
+#     }
+#     json_mess = json.dumps(mess)
+#     mqtt_client.publish_data("live_stream",json_mess)
 
 
 ###################################################################################
 def init():
     #start MQTT
-    mqtt_client.start()
-    publish_livestream([1,2,3],my_scheduler1.StreamLink)
+    # mqtt_client.start()
+    # publish_livestream([1,2,3],my_scheduler1.StreamLink)
+    pass
     
 def validateTimeformat(time_str):
     pattern = r'^([0-1][0-9]|2[0-3]):[0-5][0-9]$'
@@ -143,7 +145,7 @@ def Set_pole_stream_id():
         
     
     pole_manager.update_link_by_id(pole_ids=pole_id,new_link=my_scheduler.StreamLink,channel=my_scheduler.stream)
-    publish_livestream(pole_id,my_scheduler.StreamLink)
+    # publish_livestream(pole_id,my_scheduler.StreamLink)
 
     return jsonify( {'success': {'message': 'Set stream'}}), 200
 
@@ -170,7 +172,7 @@ def Set_pole_stream_area():
         
     
     pole_manager.update_link_by_area(area=area,new_link=my_scheduler.StreamLink,channel=my_scheduler.stream)
-    publish_livestream(pole_manager.get_ids_by_area(area),my_scheduler.StreamLink)
+    # publish_livestream(pole_manager.get_ids_by_area(area),my_scheduler.StreamLink)
 
     return jsonify( {'success': {'message': 'Set stream'}}), 200
 ################################################################################################
@@ -603,7 +605,7 @@ def Add_Task_onetime():
         return jsonify({'stream' : f'{my_scheduler.stream}' ,'error': 'Wrong file name'}), 400
 
     print(f"List Video: {video_list}")
-
+    
     #CHECK START DATE
     if not start_date:
         start_date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
@@ -648,11 +650,13 @@ def Add_Task_onetime():
 
     if not label:
         return jsonify({'stream' : f'{my_scheduler.stream}' ,'error': 'Empty label'}) ,400
+    
     # if is_time_valid(start_time,end_time) == False :
     #     return jsonify({'error': 'Wrong time format'}) ,400
-    
     new_task = TaskInformation(ID=None,label=label ,video_name=video_list,duration=0,start_date=start_date,until=until,start_time=start_time,end_time=end_time,typetask="onetime",days=[])
     my_scheduler.onetime_task(new_task)
+    
+
 
     # if end_time:
     #     schedule.every().days.at(end_time).do(cancel_task,start_date,0).tag(f'{new_task.ID}')
@@ -717,7 +721,7 @@ def main():
     # my_obs.get_input_settings("mySource")
     # my_obs.get_scene_item_list('scene1')
     # Running app
-    app.run(debug=False)
+    app.run(host="0.0.0.0", port=8000, debug=True)
 
 
 if __name__ == '__main__':
