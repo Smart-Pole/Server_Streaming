@@ -30,8 +30,8 @@ if not os.path.exists(UPLOAD_FOLDER):
 app.config['UPLOAD_FOLDER'] = FolderVideoPath
 
 my_scheduler1 = StreamScheduler(Stream=1,FileLog="log_thread1.txt",VideoPath="d:/FP_ver2/SERVER/video/",Database='task_infor.db',DataTable="thread1",OBSPass="123456",OBSPort=3344,StreamKey="live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk",StreamLink = "https://www.twitch.tv/gutsssssssss9",NameStream="gutsssssssss9")
-my_scheduler2 = StreamScheduler(Stream=2,FileLog="log_thread2.txt",VideoPath="d:/FP_ver2/SERVER/video/",Database='task_infor.db',DataTable="thread2",OBSPass="123456",OBSPort=5544,StreamKey="live_1071558463_6geWoWQgWadKOjby2mqDj40qeiW9fg",StreamLink = "https://www.twitch.tv/dat_live2",NameStream="dat_live2")
-# my_scheduler3 = StreamScheduler(Stream=2,FileLog="log_thread3.txt",VideoPath="d:/FP_ver2/SERVER/video/",Database='task_infor.db',DataTable="thread3",OBSPass="123456",OBSPort=6666,StreamKey="wyeq-3ec1-k41m-1dbk-7bd3",StreamLink = "https://www.twitch.tv/dat_live2",NameStream="dat_live2",StreamServer="rtmp://a.rtmp.youtube.com/live2")
+# my_scheduler2 = StreamScheduler(Stream=2,FileLog="log_thread2.txt",VideoPath="d:/FP_ver2/SERVER/video/",Database='task_infor.db',DataTable="thread2",OBSPass="123456",OBSPort=5544,StreamKey="live_1071558463_6geWoWQgWadKOjby2mqDj40qeiW9fg",StreamLink = "https://www.twitch.tv/dat_live2",NameStream="dat_live2")
+my_scheduler2 = StreamScheduler(Stream=2,FileLog="log_thread3.txt",VideoPath="d:/FP_ver2/SERVER/video/",Database='task_infor.db',DataTable="thread3",OBSPass="123456",OBSPort=5544,StreamKey="wyeq-3ec1-k41m-1dbk-7bd3",StreamLink = "https://www.twitch.tv/dat_live2",NameStream="dat_live2",StreamServer="rtmp://a.rtmp.youtube.com/live2")
 
 pole_manager = Pole_manager()
 
@@ -43,7 +43,9 @@ channel = {
            'Disney 2' : 'https://www.youtube.com/watch?v=x7I9aLJ4hKo',
            'Nat geo WILD' : 'https://www.youtube.com/watch?v=BJ3Yv572V1A',
            'ABC news' : 'https://www.youtube.com/watch?v=-mvUkiILTqI',
-           'Nasa' : 'https://www.youtube.com/watch?v=0FBiyFpV__g'}
+           'Nasa' : 'https://www.youtube.com/watch?v=0FBiyFpV__g',
+           'VTV1' : '_vtv1',
+           'VTV2' : '_vtv2'}
 
 
 ################## begin MQTT
@@ -286,6 +288,10 @@ def Live_Steam_TV():
     tv_channel  = request.args.get('tvchannel')
     channel_url = channel.get(tv_channel)
     if channel_url:
+        if tv_channel == "VTV1" or tv_channel == "VTV2":
+            my_scheduler.live_window_cature(tv_channel)
+            return jsonify({'stream' : f'{my_scheduler.stream}' ,'success': {'message': 'Live stream'}}), 200
+        
         streams = streamlink.streams(channel_url)
 
         best_stream_url = streams.get("720p").url
@@ -320,7 +326,6 @@ def Live_Steam():
     else:
         return jsonify({'error': 'Wrong stream'}), 400
 
-    # list = request.args.get('list')
     link  = request.args.get('link')
     if not link:
         return jsonify({'stream' : f'{my_scheduler.stream}' ,'error':'List empty'}), 400
@@ -721,7 +726,7 @@ def main():
     # my_obs.get_input_settings("mySource")
     # my_obs.get_scene_item_list('scene1')
     # Running app
-    app.run(host="0.0.0.0", port=8000, debug=True)
+    app.run(host="0.0.0.0", port=8000, debug=False)
 
 
 if __name__ == '__main__':

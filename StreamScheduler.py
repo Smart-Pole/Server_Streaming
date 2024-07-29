@@ -33,6 +33,7 @@ class StreamScheduler:
         self.FileLog = FileLog
         self.VideoPath = VideoPath
         self.NameStream = NameStream
+        self.__ListWindowCapture = ["VTV1","VTV2"]
         self.ListTask = self.__task_db.get_all_tasks()
         self.__my_obs.set_current_program_scene("SCHEDULE")
         if not self.__my_obs.check_stream_is_active():
@@ -157,6 +158,14 @@ class StreamScheduler:
             self.__my_obs.get_input_settings("live")
             self.__set_flag_live(1)
         print('LIVE')
+
+    def live_window_cature(self,link = 0):
+        if link not in self.__ListWindowCapture:
+            return -1
+        
+        self.__my_obs.set_current_program_scene(link)
+        self.__set_flag_live(1)
+        print(f'LIVE :{link}')
 
     def stop_live(self,link = 0):
         self.__set_flag_live(0)
