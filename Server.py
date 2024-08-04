@@ -29,9 +29,9 @@ if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 app.config['UPLOAD_FOLDER'] = FolderVideoPath
 
-my_scheduler1 = StreamScheduler(Stream=1,FileLog="log_thread1.txt",VideoPath="d:/FP_ver2/SERVER/video/",Database='task_infor.db',DataTable="thread1",OBSPass="123456",OBSPort=3344,StreamKey="live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk",StreamLink = "https://www.twitch.tv/gutsssssssss9",NameStream="gutsssssssss9")
-# my_scheduler2 = StreamScheduler(Stream=2,FileLog="log_thread2.txt",VideoPath="d:/FP_ver2/SERVER/video/",Database='task_infor.db',DataTable="thread2",OBSPass="123456",OBSPort=5544,StreamKey="live_1071558463_6geWoWQgWadKOjby2mqDj40qeiW9fg",StreamLink = "https://www.twitch.tv/dat_live2",NameStream="dat_live2")
-my_scheduler2 = StreamScheduler(Stream=2,FileLog="log_thread3.txt",VideoPath="d:/FP_ver2/SERVER/video/",Database='task_infor.db',DataTable="thread3",OBSPass="123456",OBSPort=5544,StreamKey="wyeq-3ec1-k41m-1dbk-7bd3",StreamLink = "https://www.twitch.tv/dat_live2",NameStream="dat_live2",StreamServer="rtmp://a.rtmp.youtube.com/live2")
+my_scheduler1 = StreamScheduler(Stream=1,FileLog="log_thread1.txt",VideoPath="d:/FP_ver2/SERVER/video/",Database='task_infor.db',DataTable="thread1",OBSPass="123456",OBSPort=3344,StreamKey="live_1044211682_Ol34MomAqRm3Ef7s0jwrKq0KNGj3Ku",StreamLink = "https://www.twitch.tv/huynhnguyenhieunhan",NameStream="huynhnguyenhieunhan")
+my_scheduler2 = StreamScheduler(Stream=2,FileLog="log_thread2.txt",VideoPath="d:/FP_ver2/SERVER/video/",Database='task_infor.db',DataTable="thread2",OBSPass="123456",OBSPort=5544,StreamKey="live_1071557915_S0GK8ydVBO5EfOREfzEmAtJNbL09fL",StreamLink = "https://www.twitch.tv/dat_live1",NameStream="dat_live1")
+# my_scheduler2 = StreamScheduler(Stream=2,FileLog="log_thread3.txt",VideoPath="d:/FP_ver2/SERVER/video/",Database='task_infor.db',DataTable="thread3",OBSPass="123456",OBSPort=5544,StreamKey="wyeq-3ec1-k41m-1dbk-7bd3",StreamLink = "https://www.twitch.tv/dat_live2",NameStream="dat_live2",StreamServer="rtmp://a.rtmp.youtube.com/live2")
 
 pole_manager = Pole_manager()
 
@@ -313,7 +313,33 @@ def Live_Steam_TV():
     else:
         return jsonify({'error':  'Wrong TV channel'}), 400
 
+@app.route('/live/video')
+def Live_Video():
+    # CHOOSE THE STREAM CHANEL
+    stream  = request.args.get('stream')
+    if not stream or stream == "1":
+        my_scheduler =  my_scheduler1
+    elif stream == "2":
+        my_scheduler = my_scheduler2
+    else:
+        return jsonify({'error': 'Wrong stream'}), 400
 
+    list  = request.args.get('list')
+    # CHECK LIST
+    if not list:
+        return jsonify({'stream' : f'{my_scheduler.stream}' ,'error':  'List empty'}), 400
+    
+    video_list = list.split(',')
+
+    if not check_video_list(video_list):
+        return jsonify({'stream' : f'{my_scheduler.stream}' ,'error':  'Wrong file name'}), 400
+    print(f"List Video: {video_list}")
+
+    my_scheduler.live(videolist=video_list)
+
+    # my_scheduler.live(link=link)
+    
+    return jsonify({'stream' : f'{my_scheduler.stream}' ,'success': {'message': 'Live stream'}}), 200
 
 @app.route('/live')
 def Live_Steam():
