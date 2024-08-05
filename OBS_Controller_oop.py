@@ -48,6 +48,10 @@ class OBS_controller:
         
         # resgiter event want to listen
         self.event_client.callback.register(self.on_stream_state_changed)
+        self.event_client.callback.register(self.on_scene_item_transform_changed)
+        
+        # self.event_client.callback.register(self.on_media_input_action_triggered)
+        # self.event_client.callback.register(self.on_scene_transition_video_ended)
         print(self.event_client.callback.get())
         
         
@@ -91,7 +95,16 @@ class OBS_controller:
             
             
         # if data.output_state ==
+    def on_scene_item_transform_changed(self, data):
+        print("on trasnform")
         
+    def  on_media_input_action_triggered(self,data):
+        print("on media action")
+        print(data.attrs())
+        
+    def on_scene_transition_video_ended(self,data):
+        print("on media action")
+        print(data.attrs())
         
         
         
@@ -476,7 +489,7 @@ class OBS_controller:
         
         
     def set_size_of_source(self, scene_name, source_name, width, height):
-        original_width, original_height = self.get_original_source_size(scene_name, source_name)
+        # original_width, original_height = self.get_original_source_size(scene_name, source_name)
         transform = {
             # "sourceHeight": 720.0,
             # "sourceWidth": 1080.0,
@@ -488,13 +501,13 @@ class OBS_controller:
             
             # "width": 1080,
             # "height": 720,
-            "scaleX": width/original_width,
-            "scaleY": height/original_height,
+            # "scaleX": width/original_width,
+            # "scaleY": height/original_height,
             
-            # "boundsAlignment": 5,
-            "boundsType": "OBS_BOUNDS_NONE",
-            # "boundsWidth": 1280.0,
-            # "boundsHeight": 720.0,
+            "boundsType": "OBS_BOUNDS_STRETCH",
+            "boundsAlignment": 5,
+            "boundsWidth": width,
+            "boundsHeight": height,
             
             "cropToBounds": False,
             "cropLeft": 0,
@@ -580,11 +593,17 @@ def test_on_stream_state_changed():
 def test_transfrom():
     my_obs1 = OBS_controller(port=4455,password="123456")
     # my_obs1.get_input_settings("myscreen")
-    
+    width = 1920
+    height = 1080
     my_obs1.set_size_of_source("LIVE","myscreen",1920,1080)
-    my_obs1.get_scene_item_transform("LIVE","myscreen")
+    # my_obs1.get_scene_item_transform("LIVE","myscreen")
     while True:
         try: 
+            # my_obs1.get_scene_item_transform("LIVE","myscreen")
+            # width = width - 100
+            # height = height - 100
+            # my_obs1.set_size_of_source("LIVE","myscreen",width, height)
+            
             time.sleep(1)
         except KeyboardInterrupt:
             if my_obs1.check_stream_is_active() :
