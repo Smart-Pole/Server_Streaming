@@ -421,7 +421,7 @@ class OBS_controller:
         Return:
             Object: 
                 - attr:
-                    + scene_item_transform(Object) Object containing scene item transform info: 
+                    + scene_item_transform(Object) Object containing scene item transform info: see detail in set_scene_item_transform at the args description
                     
 
         """
@@ -432,19 +432,21 @@ class OBS_controller:
     
     def set_scene_item_transform(self,scene_name, source_name,transform):
         """ Sets the transform and crop info of a scene item.
-
+        Note:
+            just change anything but except: sourceHeight,sourceWidth, height, width because there is read only, I add here for the explain the get_scene_item_transform
         Args:
             scene_name (String): name of scene contain item
             source_name (String): name of source of this item
             transform (object): {
+                
+                "sourceHeight" (READ_ONLY): original height of source
+                "sourceWidth" (READ_ONLY): original width of source
+                "width" (READ_ONLY): actial width of video when resize (by bouding, resizw or crop)
+                "height (READ_ONLY)": actial height of video when resize ((by bouding, resizw or crop))
+                
                 "alignment": center(0),centeleft(1), centerright(2), topcenter(4), topleft(5), topright(6),bottomcenter(8) ,bottomleft(9), bottomright(10)
                 "positionX","positionY":  x, y of source (top left point of rectangle)
                 "rotation": ration in dergee of source (ex:90, -90, 45, ...)
-                "sourceHeight": original height of source
-                "sourceWidth": original width of source
-                
-                "width": actial width of video when resize (by bouding, resizw or crop)
-                "height": actial height of video when resize ((by bouding, resizw or crop))
                 
                 "scaleX": ratio = original width/sourceWidth,
                 "scaleY": ratio = original height/sourceheight,
@@ -458,7 +460,7 @@ class OBS_controller:
                     "OBS_BOUNDS_SCALE_TO_HEIGHT",
                     "OBS_BOUNDS_MAX_ONLY"
                     
-                "boundsAlignment": center(0),centeleft(1), centerright(2), topcenter(4), topleft(5), topright(6),bottomcenter(8) ,bottomleft(9), bottomright(10)
+                "boundsAlignment": center(0), centeleft(1), centerright(2), topcenter(4), topleft(5), topright(6),bottomcenter(8) ,bottomleft(9), bottomright(10)
                 "boundsHeight": height of bounding box,
                 "boundsWidth": weidth of bounding box,
                 
