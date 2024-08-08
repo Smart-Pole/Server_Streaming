@@ -48,7 +48,8 @@ class OBS_controller:
         
         # resgiter event want to listen
         self.event_client.callback.register(self.on_stream_state_changed)
-        self.event_client.callback.register(self.on_scene_item_transform_changed)
+        # self.event_client.callback.register(self.on_scene_item_transform_changed)
+        self.event_client.callback.register(self.on_media_input_playback_ended)
         
         # self.event_client.callback.register(self.on_media_input_action_triggered)
         # self.event_client.callback.register(self.on_scene_transition_video_ended)
@@ -104,6 +105,10 @@ class OBS_controller:
         
     def on_scene_transition_video_ended(self,data):
         print("on media action")
+        print(data.attrs())
+        
+    def on_media_input_playback_ended(self,data):
+        print("[media input playbackend]")
         print(data.attrs())
         
         
