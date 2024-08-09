@@ -51,7 +51,7 @@ class OBS_controller:
         # self.event_client.callback.register(self.on_scene_item_transform_changed)
         self.event_client.callback.register(self.on_media_input_playback_ended)
         
-        # self.event_client.callback.register(self.on_media_input_action_triggered)
+        self.event_client.callback.register(self.on_media_input_action_triggered)
         # self.event_client.callback.register(self.on_scene_transition_video_ended)
         print(self.event_client.callback.get())
         
@@ -525,7 +525,45 @@ class OBS_controller:
         self.set_scene_item_transform(scene_name, source_name,transform)
         
         
+    def get_media_input_status(self, source_name):
+        """ Get status of an media 
+            "OBS_MEDIA_STATE_NONE",
+            "OBS_MEDIA_STATE_PLAING",
+            "OBS_MEDIA_STATE_OPENIN",
+            "OBS_MEDIA_STATE_BUFFERNG",
+            "OBS_MEDIA_STATE_PAUSED"
+            "OBS_MEDIA_STATE_STOPPD",
+            "OBS_MEDIA_STATE_ENDED",
+            "OBS_MEDIA_STATE_ERROR"
+        Args
+            source_name (String): name of media source
+        return:
+            the reponse is an object with:
+            -attr:
+                + media_state (String): State of the media input
+                + media_duration (Int): Total duration of the playing media in milliseconds. null if not playing
+                + media_cursor (Int): Position of the cursor in milliseconds. null if not playing
+        """
+        response = self.request_client.get_media_input_status(source_name)
         
+        return response.media_state
+    
+    def trigger_media_input_action(self,source_name, action):
+        """ Trigger an action on media input
+
+        Args:
+            source_name (String): Name of the media input
+            action (String): Identifier of the ObsMediaInputAction enum
+                + OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NONE
+                + OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY
+                + OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE
+                + OBS_WEBSOCKET_MEDIA_INPUT_ACTION_STOP
+                + OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART
+                + OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NEXT
+                + OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS
+                
+        """
+        self.request_client.trigger_media_input_action(source_name, action)
         
 
 def main():
@@ -610,6 +648,7 @@ def test_transfrom():
             # width = width - 100
             # height = height - 100
             # my_obs1.set_size_of_source("LIVE","myscreen",width, height)
+            my_obs1.get_media_input_status("myscreen")
             
             time.sleep(1)
         except KeyboardInterrupt:
