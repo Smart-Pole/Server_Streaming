@@ -529,10 +529,10 @@ class OBS_controller:
         """ Get status of an media 
             "OBS_MEDIA_STATE_NONE",
             "OBS_MEDIA_STATE_PLAING",
-            "OBS_MEDIA_STATE_OPENIN",
+            "OBS_MEDIA_STATE_OPENING",
             "OBS_MEDIA_STATE_BUFFERNG",
             "OBS_MEDIA_STATE_PAUSED"
-            "OBS_MEDIA_STATE_STOPPD",
+            "OBS_MEDIA_STATE_STOPPED",
             "OBS_MEDIA_STATE_ENDED",
             "OBS_MEDIA_STATE_ERROR"
         Args
@@ -565,7 +565,34 @@ class OBS_controller:
         """
         self.request_client.trigger_media_input_action(source_name, action)
         
+    def get_source_active(self,source_name):
+        """ Gets the active and show state of a source.
 
+        Args:
+            source_name (String): name of source
+
+        Returns:
+            Object: 
+            - attrs:
+                + video_active (Boolean):	Whether the source is showing in Program
+                + video_showing (Boolean): Whether the source is showing in the UI (Preview, Projector, Properties)
+        """
+        response = self.request_client.get_source_active(source_name)
+        # self.printJsonObject(response)
+        return response.video_active
+    
+    def get_output_list(self):
+        """Gets the list of available outputs.
+
+        Returns:
+            Array<Object>:	Array of outputs
+        """
+        response = self.request_client.get_output_list()
+        
+        self.printJsonObjectList(response.outputs)
+        return response
+        
+    
 def main():
     # stream_key = "live_1044211682_Ol34MomAqRm3Ef7s0jwrKq0KNGj3Ku"
     # server = "rtmp://live.twitch.tv/app"
@@ -642,18 +669,20 @@ def test_transfrom():
     height = 1080
     my_obs1.set_size_of_source("LIVE","myscreen",1920,1080)
     # my_obs1.get_scene_item_transform("LIVE","myscreen")
+    my_obs1.get_output_list()
     while True:
         try: 
             # my_obs1.get_scene_item_transform("LIVE","myscreen")
             # width = width - 100
             # height = height - 100
             # my_obs1.set_size_of_source("LIVE","myscreen",width, height)
-            my_obs1.get_media_input_status("myscreen")
+            print(my_obs1.get_media_input_status("myscreen"))
             
-            time.sleep(1)
+            
+            time.sleep(10)
         except KeyboardInterrupt:
-            if my_obs1.check_stream_is_active() :
-                my_obs1.stop_stream()
+            # if my_obs1.check_stream_is_active() :
+            #     my_obs1.stop_stream()
             break
     
 if __name__ == "__main__":
