@@ -108,7 +108,7 @@ class OBS_controller:
         print(data.attrs())
         
     def on_media_input_playback_ended(self,data):
-        print("[media input playbackend]")
+        print("[media input playback end]")
         print(data.attrs())
         
         

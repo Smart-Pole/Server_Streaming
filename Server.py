@@ -29,12 +29,13 @@ if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 app.config['UPLOAD_FOLDER'] = FolderVideoPath
 
-my_scheduler1 = StreamScheduler(Stream=1,FileLog="log_thread1.txt",VideoPath="d:/FP_ver2/SERVER/video/",Database='task_infor.db',DataTable="thread1",OBSPass="123456",OBSPort=3344,StreamKey="live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk",StreamLink = "https://www.twitch.tv/gutsssssssss9",NameStream="gutsssssssss9")
-# my_scheduler2 = StreamScheduler(Stream=2,FileLog="log_thread2.txt",VideoPath="d:/FP_ver2/SERVER/video/",Database='task_infor.db',DataTable="thread2",OBSPass="123456",OBSPort=5544,StreamKey="live_1071558463_6geWoWQgWadKOjby2mqDj40qeiW9fg",StreamLink = "https://www.twitch.tv/dat_live2",NameStream="dat_live2")
-my_scheduler2 = StreamScheduler(Stream=2,FileLog="log_thread3.txt",VideoPath="d:/FP_ver2/SERVER/video/",Database='task_infor.db',DataTable="thread3",OBSPass="123456",OBSPort=5544,StreamKey="wyeq-3ec1-k41m-1dbk-7bd3",StreamLink = "https://www.twitch.tv/dat_live2",NameStream="dat_live2",StreamServer="rtmp://a.rtmp.youtube.com/live2")
+my_schedulers = [
+    StreamScheduler(Stream=1, FileLog="log_thread1.txt", VideoPath="d:/FP_ver2/SERVER/video/", Database='task_infor.db', DataTable="thread1", OBSPass="123456", OBSPort=1122, StreamKey="live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk", StreamLink="https://www.twitch.tv/gutsssssssss9", NameStream="gutsssssssss9"),
+    StreamScheduler(Stream=2, FileLog="log_thread2.txt", VideoPath="d:/FP_ver2/SERVER/video/", Database='task_infor.db', DataTable="thread2", OBSPass="123456", OBSPort=9632, StreamKey="live_1071558463_6geWoWQgWadKOjby2mqDj40qeiW9fg", StreamLink="https://www.twitch.tv/dat_live2", NameStream="dat_live2"),
+    StreamScheduler(Stream=3, FileLog="log_thread3.txt", VideoPath="d:/FP_ver2/SERVER/video/", Database='task_infor.db', DataTable="thread3", OBSPass="123456", OBSPort=6688, StreamKey="live_1071557915_S0GK8ydVBO5EfOREfzEmAtJNbL09fL", StreamLink="https://www.twitch.tv/dat_live1", NameStream="dat_live1")
+]
 
 pole_manager = Pole_manager()
-
 
 channel = {
            'Cartoon 1' : 'https://www.youtube.com/watch?v=Fjp2TdlTTIU',
@@ -44,6 +45,7 @@ channel = {
            'Nat geo WILD' : 'https://www.youtube.com/watch?v=BJ3Yv572V1A',
            'ABC news' : 'https://www.youtube.com/watch?v=-mvUkiILTqI',
            'Nasa' : 'https://www.youtube.com/watch?v=0FBiyFpV__g',
+           'THVL1' : 'https://www.thvli.vn/live/thvl1-hd',
            'VTV1' : '_vtv1',
            'VTV2' : '_vtv2'}
 
@@ -133,11 +135,11 @@ def Set_pole_stream_id():
     my_pole_id = {pole.ID for pole in pole_manager.pole_infor}
     print(my_pole_id)
 
-    if stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
         return jsonify({'error':  'Wrong stream'}), 400
     
     for ID in pole_id:
@@ -160,12 +162,12 @@ def Set_pole_stream_area():
     print(area)
     my_area = {pole.area for pole in pole_manager.pole_infor}
 
-    if stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
-        return jsonify({'error': 'Wrong stream'}), 400
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
+        return jsonify({'error':  'Wrong stream'}), 400
     
 
     if not (area in my_area):
@@ -188,12 +190,12 @@ def Get_files_in_folder():
 def Get_NameStream():
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream or stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
-        return jsonify({'error': 'Wrong stream'}), 400
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
+        return jsonify({'error':  'Wrong stream'}), 400
     
     return jsonify({'stream' : f'{my_scheduler.stream}' ,'name twitch': f'{my_scheduler.NameStream}'}), 200
 
@@ -201,12 +203,12 @@ def Get_NameStream():
 def Get_Current_Task():
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream or stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
-        return jsonify({'error': 'Wrong stream'}), 400
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
+        return jsonify({'error':  'Wrong stream'}), 400
 
 
     if not my_scheduler.CurrentTask:
@@ -230,12 +232,12 @@ def Get_Current_Task():
 def Get_schedule():
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream or stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
-        return jsonify({'error': 'Wrong stream'}), 400
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
+        return jsonify({'error':  'Wrong stream'}), 400
     # Convert datetime objects to strings
     mylist = copy.deepcopy(my_scheduler.ListTask)
     for task in mylist:
@@ -254,12 +256,12 @@ def Get_schedule():
 def Get_streamkey():
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream or stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
-        return jsonify({'error': 'Wrong stream'}), 400
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
+        return jsonify({'error':  'Wrong stream'}), 400
     stream_key = my_scheduler.get_stream_key()
     print(stream_key)
     return jsonify({'stream' : f'{my_scheduler.stream}' ,'Stream key': stream_key}), 200
@@ -277,12 +279,12 @@ def get_TVchannel():
 def Live_Steam_TV():
         # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream or stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
-        return jsonify({'error': 'Wrong stream'}), 400
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
+        return jsonify({'error':  'Wrong stream'}), 400
 
     # list = request.args.get('list')
     tv_channel  = request.args.get('tvchannel')
@@ -319,12 +321,12 @@ def Live_Steam_TV():
 def Live_Steam():
         # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream or stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
-        return jsonify({'error': 'Wrong stream'}), 400
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
+        return jsonify({'error':  'Wrong stream'}), 400
 
     link  = request.args.get('link')
     if not link:
@@ -356,11 +358,11 @@ def Live_Steam():
 def Stop_Live_Steam():
         # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream or stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
         return jsonify({'error':  'Wrong stream'}), 400
 
         
@@ -381,12 +383,12 @@ def Add_Task_Everyweeks():
     deadline = None
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream or stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
-        return jsonify({'error': 'Wrong stream'}), 400
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
+        return jsonify({'error':  'Wrong stream'}), 400
         
     #CHECK DURATION
     print(duration)
@@ -494,12 +496,12 @@ def Add_Task_Everydays():
 
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream or stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
-        return jsonify({'error':'Wrong stream'}), 400
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
+        return jsonify({'error':  'Wrong stream'}), 400
         
     # CHECK DURATION 
     if not duration:
@@ -594,12 +596,12 @@ def Add_Task_onetime():
 
     # Cheking parameter
     stream  = request.args.get('stream')
-    if not stream or stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
-        return jsonify({'error': 'Wrong stream'}), 400
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
+        return jsonify({'error':  'Wrong stream'}), 400
         
     #CHECK LIST
     if not list:
@@ -673,11 +675,11 @@ def Add_Task_onetime():
 def Delete_Task():
         # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream or stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
         return jsonify({'error':  'Wrong stream'}), 400
         
     id = request.args.get('id')
@@ -720,8 +722,8 @@ def serve_video(filename):
 def main():
     
     init()
-    my_scheduler1.run()
-    my_scheduler2.run()
+    for scheduler in my_schedulers:
+        scheduler.run()
     # my_obs.get_input_list()
     # my_obs.get_input_settings("mySource")
     # my_obs.get_scene_item_list('scene1')
