@@ -2,6 +2,8 @@ import obsws_python as obs
 import json
 import time
 from datetime import datetime
+import streamlink
+import requests
 # rtmp://live.twitch.tv/app server live of twitch
 
 
@@ -14,7 +16,7 @@ class OBS_controller:
         for object in object_list:
             self.printJsonObject(object)
             
-    def __init__(self, host='localhost', port=4455, password='123456') -> None:
+    def __init__(self, streamlink, id , host='localhost', port=4455, password='123456' ) -> None:
         # flag = False
         # # Đọc file config.txt
         # with open('config.txt', 'r') as file:
@@ -29,9 +31,12 @@ class OBS_controller:
         #             break
         # if not flag:
         #     self.port = port
+        self.id = id
+        self.streamlink = streamlink
         self.port = port
         self.host = host
         self.password = password
+        self.url = "http://stream.lpnserver.net/report"
         
         # event and request client for obs websocket
         self.request_client = obs.ReqClient(host = self.host,port = self.port,password = self.password)
@@ -63,8 +68,37 @@ class OBS_controller:
            
            
     def call_on_reconnected(self):
-        if self.on_reconnected != None:
-            self.on_reconnected()
+        # if self.on_reconnected != None:
+        #     self.on_reconnected()
+
+        link_url = None
+
+        while not link_url:
+            try:
+                print("Try to get link m3u8 when reconnected")
+                link =   streamlink.streams(self.streamlink)
+                link_url = link.get("best").url
+            except:
+                pass
+            time.sleep(0.5)
+
+        data = {
+            "user": "admin",
+            "pass": "admin",
+            "cs":"0123456789",
+            "id":self.id,
+            "link":link_url
+        }
+        response = requests.post(self.url, data=data)
+        timeout = 0
+        while timeout < 5 and response.status_code != 200:
+            print(f"Send url fail, try again {timeout}:", response.status_code)
+            response = requests.post(self.url, data=data)
+            timeout = timeout + 1
+
+        print(f"RES: {response.status_code}")
+            
+            
             
     # MQTT handler setter
     def set_mqtt_handler(self,mqtt_handler):

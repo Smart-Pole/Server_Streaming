@@ -30,9 +30,9 @@ if not os.path.exists(UPLOAD_FOLDER):
 app.config['UPLOAD_FOLDER'] = FolderVideoPath
 
 my_schedulers = [
-    StreamScheduler(Stream=1, FileLog="log_thread1.txt", VideoPath="d:/FP_ver2/SERVER/video/", Database='task_infor.db', DataTable="thread1", OBSPass="123456", OBSPort=1122, StreamKey="live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk", StreamLink="https://www.twitch.tv/gutsssssssss9", NameStream="gutsssssssss9"),
-    StreamScheduler(Stream=2, FileLog="log_thread2.txt", VideoPath="d:/FP_ver2/SERVER/video/", Database='task_infor.db', DataTable="thread2", OBSPass="123456", OBSPort=9632, StreamKey="live_1071558463_6geWoWQgWadKOjby2mqDj40qeiW9fg", StreamLink="https://www.twitch.tv/dat_live2", NameStream="dat_live2"),
-    StreamScheduler(Stream=3, FileLog="log_thread3.txt", VideoPath="d:/FP_ver2/SERVER/video/", Database='task_infor.db', DataTable="thread3", OBSPass="123456", OBSPort=6688, StreamKey="live_1071557915_S0GK8ydVBO5EfOREfzEmAtJNbL09fL", StreamLink="https://www.twitch.tv/dat_live1", NameStream="dat_live1")
+    StreamScheduler(Stream=1, FileLog="log_thread1.txt", VideoPath="d:/FP_ver2/SERVER/video/", Database='task_infor.db', DataTable="thread1", OBSPass="123456", OBSPort=1122,OBSId="vtv2", StreamKey="live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk", StreamLink="https://www.twitch.tv/gutsssssssss9", NameStream="gutsssssssss9"),
+    StreamScheduler(Stream=2, FileLog="log_thread2.txt", VideoPath="d:/FP_ver2/SERVER/video/", Database='task_infor.db', DataTable="thread2", OBSPass="123456", OBSPort=9632,OBSId="vtv1", StreamKey="live_1071558463_6geWoWQgWadKOjby2mqDj40qeiW9fg", StreamLink="https://www.twitch.tv/dat_live2", NameStream="dat_live2"),
+    StreamScheduler(Stream=3, FileLog="log_thread3.txt", VideoPath="d:/FP_ver2/SERVER/video/", Database='task_infor.db', DataTable="thread3", OBSPass="123456", OBSPort=6688,OBSId="film", StreamKey="live_1071557915_S0GK8ydVBO5EfOREfzEmAtJNbL09fL", StreamLink="https://www.twitch.tv/dat_live1", NameStream="dat_live1")
 ]
 
 pole_manager = Pole_manager()

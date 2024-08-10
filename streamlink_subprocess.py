@@ -8,12 +8,12 @@ from OBS_Controller_oop import OBS_controller
 import time
 
 process = None
-browser_path = "C:\Program Files\Google\Chrome\Application\chrome.exe"
+browser_path = "C:/Program Files/Google/Chrome/Application/chrome.exe"
 url =  "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv1-1.html"
 port = "9091"
 sceen_name = "LIVE"
 source_name = "myscreen"
-obs_monitor = OBS_controller("10.128.106.80",4455,"123456")
+obs_monitor = OBS_controller("localhost",4455,"123456")
 
 def host_stream(url,port):
     global process, obs_monitor, sceen_name, source_name

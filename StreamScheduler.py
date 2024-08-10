@@ -12,8 +12,8 @@ import os
 import time
 
 class StreamScheduler:
-    def __init__(self,Stream,FileLog,VideoPath,StreamKey,StreamLink,OBSPort,OBSPass,Database,DataTable,NameStream,StreamServer = "rtmp://live.twitch.tv/app"):
-        self.__my_obs = OBS_controller(host = "10.128.89.78",port=OBSPort,password=OBSPass)
+    def __init__(self,Stream,FileLog,VideoPath,StreamKey,StreamLink,OBSPort,OBSPass,OBSId,Database,DataTable,NameStream,StreamServer = "rtmp://live.twitch.tv/app"):
+        self.__my_obs = OBS_controller(id=OBSId,streamlink=StreamLink,port=OBSPort,password=OBSPass)
         self.__Start_Schedule = schedule.Scheduler()
         self.__Stop_Schedule = schedule.Scheduler()
         self.__mutex = threading.Lock()
