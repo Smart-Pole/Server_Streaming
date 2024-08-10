@@ -319,12 +319,12 @@ def Live_Steam_TV():
 def Live_Video():
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream or stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
-        return jsonify({'error': 'Wrong stream'}), 400
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
+        return jsonify({'error':  'Wrong stream'}), 400
 
     list  = request.args.get('list')
     # CHECK LIST
