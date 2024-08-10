@@ -10,7 +10,7 @@ import time
 process = None
 browser_path = "C:\Program Files\Google\Chrome\Application\chrome.exe"
 url =  "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv1-1.html"
-port_ws = "9091"
+port = "9091"
 sceen_name = "LIVE"
 source_name = "myscreen"
 obs_monitor = OBS_controller("10.128.106.80",4455,"123456")
@@ -24,8 +24,8 @@ def host_stream(url,port):
     print(aws_waf_token_cookie)
     cmd = [
         "streamlink",
-        # "--webbrowser-executable", browser_path
-        # "--http-cookie", f"aws-waf-token={aws_waf_token_cookie}"
+        "--webbrowser-executable", browser_path,
+        "--http-cookie", f"aws-waf-token={aws_waf_token_cookie}",
         "--player-external-http",
         "--player-external-http-port", port,
         url, 
@@ -87,7 +87,7 @@ if __name__ == "__main__":
     
     # host_stream(url, port)
     # t1.start()
-    host_stream(url,port_ws)
+    host_stream(url,port)
     # time.sleep(10)
     print("start monitor source")
     t2.start()
