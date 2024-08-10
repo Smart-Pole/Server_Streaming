@@ -473,7 +473,7 @@ def Add_Task_Everyweeks():
     if end_time:
         if validateTimeformat(start_time) == False:
              return jsonify({'stream' : f'{my_scheduler.stream}' ,'error': 'Wrong time format'}) ,400
-        print(end_time)
+        print(end_time) 
     else:
         return jsonify({'stream' : f'{my_scheduler.stream}' ,'error': 'Empty end time'}) ,400
     
