@@ -528,7 +528,7 @@ class OBS_controller:
     def get_media_input_status(self, source_name):
         """ Get status of an media 
             "OBS_MEDIA_STATE_NONE",
-            "OBS_MEDIA_STATE_PLAING",
+            "OBS_MEDIA_STATE_PLAYING",
             "OBS_MEDIA_STATE_OPENING",
             "OBS_MEDIA_STATE_BUFFERNG",
             "OBS_MEDIA_STATE_PAUSED"
@@ -669,7 +669,7 @@ def test_transfrom():
     height = 1080
     my_obs1.set_size_of_source("LIVE","myscreen",1920,1080)
     # my_obs1.get_scene_item_transform("LIVE","myscreen")
-    my_obs1.get_output_list()
+    
     while True:
         try: 
             # my_obs1.get_scene_item_transform("LIVE","myscreen")
@@ -677,9 +677,10 @@ def test_transfrom():
             # height = height - 100
             # my_obs1.set_size_of_source("LIVE","myscreen",width, height)
             print(my_obs1.get_media_input_status("myscreen"))
+            my_obs1.get_stream_status()
             
             
-            time.sleep(10)
+            time.sleep(0.25)
         except KeyboardInterrupt:
             # if my_obs1.check_stream_is_active() :
             #     my_obs1.stop_stream()
