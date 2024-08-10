@@ -167,7 +167,7 @@ class OBS_controller:
         Returns: None
         """
         # print("33333333")
-        print(settings)
+        # print(settings)
         return self.request_client.set_input_settings(name, settings, overlay)   
     
     def get_scene_item_list(self,name):
@@ -591,6 +591,50 @@ class OBS_controller:
         
         self.printJsonObjectList(response.outputs)
         return response
+    
+    def get_scene_item_enabled(self,scene_name,source_name):
+        """get the enable state of a scene item.
+
+        Args:
+            scene_name (String): Name of the scene the item is in
+            source_name (Strign): Name of the item source 
+
+        Returns:
+            bool: Whether the scene item is enabled. true for enabled, false for disabled
+        """
+        
+        item_id = self.get_scene_item_id(scene_name,source_name)
+        respone = self.request_client.get_scene_item_enabled(scene_name,item_id)
+        # print(respone.scene_item_enabled)
+        return respone.scene_item_enabled
+        
+    def set_scene_item_enabled(self,scene_name,source_name,is_enable):
+        """ set the enable state of a scene item.
+
+        Args:
+            scene_name (String): Name of the scene the item is in
+            source_name (Strign): Name of the item source 
+            is_enable (bool): the state of item
+        """
+        item_id = self.get_scene_item_id(scene_name,source_name)
+        self.request_client.set_scene_item_enabled(scene_name,item_id, is_enable)
+        
+    def toggle_scene_item_enabled(self,scene_name,source_name):
+        """ toggle the enable state of a scene item.
+
+        Args:
+            scene_name (String): Name of the scene the item is in
+            source_name (Strign): Name of the item source 
+        """
+        current = self.get_scene_item_enabled(scene_name,source_name)
+        self.set_scene_item_enabled(scene_name,source_name,not current)
+        # print(not current)
+        time.sleep(1)
+        # print(current)
+        self.set_scene_item_enabled(scene_name,source_name,current)
+        time.sleep(1)
+        
+        
         
     
 def main():
@@ -663,24 +707,27 @@ def test_on_stream_state_changed():
         
         
 def test_transfrom():
-    my_obs1 = OBS_controller(port=4455,password="123456")
+    my_obs1 = OBS_controller(host="10.128.106.80",port=4455,password="123456")
     # my_obs1.get_input_settings("myscreen")
     width = 1920
     height = 1080
     my_obs1.set_size_of_source("LIVE","myscreen",1920,1080)
     # my_obs1.get_scene_item_transform("LIVE","myscreen")
-    
+    my_obs1.set_scene_item_enabled("LIVE","myscreen", True)
     while True:
         try: 
             # my_obs1.get_scene_item_transform("LIVE","myscreen")
             # width = width - 100
             # height = height - 100
             # my_obs1.set_size_of_source("LIVE","myscreen",width, height)
-            print(my_obs1.get_media_input_status("myscreen"))
-            my_obs1.get_stream_status()
+            # print(my_obs1.get_media_input_status("myscreen"))
+            # print(my_obs1.get_scene_item_enabled("LIVE","myscreen"))
+            print("toogle")
+            my_obs1.toggle_scene_item_enabled("LIVE","myscreen")
+            # my_obs1.get_stream_status()
             
             
-            time.sleep(0.25)
+            time.sleep(10)
         except KeyboardInterrupt:
             # if my_obs1.check_stream_is_active() :
             #     my_obs1.stop_stream()

@@ -5,10 +5,11 @@ import time
 # Initializing driver 
 def get_cookie(url, name):
     # headless flag must be fail
-    driver = uc.Chrome(headless=False,use_subprocess=False) 
+    driver = uc.Chrome(headless=False,use_subprocess=True) 
     driver.get(url)
     time.sleep(1)
     my_cookie = driver.get_cookie(name)
+    print (my_cookie)
     driver.close()
     # very importance if remove will raise an error
     time.sleep(0.1)
