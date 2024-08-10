@@ -8,11 +8,15 @@ from OBS_Controller_oop import OBS_controller
 import time
 
 process = None
+browser_path = "C:\Program Files\Google\Chrome\Application\chrome.exe"
 url =  "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv1-1.html"
 port_ws = "9091"
+sceen_name = "LIVE"
+source_name = "myscreen"
+obs_monitor = OBS_controller("10.128.106.80",4455,"123456")
 
 def host_stream(url,port):
-    global process
+    global process, obs_monitor, sceen_name, source_name
     if process is not None:
         process.terminate()
         time.sleep(3)
@@ -20,17 +24,28 @@ def host_stream(url,port):
     print(aws_waf_token_cookie)
     cmd = [
         "streamlink",
-        # "web"
+        # "--webbrowser-executable", browser_path
         # "--http-cookie", f"aws-waf-token={aws_waf_token_cookie}"
         "--player-external-http",
-        "--player-external-http-port", port ,
+        "--player-external-http-port", port,
         url, 
         "best"
     ]
     # Start the streamlink process
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     print("run stream link proccess")
-    time.sleep(3)
+    while True:
+        output = process.stdout.readline()
+        if output:
+            print(output.strip())
+            if "[cli][info]  http://127.0.0.1:" in output:
+                print("Server started. Proceeding with additional commands...")
+                break
+            
+            
+    # need improve code
+    obs_monitor.toggle_scene_item_enabled(sceen_name ,source_name)
+    
     # Monitor the output
     # while True:
     #     output = process.stdout.readline()
@@ -40,10 +55,9 @@ def host_stream(url,port):
     #         print(output.strip())
     #     time.sleep(1)
     
-def monitor_streamlink(host,port, password, source_name, interval):
-    global subprocess, url, port_ws
-    obs_monitor = OBS_controller(host, port, password)
-    obs_monitor.trigger_media_input_action(source_name,"OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY")
+def monitor_streamlink( interval):
+    global subprocess, url, port_ws, obs_monitor, source_name,sceen_name
+    obs_monitor.toggle_scene_item_enabled(sceen_name,source_name)
     count_end = 0
     while True:
         try:
@@ -55,7 +69,6 @@ def monitor_streamlink(host,port, password, source_name, interval):
                     print("input get problem") 
                     if subprocess is not None:
                         host_stream(url,port_ws)
-                        obs_monitor.trigger_media_input_action(source_name,"OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY")
                     
             else:
                 count_end = 0
@@ -66,7 +79,7 @@ def monitor_streamlink(host,port, password, source_name, interval):
             print(f"[ERROR:] {e}")
     
 # t1 = threading.Thread(target=host_stream, args=(url,port,),daemon=True)
-t2 = threading.Thread(target=monitor_streamlink, args=("10.128.106.80",4455,"123456","myscreen",10,),daemon=True)
+t2 = threading.Thread(target=monitor_streamlink, args=(10,),daemon=True)
 
 
 
@@ -75,12 +88,14 @@ if __name__ == "__main__":
     # host_stream(url, port)
     # t1.start()
     host_stream(url,port_ws)
-    time.sleep(10)
+    # time.sleep(10)
+    print("start monitor source")
     t2.start()
     while True:
         try:
-            output, errors = process.communicate()
-            print(output)
+            output = process.stdout.readline()
+            if output:
+                print(output)
             time.sleep(1)
         except KeyboardInterrupt:
             break
