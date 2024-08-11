@@ -13,7 +13,7 @@ url =  "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv1-1.html"
 port = "9091"
 sceen_name = "LIVE"
 source_name = "myscreen"
-obs_monitor = OBS_controller("localhost",4455,"123456")
+obs_monitor = OBS_controller(id=None,streamlink="test",host = "localhost",port = 4455,password="123456")
 
 def host_stream(url,port):
     global process, obs_monitor, sceen_name, source_name
@@ -62,13 +62,13 @@ def monitor_streamlink( interval):
     while True:
         try:
             media_status = obs_monitor.get_media_input_status(source_name)
-            print(media_status)
-            if media_status == "OBS_MEDIA_STATE_ENDED":
+            if media_status == "OBS_MEDIA_STATE_ENDED" or media_status == "OBS_MEDIA_STATE_ERROR":
                 count_end += 1
+                print(f"{media_status}: count {count_end}")
                 if count_end >= 5:
                     print("input get problem") 
                     if subprocess is not None:
-                        host_stream(url,port_ws)
+                        host_stream(url,port)
                     
             else:
                 count_end = 0
