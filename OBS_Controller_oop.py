@@ -51,9 +51,10 @@ class OBS_controller:
     def __start_checking(self):
         def run_check():
             while True:
+                time.sleep(10)
                 if self.__check_streamlink_error() == False:
                     self.__send_streamlink_to_server()
-                time.sleep(10)
+                
 
         thread = threading.Thread(target=run_check)
         thread.daemon = True  # Đảm bảo thread sẽ dừng khi chương trình chính kết thúc
