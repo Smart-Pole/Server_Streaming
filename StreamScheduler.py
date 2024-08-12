@@ -398,7 +398,7 @@ class StreamScheduler:
 
     def run(self):
         # self.__Stop_Schedule.every(10).seconds.do(self.__job)
-        schedule_thread = threading.Thread(target=self.__run)
+        schedule_thread = threading.Thread(target=self.__run,daemon=True)
         schedule_thread.start()
 
 def test():

@@ -4,6 +4,7 @@ import time
 from datetime import datetime
 import streamlink
 import requests
+import threading
 # rtmp://live.twitch.tv/app server live of twitch
 
 
@@ -17,27 +18,15 @@ class OBS_controller:
             self.printJsonObject(object)
             
     def __init__(self, streamlink, id , host='localhost', port=4455, password='123456' ) -> None:
-        # flag = False
-        # # Đọc file config.txt
-        # with open('config.txt', 'r') as file:
-        #     # Đọc từng dòng trong file
-        #     for line in file:
-        #         # Tách chuỗi thành hai phần, phần bên trái là key, phần bên phải là value
-        #         key, value = line.strip().split('-')
-        #         # Nếu key là 'VIDEO PATH', lưu giá trị vào biến videopath và thoát vòng lặp
-        #         if key.strip() == 'PORT':
-        #             self.port = value
-        #             flag = True
-        #             break
-        # if not flag:
-        #     self.port = port
+
         self.id = id
         self.streamlink = streamlink
+        self.streamlink_m3u8 = None
         self.port = port
         self.host = host
         self.password = password
         self.url = "http://stream.lpnserver.net/report"
-        
+        self.__start_checking()
         # event and request client for obs websocket
         self.request_client = obs.ReqClient(host = self.host,port = self.port,password = self.password)
         self.event_client = obs.EventClient(host = self.host,port = self.port,password = self.password)
@@ -47,9 +36,6 @@ class OBS_controller:
         self.on_reconnected = None
         self.mqtt_handler = None
         self.mqtt_topic = None
-        
-        
-        
         
         # resgiter event want to listen
         self.event_client.callback.register(self.on_stream_state_changed)
@@ -61,15 +47,31 @@ class OBS_controller:
         print(self.event_client.callback.get())
         
         
-    # --------------------------------- setter and getter -----------------------------------
-    # reconnect callback setter and getter:
-    def set_on_reconnected_callback(self,func):
-           self.on_reconnected = func
-           
-           
-    def call_on_reconnected(self):
-        # if self.on_reconnected != None:
-        #     self.on_reconnected()
+# CHECK LINK DIE
+    def __start_checking(self):
+        def run_check():
+            while True:
+                if self.__check_streamlink_error() == False:
+                    self.__send_streamlink_to_server()
+                time.sleep(10)
+
+        thread = threading.Thread(target=run_check)
+        thread.daemon = True  # Đảm bảo thread sẽ dừng khi chương trình chính kết thúc
+        thread.start()
+
+    def __check_streamlink_error(self):
+        try:
+            response = requests.get(self.streamlink_m3u8, timeout=10)
+            # Kiểm tra mã trạng thái HTTP và content type
+            if response.status_code == 200 and 'application/vnd.apple.mpegurl' in response.headers.get('Content-Type', ''):
+                return True
+            else:
+                return False
+        except requests.exceptions.RequestException as e:
+            print(f"Error: {e}")
+            return False
+        
+    def __send_streamlink_to_server(self):
         if self.id is None:
             return
         
@@ -82,7 +84,7 @@ class OBS_controller:
             except:
                 pass
             time.sleep(0.5)
-
+        self.streamlink_m3u8 = link_url
         data = {
             "user": "admin",
             "pass": "admin",
@@ -97,7 +99,16 @@ class OBS_controller:
             response = requests.post(self.url, data=data)
             timeout = timeout + 1
 
-        print(f"RES: {response.status_code}")
+        print(f"Post streamlink res: {response.status_code}")
+    # --------------------------------- setter and getter -----------------------------------
+    # reconnect callback setter and getter:
+    def set_on_reconnected_callback(self,func):
+        self.on_reconnected = func
+
+    def call_on_reconnected(self):
+        # if self.on_reconnected != None:
+        #     self.on_reconnected()
+        pass
             
             
             
@@ -767,7 +778,8 @@ def test_transfrom():
             # if my_obs1.check_stream_is_active() :
             #     my_obs1.stop_stream()
             break
-    
+
+
 if __name__ == "__main__":
     # test_for_failed_streamkey()
     # test_on_stream_state_changed()
