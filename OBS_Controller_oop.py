@@ -70,9 +70,10 @@ class OBS_controller:
     def call_on_reconnected(self):
         # if self.on_reconnected != None:
         #     self.on_reconnected()
-
+        if self.id is None:
+            return
+        
         link_url = None
-
         while not link_url:
             try:
                 print("Try to get link m3u8 when reconnected")
