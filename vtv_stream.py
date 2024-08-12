@@ -112,12 +112,14 @@ class VTV_Monitor():
             except KeyboardInterrupt:
                 break
         
+        
+        
 if __name__ == "__main__":
     myvtv = VTV_Monitor(
         OBS_controller(id=None,streamlink="https://www.twitch.tv/nhanlow", host="localhost", port=4455, password="123456"),
         url = "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv1-1.html",
-        port= "9091",
+        port= "9099",
         scene="LIVE",
-        source="myscreen"
+        source="live"
     )
     myvtv.run()
