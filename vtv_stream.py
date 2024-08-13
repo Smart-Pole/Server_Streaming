@@ -4,9 +4,9 @@ import sys
 import threading
 # import undetected_chromedriver as uc 
 # import time
-from OBS_Controller_oop import OBS_controller
+# from OBS_Controller_oop import OBS_controller
+# import undetected_chromedriver as uc 
 import time
-import undetected_chromedriver as uc 
 import json
 import argparse
 
@@ -24,26 +24,27 @@ class VTV_Input_Stream():
         self.quality = quality
         self.streamlink_subprocess: subprocess = None
         
-    def get_cookie(self,url, name):
-        # headless flag must be fail
-        try: 
-            self.driver = uc.Chrome(headless=False,use_subprocess=True) 
-            self.driver.get(url)
-            time.sleep(2)
-            my_cookie = self.driver.get_cookie(name)
-            print (json.dumps(my_cookie,indent=4))
-            # self.driver.close()
-            # very importance if remove will raise an error
-            time.sleep(1)
-            return my_cookie.get("value") 
-        except Exception as e:
-                print(f"[ERROR]: {e}")
-                return None
-        finally:
-            if self.driver:
-                self.driver.close()
-                # very important; if removed, may raise an error
-                time.sleep(1)
+    # def get_cookie(self,url, name):
+    #     # headless flag must be fail
+    #     try: 
+    #         self.driver = uc.Chrome(headless=False,use_subprocess=True) 
+    #         self.driver.get(url)
+    #         time.sleep(2)
+    #         my_cookie = self.driver.get_cookie(name)
+    #         print (json.dumps(my_cookie,indent=4))
+    #         # self.driver.close()
+    #         # very importance if remove will raise an error
+    #         time.sleep(1)
+    #         return my_cookie.get("value") 
+    #     except Exception as e:
+    #             print(f"[ERROR]: {e}")
+    #             return None
+    #     finally:
+    #         if self.driver:
+    #             self.driver.close()
+    #             # very important; if removed, may raise an error
+    #             time.sleep(1)
+                
             
     def host_stream(self):
         while True:
