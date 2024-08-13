@@ -122,7 +122,7 @@ if __name__ == "__main__":
     threads = []
     for vtv_input in vtv_input_stream:
         # Tạo và khởi động các luồng
-        thread = threading.Thread(target=vtv_input.host_stream)
+        thread = threading.Thread(target=vtv_input.host_stream,daemon = True)
         threads.append(thread)
         thread.start()
 
