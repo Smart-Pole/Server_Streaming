@@ -8,9 +8,16 @@ from OBS_Controller_oop import OBS_controller
 import time
 import undetected_chromedriver as uc 
 import json
+import argparse
 
+parser = argparse.ArgumentParser(description='VTV argument')
+parser.add_argument('--channel', type=str, help='vtv option',default="vtv1")
+parser.add_argument('--port', type=str, help='port number want hosting stream',default="9091")
+args = parser.parse_args()
+channel =  args.channel
+port = args.port
 class VTV_Input_Stream():
-    def __init__(self, url: str, port: str, scene:str, source:str, browser_path="C:/Program Files/Google/Chrome/Application/chrome.exe",quality="best"):
+    def __init__(self, url: str, port: str, browser_path="C:/Program Files/Google/Chrome/Application/chrome.exe",quality="best"):
         self.url = url
         self.port = port
         self.browser_path = browser_path
@@ -65,19 +72,19 @@ class VTV_Input_Stream():
         
         
 if __name__ == "__main__":
-    vtv1 = "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv1-1.html"
-    vtv2 = "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv2-2.html"
-    vtv3 = "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv3-3.html"
-    vtv4 = "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv4-4.html"
-    vtv5 = "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv5-5.html"
-    vtv6 = "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv-c%E1%BA%A7n-th%C6%A1-6.html"
-    vtv7 = "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv7-27.html"
-    vtv8 = "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv8-36.html"
-    vtv9 = "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv9-39.html"
+    vtv_chanel = {
+        "vtv1" : "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv1-1.html",
+        "vtv2" : "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv2-2.html",
+        "vtv3" : "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv3-3.html",
+        "vtv4" : "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv4-4.html",
+        "vtv5" : "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv5-5.html",
+        "vtv6" : "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv-c%E1%BA%A7n-th%C6%A1-6.html",
+        "vtv7" : "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv7-27.html",
+        "vtv8" : "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv8-36.html",
+        "vtv9" : "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv9-39.html"
+    }
     myvtv = VTV_Input_Stream(
-        url = vtv1,
-        port= "9091",
-        scene="LIVE",
-        source="myscreen"
+        url = vtv_chanel.get(channel),
+        port=  port
     )
     myvtv.host_stream()
