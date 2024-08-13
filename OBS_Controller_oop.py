@@ -26,7 +26,7 @@ class OBS_controller:
         self.host = host
         self.password = password
         self.url = "http://stream.lpnserver.net/report"
-        self.__start_checking()
+        # self.__start_checking()
         # event and request client for obs websocket
         self.request_client = obs.ReqClient(host = self.host,port = self.port,password = self.password)
         self.event_client = obs.EventClient(host = self.host,port = self.port,password = self.password)
@@ -40,9 +40,9 @@ class OBS_controller:
         # resgiter event want to listen
         self.event_client.callback.register(self.on_stream_state_changed)
         # self.event_client.callback.register(self.on_scene_item_transform_changed)
-        self.event_client.callback.register(self.on_media_input_playback_ended)
+        # self.event_client.callback.register(self.on_media_input_playback_ended)
         
-        self.event_client.callback.register(self.on_media_input_action_triggered)
+        # self.event_client.callback.register(self.on_media_input_action_triggered)
         # self.event_client.callback.register(self.on_scene_transition_video_ended)
         print(self.event_client.callback.get())
         
@@ -189,11 +189,13 @@ class OBS_controller:
         """
         payload = {"inputName": name}
         response =  self.request_client.send("GetInputSettings", payload)
+        print(response.attrs())
+        print(response.input_kind)
         self.printJsonObject(response.input_settings)
         return response
 
         
-    def set_input_settings(self,name, settings, overlay):
+    def set_input_settings(self, name, settings, overlay):
         """
         Sets the settings of an input.
 
@@ -681,8 +683,110 @@ class OBS_controller:
         self.set_scene_item_enabled(scene_name,source_name,current)
         time.sleep(1)
         
+    def create_scene(self, scene_name):
+        """Creates a new scene in OBS.
+
+        Args:
+            scene_name (String): name of scene want to create
+        """
+        self.request_client.create_scene(scene_name)
+        
+    def remove_scene(self, scene_name):
+        """ Removw a scene in OBS
+
+        Args:
+            scene_name (String): name of scene want to remove
+        """
+        self.request_client.remove_scene(scene_name)
+        
+    def set_scene_name(self, old_name, new_name):
+        """ rename a scene
+
+        Args:
+            old_name (string): name of scene want to rename
+            new_name (string): new name of scene
+        """
+        self.request_client.set_scene_name(old_name,new_name)
         
         
+    def create_input(self, scene_name, input_name, input_kind, input_setting, scene_item_enable):
+        """Creates a new input, adding it as a scene item to the specified scene.
+
+        Args:
+            scene_name (String): Name of the scene to add the input to as a scene item
+            input_name (String): Name of the new input to created
+            input_kind (String): The kind of input to be created_
+            input_setting (Object):	Settings object to initialize the input with (use get input setting to get the template)
+            scene_item_enable (Boolean)	Whether to set the created scene item to enabled or disabled
+        Return:
+            int : id of input created
+        """
+        response = self.request_client.create_input(scene_name, input_name, input_kind, input_setting, scene_item_enable)
+        if response is None:
+            print("Cannot create input")
+            return None
+        else:
+            print(f"Create input {input_name}(kind: {input_kind}) success")
+            return response.scene_item_id
+            
+            
+    def remove_input(self, input_name):
+        """ Removes an existing input.
+
+        Args:
+            input_name (String): Name of the input to remove
+        """
+        self.request_client.remove_input(input_name)
+    
+    
+    def create_vtv_input_source(self, scene_name, source_name , url, width, height):
+        """ creating media source of obs to play and vtv url
+
+        Args:
+            scene_name (String): Name of the scene to add the input to as a scene item
+            input_name (String): Name of the new input to created
+            width (int): width of source
+            height (int) height of source
+        """
+        input_kind = "ffmpeg_source" 
+        input_setting = {
+            "input": url,
+            "is_local_file": False,
+            # "restart_on_activate": true
+        }
+        scene_item_enable = True
+        self.request_client.create_input(scene_name, source_name, input_kind, input_setting, scene_item_enable)
+        self.set_size_of_source(scene_name, source_name, width, height)
+        
+    def create_vlc_input_source(self, scene_name, source_name , playlist, width, height):
+        """ Creating vlc source of obs to play and vtv url
+
+        Args:
+            scene_name (String): Name of the scene to add the input to as a scene item
+            input_name (String): Name of the new input to created
+            width (int): width of source
+            height (int) height of source
+        """
+        input_kind = "vlc_source" 
+        playlist_setting = []
+        for video in playlist:
+            item = {
+                "hidden": False,
+                "selected": False,
+                "value": video
+            } 
+            playlist_setting.append(item)
+        input_setting = {
+            "playlist": playlist_setting
+        }
+        scene_item_enable = True    
+        self.request_client.create_input(scene_name, source_name, input_kind, input_setting, scene_item_enable)
+        self.set_size_of_source(scene_name, source_name, width, height)
+        
+    
+            
+            
+            
     
 def main():
     # stream_key = "live_1044211682_Ol34MomAqRm3Ef7s0jwrKq0KNGj3Ku"
@@ -754,30 +858,24 @@ def test_on_stream_state_changed():
         
         
 def test_transfrom():
-    my_obs1 = OBS_controller(host="10.128.106.80",port=4455,password="123456")
+    my_obs1 = OBS_controller(id=None, streamlink="http://www.twitch/nhanlow",host="localhost",port=4455,password="123456")
     # my_obs1.get_input_settings("myscreen")
-    width = 1920
-    height = 1080
-    my_obs1.set_size_of_source("LIVE","myscreen",1920,1080)
-    # my_obs1.get_scene_item_transform("LIVE","myscreen")
-    my_obs1.set_scene_item_enabled("LIVE","myscreen", True)
+    # my_obs1.set_size_of_source("LIVE","myscreen",1920,1080)
+    # my_obs1.remove_input("mySource")
+    # my_obs1.get_input_settings("mySource")
+    # my_obs1.create_vtv_input_source("LIVE","vtv_channel","http://127.0.0.1:9091/", 1920, 1080)
+    my_obs1.get_input_settings("vtv_channel")
+    my_obs1.create_vlc_input_source("SCHEDULE","mySource",["D:/video/bird.mp4", "D:/video/hourse.mp4", "D:/video/ship.mp4"], 1920,1080)
+    
+    
     while True:
         try: 
-            # my_obs1.get_scene_item_transform("LIVE","myscreen")
-            # width = width - 100
-            # height = height - 100
-            # my_obs1.set_size_of_source("LIVE","myscreen",width, height)
-            # print(my_obs1.get_media_input_status("myscreen"))
-            # print(my_obs1.get_scene_item_enabled("LIVE","myscreen"))
-            print("toogle")
-            my_obs1.toggle_scene_item_enabled("LIVE","myscreen")
-            # my_obs1.get_stream_status()
+
             
             
             time.sleep(10)
         except KeyboardInterrupt:
-            # if my_obs1.check_stream_is_active() :
-            #     my_obs1.stop_stream()
+
             break
 
 
