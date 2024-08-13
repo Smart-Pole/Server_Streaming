@@ -17,16 +17,19 @@ class OBS_controller:
         for object in object_list:
             self.printJsonObject(object)
             
-    def __init__(self, streamlink, id , host='localhost', port=4455, password='123456' ) -> None:
+    def __init__(self, streamlink, id , name , host='localhost', port=4455, password='123456', width = 1920, height  = 1080) -> None:
 
         self.id = id
+        self.name = name
         self.streamlink = streamlink
         self.streamlink_m3u8 = None
         self.port = port
         self.host = host
         self.password = password
-        self.url = "http://stream.lpnserver.net/report"
-        # self.__start_checking()
+        self.height = height
+        self.width = width
+        self.url = "https://stream.lpnserver.net/report"
+        self.__start_checking()
         # event and request client for obs websocket
         self.request_client = obs.ReqClient(host = self.host,port = self.port,password = self.password)
         self.event_client = obs.EventClient(host = self.host,port = self.port,password = self.password)
@@ -49,6 +52,8 @@ class OBS_controller:
         
 # CHECK LINK DIE
     def __start_checking(self):
+        if self.id == None:
+            return
         def run_check():
             while True:
                 time.sleep(10)
@@ -79,28 +84,35 @@ class OBS_controller:
         link_url = None
         while not link_url:
             try:
-                print("Try to get link m3u8 when reconnected")
+                print(f"Try to get link m3u8 {self.name}")
                 link =   streamlink.streams(self.streamlink)
                 link_url = link.get("best").url
             except:
                 pass
-            time.sleep(0.5)
+            time.sleep(2)
+
         self.streamlink_m3u8 = link_url
+        header = {
+            'Content-Type': 'application/json'
+        }
         data = {
             "user": "admin",
             "pass": "admin",
             "cs":"0123456789",
             "id":self.id,
-            "link":link_url
+            "name":self.name,
+            "link":self.streamlink_m3u8
         }
-        response = requests.post(self.url, data=data)
+        # print(self.streamlink_m3u8)
+        response = requests.post(self.url, headers=header, json=data)
         timeout = 0
         while timeout < 5 and response.status_code != 200:
             print(f"Send url fail, try again {timeout}:", response.status_code)
-            response = requests.post(self.url, data=data)
+            response = requests.post(self.url, headers=header, json=data)
             timeout = timeout + 1
+            time.sleep(0.5)
 
-        print(f"Post streamlink res: {response.status_code}")
+        print(f"Post streamlink {self.name} res: {response.status_code}")
     # --------------------------------- setter and getter -----------------------------------
     # reconnect callback setter and getter:
     def set_on_reconnected_callback(self,func):
@@ -172,7 +184,7 @@ class OBS_controller:
         """
         response = self.request_client.get_input_list(kind)
         self.printJsonObjectList(response.inputs)
-        return response
+        return response.inputs
         
     def get_input_settings(self,name):
         """ 
@@ -641,6 +653,7 @@ class OBS_controller:
         self.printJsonObjectList(response.outputs)
         return response
     
+
     def get_scene_item_enabled(self,scene_name,source_name):
         """get the enable state of a scene item.
 
@@ -739,7 +752,7 @@ class OBS_controller:
         self.request_client.remove_input(input_name)
     
     
-    def create_vtv_input_source(self, scene_name, source_name , url, width, height):
+    def create_vtv_input_source(self, scene_name, source_name , url, width = 0 , height = 0):
         """ creating media source of obs to play and vtv url
 
         Args:
@@ -756,9 +769,13 @@ class OBS_controller:
         }
         scene_item_enable = True
         self.request_client.create_input(scene_name, source_name, input_kind, input_setting, scene_item_enable)
+        if width == 0:
+            width = self.width
+        if height == 0:
+            height = self.height
         self.set_size_of_source(scene_name, source_name, width, height)
         
-    def create_vlc_input_source(self, scene_name, source_name , playlist, width, height):
+    def create_vlc_input_source(self, scene_name, source_name , playlist, width = 0, height = 0):
         """ Creating vlc source of obs to play and vtv url
 
         Args:
@@ -781,6 +798,10 @@ class OBS_controller:
         }
         scene_item_enable = True    
         self.request_client.create_input(scene_name, source_name, input_kind, input_setting, scene_item_enable)
+        if width == 0:
+            width = self.width
+        if height == 0:
+            height = self.height
         self.set_size_of_source(scene_name, source_name, width, height)
         
     
@@ -858,14 +879,17 @@ def test_on_stream_state_changed():
         
         
 def test_transfrom():
-    my_obs1 = OBS_controller(id=None, streamlink="http://www.twitch/nhanlow",host="localhost",port=4455,password="123456")
+    my_obs1 = OBS_controller(id=None, streamlink="http://www.twitch/nhanlow",host="localhost",port=1131,password="123456")
     # my_obs1.get_input_settings("myscreen")
     # my_obs1.set_size_of_source("LIVE","myscreen",1920,1080)
-    # my_obs1.remove_input("mySource")
+    # data = my_obs1.get_input_list()
+    # for item in data:
+    #     print(item['inputName'])
+    # my_obs1.remove_input("vtv")
     # my_obs1.get_input_settings("mySource")
-    # my_obs1.create_vtv_input_source("LIVE","vtv_channel","http://127.0.0.1:9091/", 1920, 1080)
-    my_obs1.get_input_settings("vtv_channel")
-    my_obs1.create_vlc_input_source("SCHEDULE","mySource",["D:/video/bird.mp4", "D:/video/hourse.mp4", "D:/video/ship.mp4"], 1920,1080)
+    my_obs1.create_vtv_input_source("LIVE","vtv_channel","http://127.0.0.1:9091/", 1920, 1080)
+    # my_obs1.get_input_settings("vtv_channel")
+    # my_obs1.create_vlc_input_source("SCHEDULE","mySource",["D:/video/bird.mp4", "D:/video/hourse.mp4", "D:/video/ship.mp4"], 1920,1080)
     
     
     while True:

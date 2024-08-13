@@ -12,8 +12,8 @@ import os
 import time
 
 class StreamScheduler:
-    def __init__(self,Stream,FileLog,VideoPath,StreamKey,StreamLink,OBSPort,OBSPass,OBSId,Database,DataTable,NameStream,StreamServer = "rtmp://live.twitch.tv/app"):
-        self.__my_obs = OBS_controller(id=OBSId,streamlink=StreamLink,port=OBSPort,password=OBSPass)
+    def __init__(self,Stream,FileLog,VideoPath,StreamKey,StreamLink,OBSPort,OBSPass,OBSId,OBSName,OBSWidth, OBSHeight ,Database,DataTable,NameStream,StreamServer = "rtmp://live.twitch.tv/app"):
+        self.__my_obs = OBS_controller(id=OBSId,name=OBSName,streamlink=StreamLink,port=OBSPort,password=OBSPass,width=OBSWidth,height=OBSHeight)
         self.__Start_Schedule = schedule.Scheduler()
         self.__Stop_Schedule = schedule.Scheduler()
         self.__mutex = threading.Lock()
@@ -159,13 +159,19 @@ class StreamScheduler:
             self.__set_flag_live(1)
         print('LIVE')
 
-    def live_window_cature(self,link = 0):
-        if link not in self.__ListWindowCapture:
-            return -1
-        
-        self.__my_obs.set_current_program_scene(link)
+    def live_vtv(self,link):
+        self.__my_obs.set_current_program_scene("VTV")
+        lists = self.__my_obs.get_input_list()
+
+        for item in lists:
+            print("inputName is:", item['inputName'])
+            if item['inputName'] == "vtv":
+                self.__my_obs.remove_input(input_name="vtv")
+                time.sleep(1)
+                break
+        self.__my_obs.create_vtv_input_source(scene_name="VTV",source_name="vtv",url=link)
         self.__set_flag_live(1)
-        print(f'LIVE :{link}')
+        print('LIVE VTV')
 
     def stop_live(self,link = 0):
         self.__set_flag_live(0)
