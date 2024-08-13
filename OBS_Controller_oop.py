@@ -84,7 +84,7 @@ class OBS_controller:
         link_url = None
         while not link_url:
             try:
-                print(f"Try to get link m3u8 {self.name}")
+                print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Try to get link m3u8 {self.name}")
                 link =   streamlink.streams(self.streamlink)
                 link_url = link.get("best").url
             except:
@@ -112,7 +112,7 @@ class OBS_controller:
             timeout = timeout + 1
             time.sleep(0.5)
 
-        print(f"Post streamlink {self.name} res: {response.status_code}")
+        print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Post streamlink {self.name} res: {response.status_code}")
     # --------------------------------- setter and getter -----------------------------------
     # reconnect callback setter and getter:
     def set_on_reconnected_callback(self,func):
