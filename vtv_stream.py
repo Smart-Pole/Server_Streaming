@@ -53,7 +53,7 @@ class VTV_Input_Stream():
                 # print(aws_waf_token_cookie)
                 cmd = [
                     "streamlink",
-                    "--webbrowser-executable",  self.browser_path,
+                    # "--webbrowser-executable",  self.browser_path,
                     # "--http-cookie", f"aws-waf-token={aws_waf_token_cookie}",
                     "--player-external-http-continuous", "0",
                     "--player-external-http",
