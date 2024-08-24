@@ -23,8 +23,8 @@ app = Flask(__name__)
 CORS(app)
 
 FolderVideoPath = "video"
-OBSWidth = 1920
-OBSHeight = 1080
+OBSWidth = 1712
+OBSHeight = 920
 UPLOAD_FOLDER = FolderVideoPath
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
@@ -54,11 +54,11 @@ channel = {
            'Nasa' : 'https://www.youtube.com/watch?v=0FBiyFpV__g',
            'THVL1' : 'https://www.thvli.vn/live/thvl1-hd',}
 vtv_channel = {
-           'VTV1' : 'http://127.0.0.1:9091/',
-           'VTV2' : 'http://127.0.0.1:9092/',
-           'VTV3' : 'http://127.0.0.1:9093/',
-           'VTV4' : 'http://127.0.0.1:9094/',
-           'VTV5' : 'http://127.0.0.1:9095/',}
+           'VTV1' : 'http://127.0.0.1:9001/',
+           'VTV2' : 'http://127.0.0.1:9002/',
+           'VTV3' : 'http://127.0.0.1:9003/',
+           'VTV4' : 'http://127.0.0.1:9004/',
+           'VTV5' : 'http://127.0.0.1:9005/',}
 
 ################## begin MQTT
 
