@@ -48,6 +48,30 @@ class OBS_controller:
         # self.event_client.callback.register(self.on_media_input_action_triggered)
         # self.event_client.callback.register(self.on_scene_transition_video_ended)
         print(self.event_client.callback.get())
+        try:
+            self.create_scene("LIVE")
+        except:
+            pass
+        try:
+            self.create_scene("SCHEDULE")
+        except:
+            pass
+        try:
+            self.create_scene("VTV")
+        except:
+            pass
+            
+        try:
+            self.create_vlc_input_source("LIVE","live",[""], self.width, self.height)
+        except:
+            pass
+
+        try:
+            self.create_vlc_input_source("SCHEDULE","mySource",[""], self.width, self.height)
+        except:
+            pass
+
+        
         
         
 # CHECK LINK DIE
@@ -879,25 +903,14 @@ def test_on_stream_state_changed():
         
         
 def test_transfrom():
-    my_obs1 = OBS_controller(id=None, streamlink="http://www.twitch/nhanlow",host="localhost",port=1131,password="123456")
-    # my_obs1.get_input_settings("myscreen")
-    # my_obs1.set_size_of_source("LIVE","myscreen",1920,1080)
-    # data = my_obs1.get_input_list()
-    # for item in data:
-    #     print(item['inputName'])
-    # my_obs1.remove_input("vtv")
-    # my_obs1.get_input_settings("mySource")
-    my_obs1.create_vtv_input_source("LIVE","vtv_channel","http://127.0.0.1:9091/", 1920, 1080)
-    # my_obs1.get_input_settings("vtv_channel")
-    # my_obs1.create_vlc_input_source("SCHEDULE","mySource",["D:/video/bird.mp4", "D:/video/hourse.mp4", "D:/video/ship.mp4"], 1920,1080)
-    
-    
+    my_obs1 = OBS_controller(id=None,name = 0 , streamlink="http://www.twitch/nhanlow",host="localhost",port=1139,password="123456")
+ 
     while True:
         try: 
 
             
-            
-            time.sleep(10)
+            print("hello\n")
+            time.sleep(1)
         except KeyboardInterrupt:
 
             break

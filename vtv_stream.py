@@ -12,12 +12,12 @@ import json
 
 # parser = argparse.ArgumentParser(description='VTV argument')
 # parser.add_argument('--channel', type=str, help='vtv option',default="vtv1")
-# parser.add_argument('--port', type=str, help='port number want hosting stream',default="9091")
+# parser.add_argument('--port', type=str, help='port number want hosting stream',default="9091")    
 # args = parser.parse_args()
 # channel =  args.channel
 # port = args.port
 class VTV_Input_Stream():
-    def __init__(self, url: str, port: str, browser_path="C:/Program Files/Google/Chrome/Application/chrome.exe",quality="best"):
+    def __init__(self, url: str, port: str, browser_path="C:/Program Files/Google/Chrome/Application/chrome.exe",quality="480p"):
         self.url = url
         self.port = port
         self.browser_path = browser_path
@@ -58,7 +58,7 @@ class VTV_Input_Stream():
                     "--player-external-http-continuous", "0",
                     "--player-external-http",
                     "--player-external-http-port", self.port,
-                    self.url, "best"
+                    self.url,self.quality
                 ]
                 result = subprocess.run(cmd)
                 if result.returncode != 0:
@@ -78,10 +78,10 @@ if __name__ == "__main__":
         "vtv2" : "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv2-2.html",
         "vtv3" : "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv3-3.html",
         "vtv4" : "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv4-4.html",
-        "vtv5" : "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv5-5.html",
-        "vtv6" : "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv-c%E1%BA%A7n-th%C6%A1-6.html",
-        "vtv7" : "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv7-27.html",
-        "vtv8" : "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv8-36.html"
+        "vtv5" : "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv5-5.html"
+        # "vtv6" : "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv-c%E1%BA%A7n-th%C6%A1-6.html",
+        # "vtv7" : "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv7-27.html",
+        # "vtv8" : "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv8-36.html"
         # "vtv9" : "https://vtvgo.vn/xem-truc-tuyen-kenh-vtv9-39.html"
     }
     vtv_input_stream =  [
@@ -97,26 +97,26 @@ if __name__ == "__main__":
             url = vtv_chanel.get("vtv3"),
             port=  "9003",
         ),
-        VTV_Input_Stream(
-            url = vtv_chanel.get("vtv4"),
-            port=  "9004",
-        ),
-        VTV_Input_Stream(
-            url = vtv_chanel.get("vtv5"),
-            port=  "9005",
-        ),
-        VTV_Input_Stream(
-            url = vtv_chanel.get("vtv6"),
-            port=  "9006",
-        ),
-        VTV_Input_Stream(
-            url = vtv_chanel.get("vtv7"),
-            port=  "9007",
-        ),
-        VTV_Input_Stream(
-            url = vtv_chanel.get("vtv8"),
-            port=  "9008",
-        ),
+        # VTV_Input_Stream(
+        #     url = vtv_chanel.get("vtv4"),
+        #     port=  "9004",
+        # ),
+        # VTV_Input_Stream(
+        #     url = vtv_chanel.get("vtv5"),
+        #     port=  "9005",
+        # ),
+        # VTV_Input_Stream(
+        #     url = vtv_chanel.get("vtv6"),
+        #     port=  "9006",
+        # ),
+        # VTV_Input_Stream(
+        #     url = vtv_chanel.get("vtv7"),
+        #     port=  "9007",
+        # ),
+        # VTV_Input_Stream(
+        #     url = vtv_chanel.get("vtv8"),
+        #     port=  "9008",
+        # ),
     ]
     
     threads = []
