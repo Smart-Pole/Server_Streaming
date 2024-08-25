@@ -140,27 +140,38 @@ class StreamScheduler:
         return my_video_list
     
     def live(self,videolist=[],link = 0):
-        self.__my_obs.set_input_playlist([""],source_name="live")
-
-        time.sleep(1)
-
         if link:
-            self.__my_obs.set_input_playlist([link],source_name="live")
-
+            self.__my_obs.set_input_vtv(url="",source_name="live_m")
             time.sleep(1)
+            self.__my_obs.set_input_vtv(url = link,source_name="live_m")
+            time.sleep(1)
+            try:
+                self.__my_obs.set_current_program_scene("LIVE_M")
+                self.__my_obs.get_input_settings("live_m")
+            except:
+                pass
         else:
+            self.__my_obs.set_input_playlist([""],source_name="live_v")
+            time.sleep(1)
             myvideolist = self.get_link_video(videolist)
-            self.__my_obs.set_input_playlist(myvideolist,source_name="live")
-
-
+            self.__my_obs.set_input_playlist(myvideolist,source_name="live_v")
+            try:
+                self.__my_obs.set_current_program_scene("LIVE_V")
+                self.__my_obs.get_input_settings("live_v")
+            except:
+                pass
         if not self.__get_flag_live():
-            self.__my_obs.set_current_program_scene("LIVE")
-            self.__my_obs.get_input_settings("live")
             self.__set_flag_live(1)
+
+
+
         print('LIVE')
 
     def live_vtv(self,link):
-        self.__my_obs.set_current_program_scene("VTV")
+        try:
+            self.__my_obs.set_current_program_scene("VTV")
+        except:
+            pass
         lists = self.__my_obs.get_input_list()
 
         for item in lists:

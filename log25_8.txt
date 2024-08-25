@@ -1,0 +1,612 @@
+OBSSDKRequestError: Request CreateScene returned code 601. With message: A source already exists by that scene name.
+Traceback (most recent call last):
+  File "/home/streamlink1/Desktop/stream_server/stream_venv/lib/python3.11/site-packages/obsws_python/reqs.py", line 53, in send
+    raise OBSSDKRequestError(
+obsws_python.error.OBSSDKRequestError: Request CreateScene returned code 601. With message: A source already exists by that scene name.
+OBSSDKRequestError: Request CreateScene returned code 601. With message: A source already exists by that scene name.
+Traceback (most recent call last):
+  File "/home/streamlink1/Desktop/stream_server/stream_venv/lib/python3.11/site-packages/obsws_python/reqs.py", line 53, in send
+    raise OBSSDKRequestError(
+obsws_python.error.OBSSDKRequestError: Request CreateScene returned code 601. With message: A source already exists by that scene name.
+OBSSDKRequestError: Request CreateScene returned code 601. With message: A source already exists by that scene name.
+Traceback (most recent call last):
+  File "/home/streamlink1/Desktop/stream_server/stream_venv/lib/python3.11/site-packages/obsws_python/reqs.py", line 53, in send
+    raise OBSSDKRequestError(
+obsws_python.error.OBSSDKRequestError: Request CreateScene returned code 601. With message: A source already exists by that scene name.
+OBSSDKRequestError: Request CreateInput returned code 601. With message: A source already exists by that input name.
+Traceback (most recent call last):
+  File "/home/streamlink1/Desktop/stream_server/stream_venv/lib/python3.11/site-packages/obsws_python/reqs.py", line 53, in send
+    raise OBSSDKRequestError(
+obsws_python.error.OBSSDKRequestError: Request CreateInput returned code 601. With message: A source already exists by that input name.
+OBSSDKRequestError: Request CreateInput returned code 601. With message: A source already exists by that input name.
+Traceback (most recent call last):
+  File "/home/streamlink1/Desktop/stream_server/stream_venv/lib/python3.11/site-packages/obsws_python/reqs.py", line 53, in send
+    raise OBSSDKRequestError(
+obsws_python.error.OBSSDKRequestError: Request CreateInput returned code 601. With message: A source already exists by that input name.
+OBSSDKRequestError: Request CreateScene returned code 601. With message: A source already exists by that scene name.
+Traceback (most recent call last):
+  File "/home/streamlink1/Desktop/stream_server/stream_venv/lib/python3.11/site-packages/obsws_python/reqs.py", line 53, in send
+    raise OBSSDKRequestError(
+obsws_python.error.OBSSDKRequestError: Request CreateScene returned code 601. With message: A source already exists by that scene name.
+OBSSDKRequestError: Request CreateScene returned code 601. With message: A source already exists by that scene name.
+Traceback (most recent call last):
+  File "/home/streamlink1/Desktop/stream_server/stream_venv/lib/python3.11/site-packages/obsws_python/reqs.py", line 53, in send
+    raise OBSSDKRequestError(
+obsws_python.error.OBSSDKRequestError: Request CreateScene returned code 601. With message: A source already exists by that scene name.
+OBSSDKRequestError: Request CreateScene returned code 601. With message: A source already exists by that scene name.
+Traceback (most recent call last):
+  File "/home/streamlink1/Desktop/stream_server/stream_venv/lib/python3.11/site-packages/obsws_python/reqs.py", line 53, in send
+    raise OBSSDKRequestError(
+obsws_python.error.OBSSDKRequestError: Request CreateScene returned code 601. With message: A source already exists by that scene name.
+OBSSDKRequestError: Request CreateInput returned code 601. With message: A source already exists by that input name.
+Traceback (most recent call last):
+  File "/home/streamlink1/Desktop/stream_server/stream_venv/lib/python3.11/site-packages/obsws_python/reqs.py", line 53, in send
+    raise OBSSDKRequestError(
+obsws_python.error.OBSSDKRequestError: Request CreateInput returned code 601. With message: A source already exists by that input name.
+OBSSDKRequestError: Request CreateInput returned code 601. With message: A source already exists by that input name.
+Traceback (most recent call last):
+  File "/home/streamlink1/Desktop/stream_server/stream_venv/lib/python3.11/site-packages/obsws_python/reqs.py", line 53, in send
+    raise OBSSDKRequestError(
+obsws_python.error.OBSSDKRequestError: Request CreateInput returned code 601. With message: A source already exists by that input name.
+OBSSDKRequestError: Request CreateScene returned code 601. With message: A source already exists by that scene name.
+Traceback (most recent call last):
+  File "/home/streamlink1/Desktop/stream_server/stream_venv/lib/python3.11/site-packages/obsws_python/reqs.py", line 53, in send
+    raise OBSSDKRequestError(
+obsws_python.error.OBSSDKRequestError: Request CreateScene returned code 601. With message: A source already exists by that scene name.
+OBSSDKRequestError: Request CreateScene returned code 601. With message: A source already exists by that scene name.
+Traceback (most recent call last):
+  File "/home/streamlink1/Desktop/stream_server/stream_venv/lib/python3.11/site-packages/obsws_python/reqs.py", line 53, in send
+    raise OBSSDKRequestError(
+obsws_python.error.OBSSDKRequestError: Request CreateScene returned code 601. With message: A source already exists by that scene name.
+OBSSDKRequestError: Request CreateScene returned code 601. With message: A source already exists by that scene name.
+Traceback (most recent call last):
+  File "/home/streamlink1/Desktop/stream_server/stream_venv/lib/python3.11/site-packages/obsws_python/reqs.py", line 53, in send
+    raise OBSSDKRequestError(
+obsws_python.error.OBSSDKRequestError: Request CreateScene returned code 601. With message: A source already exists by that scene name.
+OBSSDKRequestError: Request CreateInput returned code 601. With message: A source already exists by that input name.
+Traceback (most recent call last):
+  File "/home/streamlink1/Desktop/stream_server/stream_venv/lib/python3.11/site-packages/obsws_python/reqs.py", line 53, in send
+    raise OBSSDKRequestError(
+obsws_python.error.OBSSDKRequestError: Request CreateInput returned code 601. With message: A source already exists by that input name.
+OBSSDKRequestError: Request CreateInput returned code 601. With message: A source already exists by that input name.
+Traceback (most recent call last):
+  File "/home/streamlink1/Desktop/stream_server/stream_venv/lib/python3.11/site-packages/obsws_python/reqs.py", line 53, in send
+    raise OBSSDKRequestError(
+obsws_python.error.OBSSDKRequestError: Request CreateInput returned code 601. With message: A source already exists by that input name.
+['StreamStateChanged']
+Stream Status
+	 output active: False
+	 output bytes: 85187782
+	 output congestion: 0.0
+	 output duration: 0
+	 output reconnecting: False
+	 output skipped frames: 2148
+	 output timecode:00:00:00.000
+	 output total frames:9610
+Error: Invalid URL 'None': No scheme supplied. Perhaps you meant https://None?
+[2024-08-24 09:09:59] Try to get link m3u8 SCTV 1
+Stream Status
+	 output active: True
+	 output bytes: 0
+	 output congestion: 0.0
+	 output duration: 0
+	 output reconnecting: False
+	 output skipped frames: 0
+	 output timecode:00:00:00.000
+	 output total frames:0
+INIT: SET FLAG STREAM KEY 
+['StreamStateChanged']
+[2024-08-24 09:10:03] Try to get link m3u8 SCTV 1
+Stream Status
+	 output active: False
+	 output bytes: 90661536
+	 output congestion: 0.3809528648853302
+	 output duration: 0
+	 output reconnecting: False
+	 output skipped frames: 1510
+	 output timecode:00:00:00.000
+	 output total frames:9636
+[2024-08-24 09:10:07] Try to get link m3u8 SCTV 1
+Error: Invalid URL 'None': No scheme supplied. Perhaps you meant https://None?
+[2024-08-24 09:10:10] Try to get link m3u8 SCTV 2
+[2024-08-24 09:10:10] Try to get link m3u8 SCTV 1
+Stream Status
+	 output active: True
+	 output bytes: 409427
+	 output congestion: 0.0
+	 output duration: 1399
+	 output reconnecting: False
+	 output skipped frames: 0
+	 output timecode:00:00:01.399
+	 output total frames:42
+INIT: SET FLAG STREAM KEY 
+[2024-08-24 09:10:13] Try to get link m3u8 SCTV 2
+[2024-08-24 09:10:13] Try to get link m3u8 SCTV 1
+['StreamStateChanged']
+[2024-08-24 09:10:16] Try to get link m3u8 SCTV 2
+[2024-08-24 09:10:17] Post streamlink SCTV 1 res: 200
+Stream Status
+	 output active: False
+	 output bytes: 82332861
+	 output congestion: 0.0
+	 output duration: 0
+	 output reconnecting: False
+	 output skipped frames: 2303
+	 output timecode:00:00:00.000
+	 output total frames:9594
+[2024-08-24 09:10:19] Try to get link m3u8 SCTV 2
+Error: Invalid URL 'None': No scheme supplied. Perhaps you meant https://None?
+[2024-08-24 09:10:21] Try to get link m3u8 SCTV 3
+Stream Status
+	 output active: True
+	 output bytes: 315143
+	 output congestion: 0.0
+	 output duration: 1099
+	 output reconnecting: False
+	 output skipped frames: 0
+	 output timecode:00:00:01.099
+	 output total frames:33
+INIT: SET FLAG STREAM KEY 
+ * Serving Flask app 'Server'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.94.128:8000
+[33mPress CTRL+C to quit[0m
+192.168.196.220 - - [24/Aug/2024 09:10:32] "GET /live?stream=3&link=http://103.171.91.5:80/anhphong/anhphong/3.m3u8 HTTP/1.1" 200 -
+192.168.196.220 - - [24/Aug/2024 09:10:39] "GET /live?stream=2&link=http://103.171.91.5:80/anhphong/anhphong/2.m3u8 HTTP/1.1" 200 -
+192.168.196.220 - - [24/Aug/2024 09:10:58] "GET /live?stream=1&link=http://103.171.91.5:80/anhphong/anhphong/1.m3u8 HTTP/1.1" 200 -
+192.168.196.220 - - [24/Aug/2024 09:11:41] "GET /live?stream=1&link=http://103.171.91.5:80/anhphong/anhphong/1.m3u8 HTTP/1.1" 200 -
+192.168.196.220 - - [24/Aug/2024 09:11:55] "GET /live?stream=1&link=http://103.171.91.5:80/anhphong/anhphong/2.m3u8 HTTP/1.1" 200 -
+192.168.196.220 - - [24/Aug/2024 09:13:27] "GET /live?stream=1&link=http://103.171.91.5:80/anhphong/anhphong/1.m3u8 HTTP/1.1" 200 -
+192.168.196.220 - - [24/Aug/2024 09:14:13] "GET /live?stream=1&link=http://103.171.91.5:80/anhphong/anhphong/2.m3u8 HTTP/1.1" 200 -
+192.168.196.220 - - [24/Aug/2024 09:14:57] "GET /live?stream=1&link=http://103.171.91.5:80/anhphong/anhphong/1.m3u8 HTTP/1.1" 200 -
+[2024-08-24 09:10:23] Post streamlink SCTV 2 res: 200
+[2024-08-24 09:10:24] Try to get link m3u8 SCTV 3
+[2024-08-24 09:10:27] Try to get link m3u8 SCTV 3
+[2024-08-24 09:10:30] Try to get link m3u8 SCTV 3
+['input_kind', 'input_settings']
+vlc_source
+{
+   "playback_behavior": "stop_restart",
+   "playlist": [
+      {
+         "hidden": false,
+         "selected": true,
+         "value": "http://103.171.91.5:80/anhphong/anhphong/3.m3u8"
+      }
+   ],
+   "shuffle": false
+}
+LIVE
+[2024-08-24 09:10:33] Post streamlink SCTV 3 res: 200
+['input_kind', 'input_settings']
+vlc_source
+{
+   "playback_behavior": "stop_restart",
+   "playlist": [
+      {
+         "hidden": false,
+         "selected": true,
+         "value": "http://103.171.91.5:80/anhphong/anhphong/2.m3u8"
+      }
+   ],
+   "shuffle": false
+}
+LIVE
+['input_kind', 'input_settings']
+vlc_source
+{
+   "playback_behavior": "stop_restart",
+   "playlist": [
+      {
+         "hidden": false,
+         "selected": true,
+         "value": "http://103.171.91.5:80/anhphong/anhphong/1.m3u8"
+      }
+   ],
+   "shuffle": false
+}
+LIVE
+['input_kind', 'input_settings']
+vlc_source
+{
+   "playback_behavior": "stop_restart",
+   "playlist": [
+      {
+         "hidden": false,
+         "selected": true,
+         "value": "http://103.171.91.5:80/anhphong/anhphong/1.m3u8"
+      }
+   ],
+   "shuffle": false
+}
+LIVE
+['input_kind', 'input_settings']
+vlc_source
+{
+   "playback_behavior": "stop_restart",
+   "playlist": [
+      {
+         "hidden": false,
+         "selected": true,
+         "value": "http://103.171.91.5:80/anhphong/anhphong/2.m3u8"
+      }
+   ],
+   "shuffle": false
+}
+LIVE
+['input_kind', 'input_settings']
+vlc_source
+{
+   "playback_behavior": "stop_restart",
+   "playlist": [
+      {
+         "hidden": false,
+         "selected": true,
+         "value": "http://103.171.91.5:80/anhphong/anhphong/1.m3u8"
+      }
+   ],
+   "shuffle": false
+}
+LIVE
+['input_kind', 'input_settings']
+vlc_source
+{
+   "playback_behavior": "stop_restart",
+   "playlist": [
+      {
+         "hidden": false,
+         "selected": true,
+         "value": "http://103.171.91.5:80/anhphong/anhphong/2.m3u8"
+      }
+   ],
+   "shuffle": false
+}
+LIVE
+['input_kind', 'input_settings']
+vlc_source
+{
+   "playback_behavior": "stop_restart",
+   "playlist": [
+      {
+         "hidden": false,
+         "selected": true,
+         "value": "http://103.171.91.5:80/anhphong/anhphong/1.m3u8"
+      }
+   ],
+   "shuffle": false
+}
+LIVE
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 09:18:55] Try to get link m3u8 SCTV 2
+[2024-08-24 09:19:01] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 09:20:06] Try to get link m3u8 SCTV 1
+[2024-08-24 09:20:13] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 09:22:35] Try to get link m3u8 SCTV 1
+[2024-08-24 09:22:40] Post streamlink SCTV 1 res: 200
+Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-08-24 09:36:04] Try to get link m3u8 SCTV 1
+[2024-08-24 09:36:10] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-24 10:11:04] Try to get link m3u8 SCTV 3
+[2024-08-24 10:11:10] Post streamlink SCTV 3 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 10:11:15] Try to get link m3u8 SCTV 1
+[2024-08-24 10:11:24] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 10:36:18] Try to get link m3u8 SCTV 1
+[2024-08-24 10:36:27] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-24 10:43:05] Try to get link m3u8 SCTV 2
+[2024-08-24 10:43:11] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-24 10:45:51] Try to get link m3u8 SCTV 1
+[2024-08-24 10:45:56] Post streamlink SCTV 1 res: 200
+Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-08-24 10:55:42] Try to get link m3u8 SCTV 1
+[2024-08-24 10:55:47] Post streamlink SCTV 1 res: 200
+Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-08-24 11:00:59] Try to get link m3u8 SCTV 1
+[2024-08-24 11:01:04] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 11:09:23] Try to get link m3u8 SCTV 1
+[2024-08-24 11:09:36] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 11:14:03] Try to get link m3u8 SCTV 2
+[2024-08-24 11:14:10] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 11:17:53] Try to get link m3u8 SCTV 2
+[2024-08-24 11:17:58] Post streamlink SCTV 2 res: 200
+trigger reconnnected event
+Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-08-24 11:18:24] Try to get link m3u8 SCTV 2
+[2024-08-24 11:18:30] Post streamlink SCTV 2 res: 200
+trigger reconnnected event
+[2024-08-24 11:20:47] Try to get link m3u8 SCTV 2
+[2024-08-24 11:20:54] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 11:36:29] Try to get link m3u8 SCTV 3
+[2024-08-24 11:36:35] Post streamlink SCTV 3 res: 200
+Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-08-24 11:53:10] Try to get link m3u8 SCTV 3
+[2024-08-24 11:53:17] Post streamlink SCTV 3 res: 200
+Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-08-24 12:03:42] Try to get link m3u8 SCTV 2
+[2024-08-24 12:03:48] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 12:28:04] Try to get link m3u8 SCTV 2
+[2024-08-24 12:28:09] Post streamlink SCTV 2 res: 200
+Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-08-24 12:40:40] Try to get link m3u8 SCTV 2
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 12:40:45] Try to get link m3u8 SCTV 1
+[2024-08-24 12:40:46] Post streamlink SCTV 2 res: 200
+[2024-08-24 12:40:50] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-24 12:45:59] Try to get link m3u8 SCTV 1
+[2024-08-24 12:46:07] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 13:19:41] Try to get link m3u8 SCTV 3
+[2024-08-24 13:19:46] Post streamlink SCTV 3 res: 200
+Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-08-24 13:50:53] Try to get link m3u8 SCTV 1
+[2024-08-24 13:51:00] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-24 13:59:28] Try to get link m3u8 SCTV 3
+[2024-08-24 13:59:37] Post streamlink SCTV 3 res: 200
+Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-08-24 14:03:47] Try to get link m3u8 SCTV 1
+[2024-08-24 14:03:52] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-24 14:09:17] Try to get link m3u8 SCTV 3
+192.168.196.220 - - [24/Aug/2024 20:47:53] "GET /live?stream=2&link=http://103.171.91.5:80/anhphong/anhphong/2.m3u8 HTTP/1.1" 200 -
+[2024-08-24 14:09:27] Post streamlink SCTV 3 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-24 14:17:35] Try to get link m3u8 SCTV 2
+[2024-08-24 14:17:41] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-24 14:33:59] Try to get link m3u8 SCTV 1
+[2024-08-24 14:34:03] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 14:42:20] Try to get link m3u8 SCTV 1
+[2024-08-24 14:42:27] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-24 14:48:23] Try to get link m3u8 SCTV 2
+[2024-08-24 14:48:29] Post streamlink SCTV 2 res: 200
+Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-08-24 14:58:29] Try to get link m3u8 SCTV 1
+[2024-08-24 14:58:35] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-24 15:02:55] Try to get link m3u8 SCTV 1
+[2024-08-24 15:03:02] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-24 15:05:04] Try to get link m3u8 SCTV 3
+[2024-08-24 15:05:10] Post streamlink SCTV 3 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 15:15:35] Try to get link m3u8 SCTV 3
+[2024-08-24 15:15:41] Post streamlink SCTV 3 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-24 15:20:33] Try to get link m3u8 SCTV 2
+[2024-08-24 15:20:43] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 15:35:49] Try to get link m3u8 SCTV 2
+[2024-08-24 15:35:57] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-24 16:03:01] Try to get link m3u8 SCTV 2
+[2024-08-24 16:03:08] Post streamlink SCTV 2 res: 200
+Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-08-24 16:22:08] Try to get link m3u8 SCTV 2
+[2024-08-24 16:22:14] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 16:25:18] Try to get link m3u8 SCTV 2
+[2024-08-24 16:25:25] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-24 16:30:46] Try to get link m3u8 SCTV 2
+[2024-08-24 16:30:52] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 16:35:48] Try to get link m3u8 SCTV 3
+[2024-08-24 16:35:53] Post streamlink SCTV 3 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 16:38:52] Try to get link m3u8 SCTV 2
+[2024-08-24 16:38:59] Post streamlink SCTV 2 res: 200
+Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-08-24 16:52:18] Try to get link m3u8 SCTV 1
+[2024-08-24 16:52:26] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 17:00:06] Try to get link m3u8 SCTV 3
+[2024-08-24 17:00:11] Post streamlink SCTV 3 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 17:06:07] Try to get link m3u8 SCTV 1
+[2024-08-24 17:06:13] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 17:10:12] Try to get link m3u8 SCTV 2
+[2024-08-24 17:10:17] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 17:22:18] Try to get link m3u8 SCTV 1
+[2024-08-24 17:22:26] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-24 17:27:03] Try to get link m3u8 SCTV 1
+[2024-08-24 17:27:13] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 17:58:16] Try to get link m3u8 SCTV 1
+[2024-08-24 17:58:24] Post streamlink SCTV 1 res: 200
+Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-08-24 18:00:42] Try to get link m3u8 SCTV 1
+[2024-08-24 18:00:46] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 18:01:00] Try to get link m3u8 SCTV 3
+[2024-08-24 18:01:16] Post streamlink SCTV 3 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 18:02:21] Try to get link m3u8 SCTV 2
+[2024-08-24 18:02:26] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 18:49:25] Try to get link m3u8 SCTV 3
+[2024-08-24 18:49:32] Post streamlink SCTV 3 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 19:20:23] Try to get link m3u8 SCTV 3
+[2024-08-24 19:20:30] Post streamlink SCTV 3 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-24 19:21:26] Try to get link m3u8 SCTV 2
+[2024-08-24 19:21:31] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 19:31:59] Try to get link m3u8 SCTV 2
+[2024-08-24 19:32:08] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 19:32:50] Try to get link m3u8 SCTV 1
+[2024-08-24 19:32:58] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 20:43:26] Try to get link m3u8 SCTV 3
+[2024-08-24 20:43:34] Post streamlink SCTV 3 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 20:46:04] Try to get link m3u8 SCTV 1
+[2024-08-24 20:46:09] Post streamlink SCTV 1 res: 200
+['input_kind', 'input_settings']
+vlc_source
+{
+   "playback_behavior": "stop_restart",
+   "playlist": [
+      {
+         "hidden": false,
+         "selected": true,
+         "value": "http://103.171.91.5:80/anhphong/anhphong/2.m3u8"
+      }
+   ],
+   "shuffle": false
+}
+LIVE
+Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-08-24 20:50:42] Try to get link m3u8 SCTV 1
+[2024-08-24 20:50:47] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 21:17:41] Try to get link m3u8 SCTV 2
+[2024-08-24 21:17:48] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-24 21:18:42] Try to get link m3u8 SCTV 2
+[2024-08-24 21:18:48] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-24 21:21:57] Try to get link m3u8 SCTV 3
+[2024-08-24 21:22:04] Post streamlink SCTV 3 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 21:37:55] Try to get link m3u8 SCTV 2
+[2024-08-24 21:38:03] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 21:59:29] Try to get link m3u8 SCTV 3
+[2024-08-24 21:59:36] Post streamlink SCTV 3 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 22:05:15] Try to get link m3u8 SCTV 1
+[2024-08-24 22:05:22] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-24 22:14:19] Try to get link m3u8 SCTV 3
+[2024-08-24 22:14:28] Post streamlink SCTV 3 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 22:16:48] Try to get link m3u8 SCTV 1
+[2024-08-24 22:16:55] Post streamlink SCTV 1 res: 200
+Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-08-24 22:21:40] Try to get link m3u8 SCTV 3
+[2024-08-24 22:21:45] Post streamlink SCTV 3 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 22:56:56] Try to get link m3u8 SCTV 3
+[2024-08-24 22:57:02] Post streamlink SCTV 3 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-24 23:00:19] Try to get link m3u8 SCTV 1
+[2024-08-24 23:00:27] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 23:21:09] Try to get link m3u8 SCTV 3
+[2024-08-24 23:21:17] Post streamlink SCTV 3 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-24 23:25:22] Try to get link m3u8 SCTV 3
+[2024-08-24 23:25:27] Post streamlink SCTV 3 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 23:45:00] Try to get link m3u8 SCTV 1
+[2024-08-24 23:45:07] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-24 23:53:49] Try to get link m3u8 SCTV 1
+[2024-08-24 23:53:56] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-24 23:54:01] Try to get link m3u8 SCTV 2
+[2024-08-24 23:54:06] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-25 00:01:13] Try to get link m3u8 SCTV 2
+[2024-08-25 00:01:20] Post streamlink SCTV 2 res: 200
+Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-08-25 00:27:48] Try to get link m3u8 SCTV 2
+[2024-08-25 00:27:55] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-25 00:32:48] Try to get link m3u8 SCTV 3
+[2024-08-25 00:32:56] Post streamlink SCTV 3 res: 200
+Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-08-25 00:49:00] Try to get link m3u8 SCTV 1
+[2024-08-25 00:49:07] Post streamlink SCTV 1 res: 200
+Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-08-25 00:49:58] Try to get link m3u8 SCTV 2
+[2024-08-25 00:50:06] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-25 00:51:04] Try to get link m3u8 SCTV 3
+[2024-08-25 00:51:08] Post streamlink SCTV 3 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-25 00:54:36] Try to get link m3u8 SCTV 3
+[2024-08-25 00:54:41] Post streamlink SCTV 3 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-25 00:56:17] Try to get link m3u8 SCTV 3
+[2024-08-25 00:56:20] Post streamlink SCTV 3 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-25 00:57:37] Try to get link m3u8 SCTV 2
+[2024-08-25 00:57:48] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-25 01:03:51] Try to get link m3u8 SCTV 3
+[2024-08-25 01:03:58] Post streamlink SCTV 3 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-25 01:05:02] Try to get link m3u8 SCTV 2
+[2024-08-25 01:05:09] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-25 01:08:38] Try to get link m3u8 SCTV 2
+[2024-08-25 01:08:47] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-25 01:13:11] Try to get link m3u8 SCTV 1
+[2024-08-25 01:13:17] Post streamlink SCTV 1 res: 200
+Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-08-25 01:33:27] Try to get link m3u8 SCTV 2
+[2024-08-25 01:33:35] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-25 01:42:24] Try to get link m3u8 SCTV 1
+[2024-08-25 01:42:31] Post streamlink SCTV 1 res: 200
+Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-08-25 02:04:41] Try to get link m3u8 SCTV 3
+[2024-08-25 02:04:50] Post streamlink SCTV 3 res: 200
+Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-08-25 02:08:04] Try to get link m3u8 SCTV 1
+[2024-08-25 02:08:09] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-25 02:43:08] Try to get link m3u8 SCTV 1
+[2024-08-25 02:43:17] Post streamlink SCTV 1 res: 200
+Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-08-25 02:48:54] Try to get link m3u8 SCTV 3
+[2024-08-25 02:49:00] Post streamlink SCTV 3 res: 200
+Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-08-25 03:49:20] Try to get link m3u8 SCTV 1
+[2024-08-25 03:49:31] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-25 04:17:56] Try to get link m3u8 SCTV 2
+[2024-08-25 04:18:06] Post streamlink SCTV 2 res: 200
+Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-08-25 04:21:34] Try to get link m3u8 SCTV 1
+[2024-08-25 04:21:41] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out.
+[2024-08-25 04:41:28] Try to get link m3u8 SCTV 2
+[2024-08-25 04:41:34] Post streamlink SCTV 2 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-25 04:48:39] Try to get link m3u8 SCTV 3
+[2024-08-25 04:48:46] Post streamlink SCTV 3 res: 200
+Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+[2024-08-25 05:18:46] Try to get link m3u8 SCTV 1
+[2024-08-25 05:18:58] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+[2024-08-25 05:22:05] Try to get link m3u8 SCTV 1
+[2024-08-25 05:22:10] Post streamlink SCTV 1 res: 200
+Error: HTTPSConnectionPool(host='video-weaver.hkg06.hls.ttvnw.net', port=443): Read timed out. (read timeout=10)
+192.168.196.220 - - [25/Aug/2024 11:10:45] "GET /live?stream=2&link=http://103.171.91.5:80/anhphong/anhphong/2.m3u8 HTTP/1.1" 200 -
+192.168.196.220 - - [25/Aug/2024 11:10:51] "GET /live?stream=1&link=http://103.171.91.5:80/anhphong/anhphong/1.m3u8 HTTP/1.1" 200 -

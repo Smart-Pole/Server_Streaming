@@ -39,6 +39,7 @@ class OBS_controller:
         self.on_reconnected = None
         self.mqtt_handler = None
         self.mqtt_topic = None
+        self.have_idle = False
         
         # resgiter event want to listen
         self.event_client.callback.register(self.on_stream_state_changed)
@@ -47,22 +48,65 @@ class OBS_controller:
         
         # self.event_client.callback.register(self.on_media_input_action_triggered)
         # self.event_client.callback.register(self.on_scene_transition_video_ended)
-        print(self.event_client.callback.get())
         try:
-            self.create_scene("LIVE")
+            if self.check_stream_is_active():
+                self.stop_stream()
         except:
             pass
+        time.sleep(2)
+
+        lists_input = self.request_client.get_input_list().inputs
+        for item in lists_input:
+            print("inputName is:", item['inputName'])
+            self.request_client.remove_input(name=item['inputName'])
+            time.sleep(1)
+        time.sleep(2)
+        lists_scene = self.request_client.get_scene_list().scenes
+        for item in lists_scene:
+            print("sceneName is:", item['sceneName'])
+            if item['sceneName'] != "IDLE":
+                print("sceneName delete:", item['sceneName'])
+                self.request_client.remove_scene(name=item['sceneName'])
+                time.sleep(1)
+            else:
+                self.have_idle = True
+        time.sleep(2)
+        # print(self.event_client.callback.get())
+
+        try:
+            if not self.have_idle:
+                print("crate IDLE")
+                self.create_scene("IDLE")
+        except:
+            pass
+        time.sleep(0.5)
+        try:
+            self.create_scene("LIVE_M")
+        except:
+            pass
+        time.sleep(0.5)
+        try:
+            self.create_scene("LIVE_V")
+        except:
+            pass
+        time.sleep(0.5)
         try:
             self.create_scene("SCHEDULE")
         except:
             pass
+        time.sleep(0.5)
         try:
             self.create_scene("VTV")
         except:
             pass
-            
+        time.sleep(0.5)
         try:
-            self.create_vlc_input_source("LIVE","live",[""], self.width, self.height)
+            self.create_vtv_input_source("LIVE_M","live_m",[""], self.width, self.height)
+        except:
+            pass
+        time.sleep(0.5)
+        try:
+            self.create_vlc_input_source("LIVE_V","live_v",[""], self.width, self.height)
         except:
             pass
 
@@ -468,9 +512,9 @@ class OBS_controller:
                 "selected": True if idx == 0 else False,
                 "value": video
             }
-            print("11111")
+
             playlist.append(item)
-            print("222222")
+
             
         settings = {
             "playback_behavior": "stop_restart",
@@ -775,7 +819,14 @@ class OBS_controller:
         """
         self.request_client.remove_input(input_name)
     
-    
+    def set_input_vtv(self, source_name , url):
+        input_setting = {
+            "input": url,
+            "is_local_file": False,
+            # "restart_on_activate": true
+        }
+        self.set_input_settings(name=source_name, settings=input_setting, overlay= False )
+           
     def create_vtv_input_source(self, scene_name, source_name , url, width = 0 , height = 0):
         """ creating media source of obs to play and vtv url
 
