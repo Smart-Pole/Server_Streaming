@@ -23,18 +23,26 @@ app = Flask(__name__)
 CORS(app)
 
 FolderVideoPath = "video"
-
+OBSWidth = 1920
+OBSHeight = 1080
 UPLOAD_FOLDER = FolderVideoPath
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 app.config['UPLOAD_FOLDER'] = FolderVideoPath
 
-my_scheduler1 = StreamScheduler(Stream=1,FileLog="log_thread1.txt",VideoPath="d:/FP_ver2/SERVER/video/",Database='task_infor.db',DataTable="thread1",OBSPass="123456",OBSPort=3344,StreamKey="live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk",StreamLink = "https://www.twitch.tv/gutsssssssss9",NameStream="gutsssssssss9")
-# my_scheduler2 = StreamScheduler(Stream=2,FileLog="log_thread2.txt",VideoPath="d:/FP_ver2/SERVER/video/",Database='task_infor.db',DataTable="thread2",OBSPass="123456",OBSPort=5544,StreamKey="live_1071558463_6geWoWQgWadKOjby2mqDj40qeiW9fg",StreamLink = "https://www.twitch.tv/dat_live2",NameStream="dat_live2")
-my_scheduler2 = StreamScheduler(Stream=2,FileLog="log_thread3.txt",VideoPath="d:/FP_ver2/SERVER/video/",Database='task_infor.db',DataTable="thread3",OBSPass="123456",OBSPort=5544,StreamKey="wyeq-3ec1-k41m-1dbk-7bd3",StreamLink = "https://www.twitch.tv/dat_live2",NameStream="dat_live2",StreamServer="rtmp://a.rtmp.youtube.com/live2")
+my_schedulers = [
+    StreamScheduler(Stream=1, FileLog="log_thread1.txt", VideoPath=FolderVideoPath, Database='task_infor.db', DataTable="thread1", OBSPass="123456", OBSPort=1131,OBSId="sctv1",OBSName="SCTV 1",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk", StreamLink="https://www.twitch.tv/gutsssssssss9", NameStream="gutsssssssss9"),
+    StreamScheduler(Stream=2, FileLog="log_thread2.txt", VideoPath=FolderVideoPath, Database='task_infor.db', DataTable="thread2", OBSPass="123456", OBSPort=1132,OBSId="sctv2",OBSName="SCTV 2",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1071558463_6geWoWQgWadKOjby2mqDj40qeiW9fg", StreamLink="https://www.twitch.tv/dat_live2", NameStream="dat_live2"),
+    StreamScheduler(Stream=3, FileLog="log_thread3.txt", VideoPath=FolderVideoPath, Database='task_infor.db', DataTable="thread3", OBSPass="123456", OBSPort=1133,OBSId="sctv3",OBSName="SCTV 3",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1071557915_S0GK8ydVBO5EfOREfzEmAtJNbL09fL", StreamLink="https://www.twitch.tv/dat_live1", NameStream="dat_live1"),
+    # StreamScheduler(Stream=4, FileLog="log_thread4.txt", VideoPath=FolderVideoPath, Database='task_infor.db', DataTable="thread4", OBSPass="123456", OBSPort=1134,OBSId="vtv4",OBSName="VTV 4",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1039740022_rGAe65XCi8xif5QyFwQLeRLdVKtX2O", StreamLink="https://www.twitch.tv/hehe0088", NameStream="hehe0088"),
+    # StreamScheduler(Stream=5, FileLog="log_thread5.txt", VideoPath=FolderVideoPath, Database='task_infor.db', DataTable="thread5", OBSPass="123456", OBSPort=1135,OBSId="vtv5",OBSName="VTV 5",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1125130390_vqMoTYJF7jiOtTt8uM4oBS7DANMon8", StreamLink="https://www.twitch.tv/nhanlow", NameStream="nhanlow"),
+    # StreamScheduler(Stream=6, FileLog="log_thread6.txt", VideoPath=FolderVideoPath, Database='task_infor.db', DataTable="thread6", OBSPass="123456", OBSPort=1136,OBSId="vtv6",OBSName="VTV 6",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1044211682_Ol34MomAqRm3Ef7s0jwrKq0KNGj3Ku", StreamLink="https://www.twitch.tv/huynhnguyenhieunhan", NameStream="huynhnguyenhieunhan"),
+    # StreamScheduler(Stream=7, FileLog="log_thread7.txt", VideoPath=FolderVideoPath, Database='task_infor.db', DataTable="thread7", OBSPass="123456", OBSPort=1137,OBSId="vtv7",OBSName="VTV 7",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1127937398_28e30ICQkj916Yris7ysw3wSQnjkuQ", StreamLink="https://www.twitch.tv/nhanlow_v2", NameStream="nhanlow_v2"),
+    # StreamScheduler(Stream=8, FileLog="log_thread8.txt", VideoPath=FolderVideoPath, Database='task_infor.db', DataTable="thread8", OBSPass="123456", OBSPort=1138,OBSId="vtv8",OBSName="VTV 8",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1127041941_YqyrJHfYVm7NBtX7EIckVEZtMjuMde", StreamLink="https://www.twitch.tv/hehe0081", NameStream="hehe0081"),
+    # StreamScheduler(Stream=9, FileLog="log_thread9.txt", VideoPath=FolderVideoPath, Database='task_infor.db', DataTable="thread9", OBSPass="123456", OBSPort=1139,OBSId="film",OBSName="Xem Phim",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1127937001_mk0mXlFKsXjeqQ9UmVFroNbJAWxvxW", StreamLink="https://www.twitch.tv/hehe0082", NameStream="hehe0082"),
+]
 
 pole_manager = Pole_manager()
-
 
 channel = {
            'Cartoon 1' : 'https://www.youtube.com/watch?v=Fjp2TdlTTIU',
@@ -44,9 +52,13 @@ channel = {
            'Nat geo WILD' : 'https://www.youtube.com/watch?v=BJ3Yv572V1A',
            'ABC news' : 'https://www.youtube.com/watch?v=-mvUkiILTqI',
            'Nasa' : 'https://www.youtube.com/watch?v=0FBiyFpV__g',
-           'VTV1' : '_vtv1',
-           'VTV2' : '_vtv2'}
-
+           'THVL1' : 'https://www.thvli.vn/live/thvl1-hd',}
+vtv_channel = {
+           'VTV1' : 'http://127.0.0.1:9001/',
+           'VTV2' : 'http://127.0.0.1:9002/',
+           'VTV3' : 'http://127.0.0.1:9003/',
+           'VTV4' : 'http://127.0.0.1:9004/',
+           'VTV5' : 'http://127.0.0.1:9005/',}
 
 ################## begin MQTT
 
@@ -133,11 +145,11 @@ def Set_pole_stream_id():
     my_pole_id = {pole.ID for pole in pole_manager.pole_infor}
     print(my_pole_id)
 
-    if stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
         return jsonify({'error':  'Wrong stream'}), 400
     
     for ID in pole_id:
@@ -160,12 +172,12 @@ def Set_pole_stream_area():
     print(area)
     my_area = {pole.area for pole in pole_manager.pole_infor}
 
-    if stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
-        return jsonify({'error': 'Wrong stream'}), 400
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
+        return jsonify({'error':  'Wrong stream'}), 400
     
 
     if not (area in my_area):
@@ -188,12 +200,12 @@ def Get_files_in_folder():
 def Get_NameStream():
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream or stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
-        return jsonify({'error': 'Wrong stream'}), 400
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
+        return jsonify({'error':  'Wrong stream'}), 400
     
     return jsonify({'stream' : f'{my_scheduler.stream}' ,'name twitch': f'{my_scheduler.NameStream}'}), 200
 
@@ -201,12 +213,12 @@ def Get_NameStream():
 def Get_Current_Task():
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream or stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
-        return jsonify({'error': 'Wrong stream'}), 400
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
+        return jsonify({'error':  'Wrong stream'}), 400
 
 
     if not my_scheduler.CurrentTask:
@@ -230,12 +242,12 @@ def Get_Current_Task():
 def Get_schedule():
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream or stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
-        return jsonify({'error': 'Wrong stream'}), 400
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
+        return jsonify({'error':  'Wrong stream'}), 400
     # Convert datetime objects to strings
     mylist = copy.deepcopy(my_scheduler.ListTask)
     for task in mylist:
@@ -254,12 +266,12 @@ def Get_schedule():
 def Get_streamkey():
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream or stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
-        return jsonify({'error': 'Wrong stream'}), 400
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
+        return jsonify({'error':  'Wrong stream'}), 400
     stream_key = my_scheduler.get_stream_key()
     print(stream_key)
     return jsonify({'stream' : f'{my_scheduler.stream}' ,'Stream key': stream_key}), 200
@@ -271,26 +283,24 @@ def Set_Stream_Parameter():
 
 @app.route('/get/TVchannel')
 def get_TVchannel():
-    return jsonify({'TV channel' : f'{list(channel.keys())}'})
+    combined_channel = {**channel, **vtv_channel}
+    return jsonify({'TV channel' : f'{list(combined_channel.keys())}'})
 
 @app.route('/live/TVchannel')
 def Live_Steam_TV():
-        # CHOOSE THE STREAM CHANEL
+     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream or stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
-        return jsonify({'error': 'Wrong stream'}), 400
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
+        return jsonify({'error':  'Wrong stream'}), 400
 
-    # list = request.args.get('list')
     tv_channel  = request.args.get('tvchannel')
-    channel_url = channel.get(tv_channel)
-    if channel_url:
-        if tv_channel == "VTV1" or tv_channel == "VTV2":
-            my_scheduler.live_window_cature(tv_channel)
-            return jsonify({'stream' : f'{my_scheduler.stream}' ,'success': {'message': 'Live stream'}}), 200
+    
+    if channel.get(tv_channel):
+        channel_url = channel.get(tv_channel)
         
         streams = streamlink.streams(channel_url)
 
@@ -310,21 +320,52 @@ def Live_Steam_TV():
 
         my_scheduler.live(link=best_stream_url)
         return jsonify({'stream' : f'{my_scheduler.stream}' ,'success': {'message': 'Live stream'}}), 200
+    elif vtv_channel.get(tv_channel):
+        # print(vtv_channel.get(tv_channel))
+        my_scheduler.live_vtv(vtv_channel.get(tv_channel))
+        return jsonify({'stream' : f'{my_scheduler.stream}' ,'success': {'message': 'Live stream'}}), 200
+        pass
     else:
         return jsonify({'error':  'Wrong TV channel'}), 400
 
+@app.route('/live/video')
+def Live_Video():
+    # CHOOSE THE STREAM CHANEL
+    stream  = request.args.get('stream')
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
+        return jsonify({'error':  'Wrong stream'}), 400
 
+    list  = request.args.get('list')
+    # CHECK LIST
+    if not list:
+        return jsonify({'stream' : f'{my_scheduler.stream}' ,'error':  'List empty'}), 400
+    
+    video_list = list.split(',')
+
+    if not check_video_list(video_list):
+        return jsonify({'stream' : f'{my_scheduler.stream}' ,'error':  'Wrong file name'}), 400
+    print(f"List Video: {video_list}")
+
+    my_scheduler.live(videolist=video_list)
+
+    # my_scheduler.live(link=link)
+    
+    return jsonify({'stream' : f'{my_scheduler.stream}' ,'success': {'message': 'Live stream'}}), 200
 
 @app.route('/live')
 def Live_Steam():
         # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream or stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
-        return jsonify({'error': 'Wrong stream'}), 400
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
+        return jsonify({'error':  'Wrong stream'}), 400
 
     link  = request.args.get('link')
     if not link:
@@ -356,11 +397,11 @@ def Live_Steam():
 def Stop_Live_Steam():
         # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream or stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
         return jsonify({'error':  'Wrong stream'}), 400
 
         
@@ -381,12 +422,12 @@ def Add_Task_Everyweeks():
     deadline = None
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream or stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
-        return jsonify({'error': 'Wrong stream'}), 400
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
+        return jsonify({'error':  'Wrong stream'}), 400
         
     #CHECK DURATION
     print(duration)
@@ -447,7 +488,7 @@ def Add_Task_Everyweeks():
     if end_time:
         if validateTimeformat(start_time) == False:
              return jsonify({'stream' : f'{my_scheduler.stream}' ,'error': 'Wrong time format'}) ,400
-        print(end_time)
+        print(end_time) 
     else:
         return jsonify({'stream' : f'{my_scheduler.stream}' ,'error': 'Empty end time'}) ,400
     
@@ -494,12 +535,12 @@ def Add_Task_Everydays():
 
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream or stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
-        return jsonify({'error':'Wrong stream'}), 400
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
+        return jsonify({'error':  'Wrong stream'}), 400
         
     # CHECK DURATION 
     if not duration:
@@ -594,12 +635,12 @@ def Add_Task_onetime():
 
     # Cheking parameter
     stream  = request.args.get('stream')
-    if not stream or stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
-        return jsonify({'error': 'Wrong stream'}), 400
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
+        return jsonify({'error':  'Wrong stream'}), 400
         
     #CHECK LIST
     if not list:
@@ -673,11 +714,11 @@ def Add_Task_onetime():
 def Delete_Task():
         # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream or stream == "1":
-        my_scheduler =  my_scheduler1
-    elif stream == "2":
-        my_scheduler = my_scheduler2
-    else:
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
         return jsonify({'error':  'Wrong stream'}), 400
         
     id = request.args.get('id')
@@ -720,8 +761,8 @@ def serve_video(filename):
 def main():
     
     init()
-    my_scheduler1.run()
-    my_scheduler2.run()
+    for scheduler in my_schedulers:
+        scheduler.run()
     # my_obs.get_input_list()
     # my_obs.get_input_settings("mySource")
     # my_obs.get_scene_item_list('scene1')

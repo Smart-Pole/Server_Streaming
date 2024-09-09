@@ -1,10 +1,14 @@
 import obsws_python as obs
 import json
 import time
+from datetime import datetime
+import streamlink
+import requests
+import threading
+# rtmp://live.twitch.tv/app server live of twitch
 
 
 class OBS_controller:
-    
     def printJsonObject(self,object):
         print(json.dumps(object,indent=3))
         
@@ -13,27 +17,230 @@ class OBS_controller:
         for object in object_list:
             self.printJsonObject(object)
             
-    def __init__(self, host='10.128.89.78', port=4455, password='123456') -> None:
-        # flag = False
-        # # Đọc file config.txt
-        # with open('config.txt', 'r') as file:
-        #     # Đọc từng dòng trong file
-        #     for line in file:
-        #         # Tách chuỗi thành hai phần, phần bên trái là key, phần bên phải là value
-        #         key, value = line.strip().split('-')
-        #         # Nếu key là 'VIDEO PATH', lưu giá trị vào biến videopath và thoát vòng lặp
-        #         if key.strip() == 'PORT':
-        #             self.port = value
-        #             flag = True
-        #             break
-        # if not flag:
-        #     self.port = port
+    def __init__(self, streamlink, id , name , host='localhost', port=4455, password='123456', width = 1920, height  = 1080) -> None:
+
+        self.id = id
+        self.name = name
+        self.streamlink = streamlink
+        self.streamlink_m3u8 = None
         self.port = port
         self.host = host
         self.password = password
+        self.height = height
+        self.width = width
+        self.url = "https://stream.lpnserver.net/report"
+        self.__start_checking()
+        # event and request client for obs websocket
         self.request_client = obs.ReqClient(host = self.host,port = self.port,password = self.password)
+        self.event_client = obs.EventClient(host = self.host,port = self.port,password = self.password)
+        
+        
+        # on reconnect handler
+        self.on_reconnected = None
+        self.mqtt_handler = None
+        self.mqtt_topic = None
+        self.have_idle = False
+        
+        # resgiter event want to listen
+        self.event_client.callback.register(self.on_stream_state_changed)
+        # self.event_client.callback.register(self.on_scene_item_transform_changed)
+        # self.event_client.callback.register(self.on_media_input_playback_ended)
+        
+        # self.event_client.callback.register(self.on_media_input_action_triggered)
+        # self.event_client.callback.register(self.on_scene_transition_video_ended)
+        try:
+            if self.check_stream_is_active():
+                self.stop_stream()
+        except:
+            pass
+        time.sleep(2)
+
+        lists_input = self.request_client.get_input_list().inputs
+        for item in lists_input:
+            print("inputName is:", item['inputName'])
+            self.request_client.remove_input(name=item['inputName'])
+            time.sleep(1)
+        time.sleep(2)
+        lists_scene = self.request_client.get_scene_list().scenes
+        for item in lists_scene:
+            print("sceneName is:", item['sceneName'])
+            if item['sceneName'] != "IDLE":
+                print("sceneName delete:", item['sceneName'])
+                self.request_client.remove_scene(name=item['sceneName'])
+                time.sleep(1)
+            else:
+                self.have_idle = True
+        time.sleep(2)
+        # print(self.event_client.callback.get())
+
+        try:
+            if not self.have_idle:
+                print("crate IDLE")
+                self.create_scene("IDLE")
+        except:
+            pass
+        time.sleep(0.5)
+        try:
+            self.create_scene("LIVE_M")
+        except:
+            pass
+        time.sleep(0.5)
+        try:
+            self.create_scene("LIVE_V")
+        except:
+            pass
+        time.sleep(0.5)
+        try:
+            self.create_scene("SCHEDULE")
+        except:
+            pass
+        time.sleep(0.5)
+        try:
+            self.create_scene("VTV")
+        except:
+            pass
+        time.sleep(0.5)
+        try:
+            self.create_vtv_input_source("LIVE_M","live_m",[""], self.width, self.height)
+        except:
+            pass
+        time.sleep(0.5)
+        try:
+            self.create_vlc_input_source("LIVE_V","live_v",[""], self.width, self.height)
+        except:
+            pass
+
+        try:
+            self.create_vlc_input_source("SCHEDULE","mySource",[""], self.width, self.height)
+        except:
+            pass
 
         
+        
+        
+# CHECK LINK DIE
+    def __start_checking(self):
+        if self.id == None:
+            return
+        def run_check():
+            while True:
+                time.sleep(10)
+                if self.__check_streamlink_error() == False:
+                    self.__send_streamlink_to_server()
+                
+
+        thread = threading.Thread(target=run_check)
+        thread.daemon = True  # Đảm bảo thread sẽ dừng khi chương trình chính kết thúc
+        thread.start()
+
+    def __check_streamlink_error(self):
+        try:
+            response = requests.get(self.streamlink_m3u8, timeout=10)
+            # Kiểm tra mã trạng thái HTTP và content type
+            if response.status_code == 200 and 'application/vnd.apple.mpegurl' in response.headers.get('Content-Type', ''):
+                return True
+            else:
+                return False
+        except requests.exceptions.RequestException as e:
+            print(f"Error: {e}")
+            return False
+        
+    def __send_streamlink_to_server(self):
+        if self.id is None:
+            return
+        
+        link_url = None
+        while not link_url:
+            try:
+                print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Try to get link m3u8 {self.name}")
+                link =   streamlink.streams(self.streamlink)
+                link_url = link.get("best").url
+            except:
+                pass
+            time.sleep(2)
+
+        self.streamlink_m3u8 = link_url
+        header = {
+            'Content-Type': 'application/json'
+        }
+        data = {
+            "user": "admin",
+            "pass": "admin",
+            "cs":"0123456789",
+            "id":self.id,
+            "name":self.name,
+            "link":self.streamlink_m3u8
+        }
+        # print(self.streamlink_m3u8)
+        response = requests.post(self.url, headers=header, json=data)
+        timeout = 0
+        while timeout < 5 and response.status_code != 200:
+            print(f"Send url fail, try again {timeout}:", response.status_code)
+            response = requests.post(self.url, headers=header, json=data)
+            timeout = timeout + 1
+            time.sleep(0.5)
+
+        print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Post streamlink {self.name} res: {response.status_code}")
+    # --------------------------------- setter and getter -----------------------------------
+    # reconnect callback setter and getter:
+    def set_on_reconnected_callback(self,func):
+        self.on_reconnected = func
+
+    def call_on_reconnected(self):
+        # if self.on_reconnected != None:
+        #     self.on_reconnected()
+        pass
+            
+            
+            
+    # MQTT handler setter
+    def set_mqtt_handler(self,mqtt_handler):
+        self.mqtt_handler = mqtt_handler
+    
+    def set_mqtt_topic(self,mqtt_topic):
+        self.mqtt_topic = mqtt_topic
+
+    #--------------------------------------------- on event handler methods obs websocket------------------------------------------
+    def on_stream_state_changed(self,data):
+        """ handler function when stream state changed:
+
+        Args:
+            data (dict): data of stream state
+            - attr:
+                + output_active: the output is active or not
+                + output_state: The specific state of the output OBS_WEBSOCKET_OUTPUT_STARTING, OBS_WEBSOCKET_OUTPUT_STARTED,
+                                OBS_WEBSOCKET_OUTPUT_STOPPING, OBS_WEBSOCKET_OUTPUT_STOPPED, OBS_WEBSOCKET_OUTPUT_RECONNECTING, OBS_WEBSOCKET_OUTPUT_RECONNECTED
+        """
+        # print("[Stream state change]")
+        # print(data.attrs())
+        # print("Output active", data.output_active)
+        # print("Output state", data.output_state)
+        # print(type(data.output_state))
+        
+        if data.output_state == "OBS_WEBSOCKET_OUTPUT_RECONNECTED":
+            print("trigger reconnnected event")
+            self.call_on_reconnected()
+            
+            
+        # if data.output_state ==
+    def on_scene_item_transform_changed(self, data):
+        print("on trasnform")
+        
+    def  on_media_input_action_triggered(self,data):
+        print("on media action")
+        print(data.attrs())
+        
+    def on_scene_transition_video_ended(self,data):
+        print("on media action")
+        print(data.attrs())
+        
+    def on_media_input_playback_ended(self,data):
+        print("[media input playback end]")
+        print(data.attrs())
+        
+        
+        
+    # ------------------------------------------------------request method  obs websocket-----------------------------------------------
     def get_input_list(self,kind=None):
         """
         Get inputs of obs
@@ -45,7 +252,7 @@ class OBS_controller:
         """
         response = self.request_client.get_input_list(kind)
         self.printJsonObjectList(response.inputs)
-        return response
+        return response.inputs
         
     def get_input_settings(self,name):
         """ 
@@ -62,11 +269,13 @@ class OBS_controller:
         """
         payload = {"inputName": name}
         response =  self.request_client.send("GetInputSettings", payload)
+        print(response.attrs())
+        print(response.input_kind)
         self.printJsonObject(response.input_settings)
         return response
 
         
-    def set_input_settings(self,name, settings, overlay):
+    def set_input_settings(self, name, settings, overlay):
         """
         Sets the settings of an input.
 
@@ -86,8 +295,8 @@ class OBS_controller:
 
         Returns: None
         """
-        print("33333333")
-        print(settings)
+        # print("33333333")
+        # print(settings)
         return self.request_client.set_input_settings(name, settings, overlay)   
     
     def get_scene_item_list(self,name):
@@ -303,9 +512,9 @@ class OBS_controller:
                 "selected": True if idx == 0 else False,
                 "value": video
             }
-            print("11111")
+
             playlist.append(item)
-            print("222222")
+
             
         settings = {
             "playback_behavior": "stop_restart",
@@ -317,9 +526,364 @@ class OBS_controller:
         
                     
     def set_current_program_scene(self,scene_name):
-            self.request_client.set_current_program_scene(scene_name)
-        
+        self.request_client.set_current_program_scene(scene_name)
+    
+    
+    def get_scene_item_id(self,scene_name,source_name):
+        """get id on an item in a scene
 
+        Args:
+            scene_name (String): name of scene contain item
+            source_name (String): name of source of this item
+
+        Returns:
+            Object: 
+                -attr:
+                    + scene_item_id	(int): int ID of the scene item
+        """
+        
+        response = self.request_client.get_scene_item_id(scene_name,source_name)
+        return response.scene_item_id
+            
+    def get_scene_item_transform(self, scene_name, source_name):
+        """get stransform of an item source
+        Description: obs manger ui of an source by id -> get id from source name to use
+
+        Args:
+            scene_name (String): name of scene contain item
+            source_name (String): name of source of this item
+        Return:
+            Object: 
+                - attr:
+                    + scene_item_transform(Object) Object containing scene item transform info: see detail in set_scene_item_transform at the args description
+                    
+
+        """
+        id_source_name =  self.get_scene_item_id(scene_name, source_name)
+        response = self.request_client.get_scene_item_transform(scene_name,id_source_name)
+        self.printJsonObject(response.scene_item_transform)
+        return response.scene_item_transform
+    
+    def set_scene_item_transform(self,scene_name, source_name,transform):
+        """ Sets the transform and crop info of a scene item.
+        Note:
+            just change anything but except: sourceHeight,sourceWidth, height, width because there is read only, I add here for the explain the get_scene_item_transform
+        Args:
+            scene_name (String): name of scene contain item
+            source_name (String): name of source of this item
+            transform (object): {
+                
+                "sourceHeight" (READ_ONLY): original height of source
+                "sourceWidth" (READ_ONLY): original width of source
+                "width" (READ_ONLY): actial width of video when resize (by bouding, resizw or crop)
+                "height (READ_ONLY)": actial height of video when resize ((by bouding, resizw or crop))
+                
+                "alignment": center(0),centeleft(1), centerright(2), topcenter(4), topleft(5), topright(6),bottomcenter(8) ,bottomleft(9), bottomright(10)
+                "positionX","positionY":  x, y of source (top left point of rectangle)
+                "rotation": ration in dergee of source (ex:90, -90, 45, ...)
+                
+                "scaleX": ratio = original width/sourceWidth,
+                "scaleY": ratio = original height/sourceheight,
+                
+                "boundsType": 
+                    "OBS_BOUNDS_NONE",
+                    "OBS_BOUNDS_STRETCH",
+                    "OBS_BOUNDS_SCALE_INNER", 
+                    "OBS_BOUNDS_SCALE_OUTER" , 
+                    "OBS_BOUNDS_SCALE_TO_WIDTH",
+                    "OBS_BOUNDS_SCALE_TO_HEIGHT",
+                    "OBS_BOUNDS_MAX_ONLY"
+                    
+                "boundsAlignment": center(0), centeleft(1), centerright(2), topcenter(4), topleft(5), topright(6),bottomcenter(8) ,bottomleft(9), bottomright(10)
+                "boundsHeight": height of bounding box,
+                "boundsWidth": weidth of bounding box,
+                
+                "cropToBounds": false,
+                "cropLeft": number pixel video crop from left of source,
+                "cropTop": number pixel video crop from top of source,
+                "cropBottom": number pixel video crop from bottom of source,
+                "cropRight": number pixel video crop from right of source, 
+            }
+        """
+        id_source_name =  self.get_scene_item_id(scene_name, source_name)
+        self.request_client.set_scene_item_transform(scene_name,id_source_name,transform)
+        
+    def get_original_source_size(self, scene_name,source_name):
+        """ Get original size of source
+
+        Args:
+            scene_name (String): name of scene contain item
+            source_name (String): name of source of this item
+
+        Returns:
+            _type_: _description_
+        """
+        
+        response = self.get_scene_item_transform(scene_name,source_name)
+        return response.get("sourceWidth"), response.get("sourceHeight")
+        
+        
+        
+    def set_size_of_source(self, scene_name, source_name, width, height):
+        # original_width, original_height = self.get_original_source_size(scene_name, source_name)
+        transform = {
+            # "sourceHeight": 720.0,
+            # "sourceWidth": 1080.0,
+            
+            "alignment": 5,
+            "positionX": 0.0,
+            "positionY": 0.0,
+            "rotation": 0.0,
+            
+            # "width": 1080,
+            # "height": 720,
+            # "scaleX": width/original_width,
+            # "scaleY": height/original_height,
+            
+            "boundsType": "OBS_BOUNDS_STRETCH",
+            "boundsAlignment": 5,
+            "boundsWidth": width,
+            "boundsHeight": height,
+            
+            "cropToBounds": False,
+            "cropLeft": 0,
+            "cropTop": 0,
+            "cropBottom": 0,
+            "cropRight": 0,
+        }
+        self.set_scene_item_transform(scene_name, source_name,transform)
+        
+        
+    def get_media_input_status(self, source_name):
+        """ Get status of an media 
+            "OBS_MEDIA_STATE_NONE",
+            "OBS_MEDIA_STATE_PLAYING",
+            "OBS_MEDIA_STATE_OPENING",
+            "OBS_MEDIA_STATE_BUFFERNG",
+            "OBS_MEDIA_STATE_PAUSED"
+            "OBS_MEDIA_STATE_STOPPED",
+            "OBS_MEDIA_STATE_ENDED",
+            "OBS_MEDIA_STATE_ERROR"
+        Args
+            source_name (String): name of media source
+        return:
+            the reponse is an object with:
+            -attr:
+                + media_state (String): State of the media input
+                + media_duration (Int): Total duration of the playing media in milliseconds. null if not playing
+                + media_cursor (Int): Position of the cursor in milliseconds. null if not playing
+        """
+        response = self.request_client.get_media_input_status(source_name)
+        
+        return response.media_state
+    
+    def trigger_media_input_action(self,source_name, action):
+        """ Trigger an action on media input
+
+        Args:
+            source_name (String): Name of the media input
+            action (String): Identifier of the ObsMediaInputAction enum
+                + OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NONE
+                + OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY
+                + OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE
+                + OBS_WEBSOCKET_MEDIA_INPUT_ACTION_STOP
+                + OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART
+                + OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NEXT
+                + OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS
+                
+        """
+        self.request_client.trigger_media_input_action(source_name, action)
+        
+    def get_source_active(self,source_name):
+        """ Gets the active and show state of a source.
+
+        Args:
+            source_name (String): name of source
+
+        Returns:
+            Object: 
+            - attrs:
+                + video_active (Boolean):	Whether the source is showing in Program
+                + video_showing (Boolean): Whether the source is showing in the UI (Preview, Projector, Properties)
+        """
+        response = self.request_client.get_source_active(source_name)
+        # self.printJsonObject(response)
+        return response.video_active
+    
+    def get_output_list(self):
+        """Gets the list of available outputs.
+
+        Returns:
+            Array<Object>:	Array of outputs
+        """
+        response = self.request_client.get_output_list()
+        
+        self.printJsonObjectList(response.outputs)
+        return response
+    
+
+    def get_scene_item_enabled(self,scene_name,source_name):
+        """get the enable state of a scene item.
+
+        Args:
+            scene_name (String): Name of the scene the item is in
+            source_name (Strign): Name of the item source 
+
+        Returns:
+            bool: Whether the scene item is enabled. true for enabled, false for disabled
+        """
+        
+        item_id = self.get_scene_item_id(scene_name,source_name)
+        respone = self.request_client.get_scene_item_enabled(scene_name,item_id)
+        # print(respone.scene_item_enabled)
+        return respone.scene_item_enabled
+        
+    def set_scene_item_enabled(self,scene_name,source_name,is_enable):
+        """ set the enable state of a scene item.
+
+        Args:
+            scene_name (String): Name of the scene the item is in
+            source_name (Strign): Name of the item source 
+            is_enable (bool): the state of item
+        """
+        item_id = self.get_scene_item_id(scene_name,source_name)
+        self.request_client.set_scene_item_enabled(scene_name,item_id, is_enable)
+        
+    def toggle_scene_item_enabled(self,scene_name,source_name):
+        """ toggle the enable state of a scene item.
+
+        Args:
+            scene_name (String): Name of the scene the item is in
+            source_name (Strign): Name of the item source 
+        """
+        current = self.get_scene_item_enabled(scene_name,source_name)
+        self.set_scene_item_enabled(scene_name,source_name,not current)
+        # print(not current)
+        time.sleep(1)
+        # print(current)
+        self.set_scene_item_enabled(scene_name,source_name,current)
+        time.sleep(1)
+        
+    def create_scene(self, scene_name):
+        """Creates a new scene in OBS.
+
+        Args:
+            scene_name (String): name of scene want to create
+        """
+        self.request_client.create_scene(scene_name)
+        
+    def remove_scene(self, scene_name):
+        """ Removw a scene in OBS
+
+        Args:
+            scene_name (String): name of scene want to remove
+        """
+        self.request_client.remove_scene(scene_name)
+        
+    def set_scene_name(self, old_name, new_name):
+        """ rename a scene
+
+        Args:
+            old_name (string): name of scene want to rename
+            new_name (string): new name of scene
+        """
+        self.request_client.set_scene_name(old_name,new_name)
+        
+        
+    def create_input(self, scene_name, input_name, input_kind, input_setting, scene_item_enable):
+        """Creates a new input, adding it as a scene item to the specified scene.
+
+        Args:
+            scene_name (String): Name of the scene to add the input to as a scene item
+            input_name (String): Name of the new input to created
+            input_kind (String): The kind of input to be created_
+            input_setting (Object):	Settings object to initialize the input with (use get input setting to get the template)
+            scene_item_enable (Boolean)	Whether to set the created scene item to enabled or disabled
+        Return:
+            int : id of input created
+        """
+        response = self.request_client.create_input(scene_name, input_name, input_kind, input_setting, scene_item_enable)
+        if response is None:
+            print("Cannot create input")
+            return None
+        else:
+            print(f"Create input {input_name}(kind: {input_kind}) success")
+            return response.scene_item_id
+            
+            
+    def remove_input(self, input_name):
+        """ Removes an existing input.
+
+        Args:
+            input_name (String): Name of the input to remove
+        """
+        self.request_client.remove_input(input_name)
+    
+    def set_input_vtv(self, source_name , url):
+        input_setting = {
+            "input": url,
+            "is_local_file": False,
+            # "restart_on_activate": true
+        }
+        self.set_input_settings(name=source_name, settings=input_setting, overlay= False )
+           
+    def create_vtv_input_source(self, scene_name, source_name , url, width = 0 , height = 0):
+        """ creating media source of obs to play and vtv url
+
+        Args:
+            scene_name (String): Name of the scene to add the input to as a scene item
+            input_name (String): Name of the new input to created
+            width (int): width of source
+            height (int) height of source
+        """
+        input_kind = "ffmpeg_source" 
+        input_setting = {
+            "input": url,
+            "is_local_file": False,
+            # "restart_on_activate": true
+        }
+        scene_item_enable = True
+        self.request_client.create_input(scene_name, source_name, input_kind, input_setting, scene_item_enable)
+        if width == 0:
+            width = self.width
+        if height == 0:
+            height = self.height
+        self.set_size_of_source(scene_name, source_name, width, height)
+        
+    def create_vlc_input_source(self, scene_name, source_name , playlist, width = 0, height = 0):
+        """ Creating vlc source of obs to play and vtv url
+
+        Args:
+            scene_name (String): Name of the scene to add the input to as a scene item
+            input_name (String): Name of the new input to created
+            width (int): width of source
+            height (int) height of source
+        """
+        input_kind = "vlc_source" 
+        playlist_setting = []
+        for video in playlist:
+            item = {
+                "hidden": False,
+                "selected": False,
+                "value": video
+            } 
+            playlist_setting.append(item)
+        input_setting = {
+            "playlist": playlist_setting
+        }
+        scene_item_enable = True    
+        self.request_client.create_input(scene_name, source_name, input_kind, input_setting, scene_item_enable)
+        if width == 0:
+            width = self.width
+        if height == 0:
+            height = self.height
+        self.set_size_of_source(scene_name, source_name, width, height)
+        
+    
+            
+            
+            
+    
 def main():
     # stream_key = "live_1044211682_Ol34MomAqRm3Ef7s0jwrKq0KNGj3Ku"
     # server = "rtmp://live.twitch.tv/app"
@@ -370,7 +934,40 @@ def test_for_failed_streamkey():
             # if my_obs2.check_stream_is_active() :
             #     my_obs2.stop_stream()
             break
+
+
+
+def print_hi()   :
+    print("hello")
     
-    
+def test_on_stream_state_changed():
+    my_obs1 = OBS_controller(port=4455,password="123456")
+    my_obs1.set_on_reconnected_callback(print_hi)
+    my_obs1.start_stream()
+    while True:
+        try: 
+            time.sleep(1)
+        except KeyboardInterrupt:
+            if my_obs1.check_stream_is_active() :
+                my_obs1.stop_stream()
+            break
+        
+        
+def test_transfrom():
+    my_obs1 = OBS_controller(id=None,name = 0 , streamlink="http://www.twitch/nhanlow",host="localhost",port=1139,password="123456")
+ 
+    while True:
+        try: 
+
+            
+            print("hello\n")
+            time.sleep(1)
+        except KeyboardInterrupt:
+
+            break
+
+
 if __name__ == "__main__":
-    test_for_failed_streamkey()
+    # test_for_failed_streamkey()
+    # test_on_stream_state_changed()
+    test_transfrom()

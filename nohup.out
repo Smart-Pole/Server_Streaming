@@ -1,0 +1,134 @@
+OBSSDKRequestError: Request StopStream returned code 501.
+Traceback (most recent call last):
+  File "/home/streamlink1/Desktop/stream_server/stream_venv/lib/python3.11/site-packages/obsws_python/reqs.py", line 53, in send
+    raise OBSSDKRequestError(
+obsws_python.error.OBSSDKRequestError: Request StopStream returned code 501.
+inputName is: mySource
+inputName is: live_v
+inputName is: live_m
+inputName is: Desktop Audio
+sceneName is: VTV
+sceneName delete: VTV
+sceneName is: SCHEDULE
+sceneName delete: SCHEDULE
+Error: Invalid URL 'None': No scheme supplied. Perhaps you meant https://None?
+[2024-08-25 12:23:21] Try to get link m3u8 SCTV 1
+sceneName is: LIVE_V
+sceneName delete: LIVE_V
+sceneName is: LIVE_M
+sceneName delete: LIVE_M
+sceneName is: IDLE
+[2024-08-25 12:23:24] Try to get link m3u8 SCTV 1
+[2024-08-25 12:23:27] Try to get link m3u8 SCTV 1
+Stream Status
+	 output active: False
+	 output bytes: 7353498
+	 output congestion: 0.0
+	 output duration: 0
+	 output reconnecting: False
+	 output skipped frames: 0
+	 output timecode:00:00:00.000
+	 output total frames:707
+[2024-08-25 12:23:32] Try to get link m3u8 SCTV 1
+Stream Status
+	 output active: True
+	 output bytes: 503665
+	 output congestion: 0.0
+	 output duration: 1699
+	 output reconnecting: False
+	 output skipped frames: 0
+	 output timecode:00:00:01.699
+	 output total frames:51
+INIT: SET FLAG STREAM KEY 
+[2024-08-25 12:23:34] Try to get link m3u8 SCTV 1
+inputName is: live_v
+inputName is: live_m
+[2024-08-25 12:23:37] Try to get link m3u8 SCTV 1
+inputName is: Desktop Audio
+[2024-08-25 12:23:40] Try to get link m3u8 SCTV 1
+sceneName is: SCHEDULE
+sceneName delete: SCHEDULE
+sceneName is: LIVE_V
+sceneName delete: LIVE_V
+sceneName is: LIVE_M
+sceneName delete: LIVE_M
+[2024-08-25 12:23:43] Post streamlink SCTV 1 res: 200
+Error: Invalid URL 'None': No scheme supplied. Perhaps you meant https://None?
+[2024-08-25 12:23:43] Try to get link m3u8 SCTV 2
+sceneName is: IDLE
+[2024-08-25 12:23:46] Try to get link m3u8 SCTV 2
+Stream Status
+	 output active: False
+	 output bytes: 30856490
+	 output congestion: 0.0
+	 output duration: 0
+	 output reconnecting: False
+	 output skipped frames: 0
+	 output timecode:00:00:00.000
+	 output total frames:2950
+[2024-08-25 12:23:49] Try to get link m3u8 SCTV 2
+[2024-08-25 12:23:52] Try to get link m3u8 SCTV 2
+Stream Status
+	 output active: True
+	 output bytes: 472260
+	 output congestion: 0.0
+	 output duration: 1633
+	 output reconnecting: False
+	 output skipped frames: 0
+	 output timecode:00:00:01.633
+	 output total frames:49
+INIT: SET FLAG STREAM KEY 
+[2024-08-25 12:23:55] Try to get link m3u8 SCTV 2
+inputName is: mySource
+inputName is: live_v
+[2024-08-25 12:23:57] Try to get link m3u8 SCTV 2
+inputName is: live_m
+inputName is: Desktop Audio
+[2024-08-25 12:24:00] Try to get link m3u8 SCTV 2
+sceneName is: VTV
+sceneName delete: VTV
+sceneName is: SCHEDULE
+sceneName delete: SCHEDULE
+[2024-08-25 12:24:03] Try to get link m3u8 SCTV 2
+Error: Invalid URL 'None': No scheme supplied. Perhaps you meant https://None?
+[2024-08-25 12:24:04] Try to get link m3u8 SCTV 3
+sceneName is: LIVE_V
+sceneName delete: LIVE_V
+sceneName is: LIVE_M
+sceneName delete: LIVE_M
+sceneName is: IDLE
+[2024-08-25 12:24:06] Post streamlink SCTV 2 res: 200
+[2024-08-25 12:24:06] Try to get link m3u8 SCTV 3
+[2024-08-25 12:24:09] Try to get link m3u8 SCTV 3
+Stream Status
+	 output active: False
+	 output bytes: 44451367
+	 output congestion: 0.0
+	 output duration: 0
+	 output reconnecting: False
+	 output skipped frames: 0
+	 output timecode:00:00:00.000
+	 output total frames:4248
+[2024-08-25 12:24:12] Try to get link m3u8 SCTV 3
+[2024-08-25 12:24:15] Try to get link m3u8 SCTV 3
+Stream Status
+	 output active: True
+	 output bytes: 84756
+	 output congestion: 0.0
+	 output duration: 366
+	 output reconnecting: False
+	 output skipped frames: 0
+	 output timecode:00:00:00.366
+	 output total frames:11
+INIT: SET FLAG STREAM KEY 
+ * Serving Flask app 'Server'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.94.128:8000
+[33mPress CTRL+C to quit[0m
+192.168.196.220 - - [25/Aug/2024 12:25:18] "GET /live?stream=1&link=http://103.171.91.5:80/anhphong/anhphong/1.m3u8 HTTP/1.1" 200 -
+192.168.196.220 - - [25/Aug/2024 12:25:32] "GET /live?stream=2&link=http://103.171.91.5:80/anhphong/anhphong/2.m3u8 HTTP/1.1" 200 -
+192.168.196.220 - - [25/Aug/2024 12:25:44] "GET /live?stream=3&link=http://103.171.91.5:80/anhphong/anhphong/3.m3u8 HTTP/1.1" 200 -
+192.168.196.220 - - [25/Aug/2024 12:29:03] "GET /live?stream=3&link=http://103.171.91.5:80/anhphong/anhphong/3.m3u8 HTTP/1.1" 200 -
