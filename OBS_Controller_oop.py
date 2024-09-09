@@ -119,6 +119,8 @@ class OBS_controller:
         
         
 # CHECK LINK DIE
+
+
     def __start_checking(self):
         if self.id == None:
             return
@@ -181,6 +183,11 @@ class OBS_controller:
             time.sleep(0.5)
 
         print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Post streamlink {self.name} res: {response.status_code}")
+
+    def change_id(self, id, name):
+        self.id = id
+        self.name = name
+        self.__send_streamlink_to_server()
     # --------------------------------- setter and getter -----------------------------------
     # reconnect callback setter and getter:
     def set_on_reconnected_callback(self,func):
@@ -190,9 +197,6 @@ class OBS_controller:
         # if self.on_reconnected != None:
         #     self.on_reconnected()
         pass
-            
-            
-            
     # MQTT handler setter
     def set_mqtt_handler(self,mqtt_handler):
         self.mqtt_handler = mqtt_handler

@@ -134,6 +134,9 @@ class StreamScheduler:
 
         return True
     
+    def change_stream_infor(self,id,name):
+        self.__my_obs.change_id(id=id,name=name)
+
     def get_link_video(self,list_video):
         my_video_list = [f"{self.VideoPath}{item}" for item in list_video]
         print(f"List Video: {my_video_list}")
