@@ -161,7 +161,7 @@ class OBS_controller:
                 pass
             time.sleep(2)
 
-        # self.streamlink_m3u8 = link_url
+        self.streamlink_m3u8 = link_url
         # header = {
         #     'Content-Type': 'application/json'
         # }

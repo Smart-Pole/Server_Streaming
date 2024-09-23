@@ -31,15 +31,15 @@ if not os.path.exists(UPLOAD_FOLDER):
 app.config['UPLOAD_FOLDER'] = FolderVideoPath
 
 my_schedulers = [
-    # StreamScheduler(Stream=1, FileLog="log_thread1.txt", VideoPath=FolderVideoPath, Database='task_infor.db', DataTable="thread1", OBSPass="123456", OBSPort=1131,OBSId="sctv1",OBSName="SCTV 1",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk", StreamLink="https://www.twitch.tv/gutsssssssss9", NameStream="gutsssssssss9"),
-    # StreamScheduler(Stream=2, FileLog="log_thread2.txt", VideoPath=FolderVideoPath, Database='task_infor.db', DataTable="thread2", OBSPass="123456", OBSPort=1132,OBSId="sctv2",OBSName="SCTV 2",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1071558463_6geWoWQgWadKOjby2mqDj40qeiW9fg", StreamLink="https://www.twitch.tv/dat_live2", NameStream="dat_live2"),
-    # StreamScheduler(Stream=3, FileLog="log_thread3.txt", VideoPath=FolderVideoPath, Database='task_infor.db', DataTable="thread3", OBSPass="123456", OBSPort=1133,OBSId="sctv3",OBSName="SCTV 3",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1071557915_S0GK8ydVBO5EfOREfzEmAtJNbL09fL", StreamLink="https://www.twitch.tv/dat_live1", NameStream="dat_live1"),
+    StreamScheduler(Stream=1, FileLog="log_thread1.txt", VideoPath=FolderVideoPath, Database='task_infor.db', DataTable="thread1", OBSPass="123456", OBSPort=1131,OBSId="sctv1",OBSName="SCTV 1",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk", StreamLink="https://www.twitch.tv/gutsssssssss9", NameStream="gutsssssssss9"),
+    StreamScheduler(Stream=2, FileLog="log_thread2.txt", VideoPath=FolderVideoPath, Database='task_infor.db', DataTable="thread2", OBSPass="123456", OBSPort=1132,OBSId="sctv2",OBSName="SCTV 2",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1071558463_6geWoWQgWadKOjby2mqDj40qeiW9fg", StreamLink="https://www.twitch.tv/dat_live2", NameStream="dat_live2"),
+    StreamScheduler(Stream=3, FileLog="log_thread3.txt", VideoPath=FolderVideoPath, Database='task_infor.db', DataTable="thread3", OBSPass="123456", OBSPort=1133,OBSId="sctv3",OBSName="SCTV 3",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1071557915_S0GK8ydVBO5EfOREfzEmAtJNbL09fL", StreamLink="https://www.twitch.tv/dat_live1", NameStream="dat_live1"),
     # StreamScheduler(Stream=4, FileLog="log_thread4.txt", VideoPath=FolderVideoPath, Database='task_infor.db', DataTable="thread4", OBSPass="123456", OBSPort=1134,OBSId="vtv4",OBSName="VTV 4",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1039740022_rGAe65XCi8xif5QyFwQLeRLdVKtX2O", StreamLink="https://www.twitch.tv/hehe0088", NameStream="hehe0088"),
     # StreamScheduler(Stream=5, FileLog="log_thread5.txt", VideoPath=FolderVideoPath, Database='task_infor.db', DataTable="thread5", OBSPass="123456", OBSPort=1135,OBSId="vtv5",OBSName="VTV 5",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1125130390_vqMoTYJF7jiOtTt8uM4oBS7DANMon8", StreamLink="https://www.twitch.tv/nhanlow", NameStream="nhanlow"),
     # StreamScheduler(Stream=6, FileLog="log_thread6.txt", VideoPath=FolderVideoPath, Database='task_infor.db', DataTable="thread6", OBSPass="123456", OBSPort=1136,OBSId="vtv6",OBSName="VTV 6",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1044211682_Ol34MomAqRm3Ef7s0jwrKq0KNGj3Ku", StreamLink="https://www.twitch.tv/huynhnguyenhieunhan", NameStream="huynhnguyenhieunhan"),
     # StreamScheduler(Stream=7, FileLog="log_thread7.txt", VideoPath=FolderVideoPath, Database='task_infor.db', DataTable="thread7", OBSPass="123456", OBSPort=1137,OBSId="vtv7",OBSName="VTV 7",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1127937398_28e30ICQkj916Yris7ysw3wSQnjkuQ", StreamLink="https://www.twitch.tv/nhanlow_v2", NameStream="nhanlow_v2"),
     # StreamScheduler(Stream=8, FileLog="log_thread8.txt", VideoPath=FolderVideoPath, Database='task_infor.db', DataTable="thread8", OBSPass="123456", OBSPort=1138,OBSId="vtv8",OBSName="VTV 8",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1127041941_YqyrJHfYVm7NBtX7EIckVEZtMjuMde", StreamLink="https://www.twitch.tv/hehe0081", NameStream="hehe0081"),
-    StreamScheduler(Stream=9, FileLog="log_thread9.txt", VideoPath=FolderVideoPath, Database='task_infor.db', DataTable="thread9", OBSPass="123456", OBSPort=1139,OBSId="film",OBSName="Xem Phim",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1127937001_mk0mXlFKsXjeqQ9UmVFroNbJAWxvxW", StreamLink="https://www.twitch.tv/hehe0082", NameStream="hehe0082"),
+    # StreamScheduler(Stream=9, FileLog="log_thread9.txt", VideoPath=FolderVideoPath, Database='task_infor.db', DataTable="thread9", OBSPass="123456", OBSPort=1139,OBSId="film",OBSName="Xem Phim",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1127937001_mk0mXlFKsXjeqQ9UmVFroNbJAWxvxW", StreamLink="https://www.twitch.tv/hehe0082", NameStream="hehe0082"),
 ]
 
 pole_manager = Pole_manager()
@@ -110,7 +110,6 @@ def Get_Stats():
     for scheduler in my_schedulers:
         name = f"stream_{scheduler.stream}"
         performance_data[name] =  scheduler.get_stats()
-    print(performance_data)
     return jsonify(performance_data), 200
 
 @app.route('/change/streamInfo')
