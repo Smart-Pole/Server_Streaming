@@ -161,28 +161,30 @@ class OBS_controller:
                 pass
             time.sleep(2)
 
-        self.streamlink_m3u8 = link_url
-        header = {
-            'Content-Type': 'application/json'
-        }
-        data = {
-            "user": "admin",
-            "pass": "admin",
-            "cs":"0123456789",
-            "id":self.id,
-            "name":self.name,
-            "link":self.streamlink_m3u8
-        }
-        # print(self.streamlink_m3u8)
-        response = requests.post(self.url, headers=header, json=data)
-        timeout = 0
-        while timeout < 5 and response.status_code != 200:
-            print(f"Send url fail, try again {timeout}:", response.status_code)
-            response = requests.post(self.url, headers=header, json=data)
-            timeout = timeout + 1
-            time.sleep(0.5)
+        # self.streamlink_m3u8 = link_url
+        # header = {
+        #     'Content-Type': 'application/json'
+        # }
+        # data = {
+        #     "user": "admin",
+        #     "pass": "admin",
+        #     "cs":"0123456789",
+        #     "id":self.id,
+        #     "name":self.name,
+        #     "link":self.streamlink_m3u8
+        # }
+        # # print(self.streamlink_m3u8)
+        # response = requests.post(self.url, headers=header, json=data)
+        # timeout = 0
+        # while timeout < 5 and response.status_code != 200:
+        #     print(f"Send url fail, try again {timeout}:", response.status_code)
+        #     response = requests.post(self.url, headers=header, json=data)
+        #     timeout = timeout + 1
+        #     time.sleep(0.5)
 
-        print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Post streamlink {self.name} res: {response.status_code}")
+        print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Post streamlink {self.name}")
+        # print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Post streamlink {self.name} res: {response.status_code}")
+
 
     def change_id(self, id, name):
         self.id = id
@@ -254,10 +256,14 @@ class OBS_controller:
         Returns:
         Object : response contain field "inputs" (Array<Object>)
         """
+        
         response = self.request_client.get_input_list(kind)
         self.printJsonObjectList(response.inputs)
         return response.inputs
-        
+    
+    def get_stats(self):
+        return self.request_client.get_stats()
+
     def get_input_settings(self,name):
         """ 
         To create the entire settings object,
@@ -962,9 +968,7 @@ def test_transfrom():
  
     while True:
         try: 
-
-            
-            print("hello\n")
+            my_obs1.get_stats()
             time.sleep(1)
         except KeyboardInterrupt:
 

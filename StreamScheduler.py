@@ -136,7 +136,20 @@ class StreamScheduler:
     
     def change_stream_infor(self,id,name):
         self.__my_obs.change_id(id=id,name=name)
+    def get_stats(self):
+        try:
+            # Fetch stats from OBS WebSocket
+            response = self.__my_obs.get_stats()
 
+            # Extract relevant performance data
+            return {
+                "cpu_usage": round(response.cpu_usage, 2),  # CPU usage in percentage
+                "memory_usage": round(response.memory_usage, 2),  # Memory usage in MB
+                "active_fps": round(response.active_fps, 2)  # Active FPS
+            }
+        except Exception as e:
+            return {"error": str(e)}
+        
     def get_link_video(self,list_video):
         my_video_list = [f"{self.VideoPath}{item}" for item in list_video]
         print(f"List Video: {my_video_list}")
