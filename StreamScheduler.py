@@ -202,7 +202,8 @@ class StreamScheduler:
 
     def stop_live(self,link = 0):
         self.__set_flag_live(0)
-        self.__my_obs.set_input_playlist([],source_name="live")
+        self.__my_obs.set_input_playlist([],source_name="live_v")
+        self.__my_obs.set_input_playlist([],source_name="live_m")
         self.__my_obs.set_current_program_scene("SCHEDULE")
         self.__my_obs.get_input_settings("mySource")
 
