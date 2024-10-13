@@ -193,10 +193,10 @@ class StreamScheduler:
         for item in lists:
             print("inputName is:", item['inputName'])
             if item['inputName'] == "vtv":
-                self.__my_obs.remove_input(input_name="vtv")
+                self.__my_obs.remove_input(input_name="vtv")                                                                                                    
                 time.sleep(1)
                 break
-        self.__my_obs.create_vtv_input_source(scene_name="VTV",source_name="vtv",url=link)
+        self.__my_obs.create_vtv_input_source(scene_name="VTV",source_name="vtv",url=link)                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
         self.__set_flag_live(1)
         print('LIVE VTV')
 

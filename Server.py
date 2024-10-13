@@ -116,6 +116,8 @@ def Get_Stats():
 def Change_stream_Info():
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
+    if not stream:
+        return jsonify({'error':  'Wrong stream'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
@@ -219,6 +221,8 @@ def Get_files_in_folder():
 def Get_NameStream():
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
+    if not stream:
+        return jsonify({'error':  'Wrong stream'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
@@ -232,6 +236,8 @@ def Get_NameStream():
 def Get_Current_Task():
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
+    if not stream:
+        return jsonify({'error':  'Wrong stream'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
@@ -261,6 +267,8 @@ def Get_Current_Task():
 def Get_schedule():
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
+    if not stream:
+        return jsonify({'error':  'Wrong stream'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
@@ -285,6 +293,8 @@ def Get_schedule():
 def Get_streamkey():
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
+    if not stream:
+        return jsonify({'error':  'Wrong stream'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
@@ -309,6 +319,8 @@ def get_TVchannel():
 def Live_Steam_TV():
      # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
+    if not stream:
+        return jsonify({'error':  'Wrong stream'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
@@ -351,6 +363,8 @@ def Live_Steam_TV():
 def Live_Video():
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
+    if not stream:
+        return jsonify({'error':  'Wrong stream'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
@@ -379,6 +393,8 @@ def Live_Video():
 def Live_Steam():
         # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
+    if not stream:
+        return jsonify({'error':  'Wrong stream'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
@@ -416,6 +432,8 @@ def Live_Steam():
 def Stop_Live_Steam():
         # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
+    if not stream:
+        return jsonify({'error':  'Wrong stream'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
@@ -441,6 +459,8 @@ def Add_Task_Everyweeks():
     deadline = None
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
+    if not stream:
+        return jsonify({'error':  'Wrong stream'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
@@ -554,6 +574,8 @@ def Add_Task_Everydays():
 
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
+    if not stream:
+        return jsonify({'error':  'Wrong stream'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
@@ -654,6 +676,8 @@ def Add_Task_onetime():
 
     # Cheking parameter
     stream  = request.args.get('stream')
+    if not stream:
+        return jsonify({'error':  'Wrong stream'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
@@ -733,6 +757,8 @@ def Add_Task_onetime():
 def Delete_Task():
         # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
+    if not stream:
+        return jsonify({'error':  'Wrong stream'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
