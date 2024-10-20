@@ -43,6 +43,7 @@ class OBS_controller:
         
         # resgiter event want to listen
         self.event_client.callback.register(self.on_stream_state_changed)
+    
         # self.event_client.callback.register(self.on_scene_item_transform_changed)
         # self.event_client.callback.register(self.on_media_input_playback_ended)
         
@@ -114,7 +115,7 @@ class OBS_controller:
             self.create_vlc_input_source("SCHEDULE","mySource",[""], self.width, self.height)
         except:
             pass
-
+    
         
         
         
@@ -888,6 +889,118 @@ class OBS_controller:
         if height == 0:
             height = self.height
         self.set_size_of_source(scene_name, source_name, width, height)
+    
+    
+    def create_slideshow(self, scene_name, source_name , image_list, slide_time=2000, transition="slide",transition_speed = 700, width = 0, height = 0):
+        """ create slide show input
+
+        Args:
+            scene_name (String): Name of scene hold input.
+            source_name (String): name of slideshow input want to create
+            image_list (List<String>): list of file image path display on slideshow
+            slide_time (int, optional): time to transition to next slide. Defaults to 2000.
+            transition (str, optional): transition mode("cut", "fade", "swipe" and "slide"). Defaults to "slide".
+            transition_speed (int, optional): time of effect transition slide. Defaults to "700".
+            width (int, optional): width of slide. Defaults to 0.
+            height (int, optional): height of slide. Defaults to 0.
+        """
+        image_files = [
+            {
+                "hidden":False,
+                "selected":False,
+                "value": image
+            }
+            for image in image_list
+        ]
+        input_setting = {
+            "files": image_files,
+            "slide_time": slide_time,
+            "transition": transition,
+            "transition_speed": transition_speed,
+            "use_custom_size": f"{width}x{height}"
+        }
+        input_kind="slideshow_v2"       
+        scene_item_enable = True
+        self.request_client.create_input(scene_name, source_name, input_kind, input_setting, scene_item_enable)        
+    
+    
+    
+    def set_slide_show_settings(self,source_name, image_list, slide_time=2000, transition="slide",transition_speed = 700, width = 0, height = 0, overlay=True):
+        """ set slide show setting
+        Args:
+            source_name (String): name of slideshow input want to create
+            image_list (List<String>): list of file image path display on slideshow
+            slide_time (int, optional): time to transition to next slide. Defaults to 2000.
+            transition (str, optional): transition mode("cut", "fade", "swipe" and "slide"). Defaults to "slide".
+            transition_speed (int, optional): time of effect transition slide. Defaults to "700".
+            width (int, optional): width of slide. Defaults to 0.
+            height (int, optional): height of slide. Defaults to 0.
+            overlay (bool, optional):   True == apply the settings on top of existing ones, 
+                                        False == reset the input to its defaults, then apply settings.
+        """
+        image_files = [
+            {
+                "hidden":False,
+                "selected":False,
+                "value": image
+            }
+            for image in image_list
+        ]
+        input_setting = {
+            "files": image_files,
+            "slide_time": slide_time,
+            "transition": transition,
+            "transition_speed": transition_speed,
+            "use_custom_size": f"{width}x{height}"
+        }
+        self.set_input_settings(source_name,input_setting, overlay)
+        
+    def add_image_to_slideshow(self,source_name, image_list):
+        """ add a list of image to a slideshow
+
+        Args:
+            source_name (String): Name of slideshow input source
+            image_list (List<String>): list of images want to add into
+        """
+        image_files = [
+            {
+                "hidden":False,
+                "selected":False,
+                "value": image
+            }
+            for image in image_list
+        ]
+        input_setting = self.get_input_settings(source_name).input_settings
+        files = input_setting["files"]
+        files.extend(image_files)
+        input_setting["files"] = files
+        self.set_input_settings(source_name,input_setting, overlay=True)
+        
+        
+        
+    def remove_image_to_slideshow(self,source_name, image_list):
+        """ remove a list of image to a slideshow
+
+        Args:
+            source_name (String): Name of slideshow input source
+            image_list (List<String>): list of images want to remove
+        """
+        image_files = [
+            {
+                "hidden":False,
+                "selected":False,
+                "value": image
+            }
+            for image in image_list
+        ]
+        input_setting = self.get_input_settings(source_name).input_settings
+        files = input_setting["files"]
+        files = [file for file in files if file not in image_files]
+        input_setting["files"] = files
+        self.set_input_settings(source_name,input_setting, overlay=True)
+    
+        
+        
         
     
             
@@ -975,7 +1088,72 @@ def test_transfrom():
             break
 
 
+def test_api_input_slideshow():
+    my_obs = OBS_controller( id="live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk", streamlink="https://www.twitch.tv/gutsssssssss9", name="gutsssssssss9", port=4455,password="123456")
+    # my_obs.get_input_list()
+    
+    my_obs.create_slideshow(
+        scene_name="VTV",
+        source_name="slideshow", 
+        image_list = [ 
+            "D:/background/wall1.jpg",
+            "D:/background/wall2.jpg",
+            "D:/background/wall3.jpg",
+            "D:/background/wall4.jpg", 
+            "D:/background/wall5.jpg",
+            "D:/background/wall6.jpg"
+        ],
+        slide_time= 3000,
+        transition="slide",
+        transition_speed= 700,
+        width=1920,
+        height=1080
+    )
+    my_obs.get_input_settings("slideshow")
+    my_obs.set_slide_show_settings(
+        source_name="slideshow", 
+        image_list = [ 
+            "D:/background/wall1.jpg",
+            "D:/background/wall2.jpg",
+            "D:/background/wall3.jpg",
+            "D:/background/wall4.jpg", 
+            "D:/background/wall5.jpg",
+            "D:/background/wall6.jpg"
+        ],
+        slide_time= 2000,
+        transition="slide",
+        transition_speed= 500,
+        width=1920,
+        height=1080
+    )
+    # my_obs.get_input_settings("slideshow")
+    
+    my_obs.add_image_to_slideshow(
+        source_name = "slideshow", 
+        image_list = [
+            "D:/background/wall7.jpg",
+            "D:/background/wall8.jpg",    
+        ]
+    )
+    my_obs.get_input_settings("slideshow")
+    
+    my_obs.remove_image_to_slideshow(
+        source_name = "slideshow", 
+        image_list = [
+            "D:/background/wall7.jpg",
+            "D:/background/wall8.jpg",    
+        ]
+    )
+    my_obs.get_input_settings("slideshow")
+    
+    my_obs.remove_input("slideshow")
+    
+    
+
 if __name__ == "__main__":
     # test_for_failed_streamkey()
     # test_on_stream_state_changed()
-    test_transfrom()
+    # test_transfrom()
+    
+    test_api_input_slideshow()
+    
