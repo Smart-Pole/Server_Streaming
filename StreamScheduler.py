@@ -12,7 +12,7 @@ import os
 import time
 
 class StreamScheduler:
-    def __init__(self,Stream,FileLog,VideoPath,StreamKey,StreamLink,OBSPort,OBSPass,OBSId,OBSName,OBSWidth, OBSHeight ,Database,DataTable,NameStream,StreamServer = "rtmp://live.twitch.tv/app"):
+    def __init__(self,Stream,FileLog,VideoPath,ImagesPath,StreamKey,StreamLink,OBSPort,OBSPass,OBSId,OBSName,OBSWidth, OBSHeight ,Database,DataTable,NameStream,StreamServer = "rtmp://live.twitch.tv/app"):
         self.__my_obs = OBS_controller(id=OBSId,name=OBSName,streamlink=StreamLink,port=OBSPort,password=OBSPass,width=OBSWidth,height=OBSHeight)
         self.__Start_Schedule = schedule.Scheduler()
         self.__Stop_Schedule = schedule.Scheduler()
@@ -32,6 +32,7 @@ class StreamScheduler:
         self.StreamLink=StreamLink
         self.FileLog = FileLog
         self.VideoPath = VideoPath
+        self.ImagesPath = ImagesPath
         self.NameStream = NameStream
         self.__ListWindowCapture = ["VTV1","VTV2"]
         self.ListTask = self.__task_db.get_all_tasks()
@@ -152,8 +153,11 @@ class StreamScheduler:
         
     def get_link_video(self,list_video):
         my_video_list = [f"{self.VideoPath}{item}" for item in list_video]
-        print(f"List Video: {my_video_list}")
         return my_video_list
+    
+    def get_link_images(self,list_images):
+        my_images_list = [f"{self.ImagesPath}{item}" for item in list_images]
+        return my_images_list
     
     def live(self,videolist=[],link = 0):
         if link:
@@ -179,9 +183,12 @@ class StreamScheduler:
         if not self.__get_flag_live():
             self.__set_flag_live(1)
 
-
-
-        print('LIVE')
+    def live_slide(self, image_list, transition = "slide", slide_time = 3000, transition_speed = 700):
+        if transition == "cut" or transition == "fade" or transition == "swipe" or transition == "slide" :
+            self.__my_obs.set_current_program_scene("LIVE_S")
+            self.__my_obs.set_slide_show_settings(source_name="slideshow_l", image_list=self.get_link_images(image_list), transition=transition , slide_time=slide_time, transition_speed= transition_speed)
+            return True
+        return False
 
     def live_vtv(self,link):
         try:
@@ -198,12 +205,12 @@ class StreamScheduler:
                 break
         self.__my_obs.create_vtv_input_source(scene_name="VTV",source_name="vtv",url=link)                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
         self.__set_flag_live(1)
-        print('LIVE VTV')
 
     def stop_live(self,link = 0):
         self.__set_flag_live(0)
         self.__my_obs.set_input_playlist([],source_name="live_v")
         self.__my_obs.set_input_playlist([],source_name="live_m")
+        self.__my_obs.set_slide_show_settings(image_list=[], source_name="slideshow_l")
         self.__my_obs.set_current_program_scene("SCHEDULE")
         self.__my_obs.get_input_settings("mySource")
 

@@ -95,9 +95,18 @@ class OBS_controller:
             self.create_scene("SCHEDULE")
         except:
             pass
+        try:
+            self.create_scene("SCHEDULE_S")
+        except:
+            pass
         time.sleep(0.5)
         try:
             self.create_scene("VTV")
+        except:
+            pass
+        time.sleep(0.5)
+        try:
+            self.create_scene("LIVE_S")
         except:
             pass
         time.sleep(0.5)
@@ -110,12 +119,41 @@ class OBS_controller:
             self.create_vlc_input_source("LIVE_V","live_v",[""], self.width, self.height)
         except:
             pass
-
+        time.sleep(0.5)
         try:
             self.create_vlc_input_source("SCHEDULE","mySource",[""], self.width, self.height)
         except:
             pass
-    
+        time.sleep(0.5)
+        try:
+            self.create_slideshow(
+                scene_name="SCHEDULE_S",
+                source_name="slideshow_s", 
+                image_list = [ 
+                ],
+                slide_time= 3000,
+                transition="slide",
+                transition_speed= 700,
+                width=self.width,
+                height=self.height
+            )
+        except:
+            pass
+        time.sleep(0.5)
+        try:
+            self.create_slideshow(
+                scene_name="LIVE_S",
+                source_name="slideshow_l", 
+                image_list = [ 
+                ],
+                slide_time= 3000,
+                transition="slide",
+                transition_speed= 700,
+                width=1920,
+                height=1080
+            )
+        except:
+            pass
         
         
         
@@ -925,7 +963,7 @@ class OBS_controller:
     
     
     
-    def set_slide_show_settings(self,source_name, image_list, slide_time=2000, transition="slide",transition_speed = 700, width = 0, height = 0, overlay=True):
+    def set_slide_show_settings(self,source_name, image_list, slide_time=2000, transition="slide",transition_speed = 700, overlay=True):
         """ set slide show setting
         Args:
             source_name (String): name of slideshow input want to create
@@ -951,7 +989,7 @@ class OBS_controller:
             "slide_time": slide_time,
             "transition": transition,
             "transition_speed": transition_speed,
-            "use_custom_size": f"{width}x{height}"
+            "use_custom_size": f"{self.width}x{self.height}"
         }
         self.set_input_settings(source_name,input_setting, overlay)
         
@@ -1059,13 +1097,9 @@ def test_for_failed_streamkey():
             break
 
 
-
-def print_hi()   :
-    print("hello")
     
 def test_on_stream_state_changed():
     my_obs1 = OBS_controller(port=4455,password="123456")
-    my_obs1.set_on_reconnected_callback(print_hi)
     my_obs1.start_stream()
     while True:
         try: 
@@ -1089,7 +1123,7 @@ def test_transfrom():
 
 
 def test_api_input_slideshow():
-    my_obs = OBS_controller( id="live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk", streamlink="https://www.twitch.tv/gutsssssssss9", name="gutsssssssss9", port=4455,password="123456")
+    my_obs = OBS_controller( id="live_1127937001_mk0mXlFKsXjeqQ9UmVFroNbJAWxvxW", streamlink="https://www.twitch.tv/hehe0082", name="gutsssssssss9", port=1133,password="123456")
     # my_obs.get_input_list()
     
     my_obs.create_slideshow(
@@ -1098,13 +1132,9 @@ def test_api_input_slideshow():
         image_list = [ 
             "D:/background/wall1.jpg",
             "D:/background/wall2.jpg",
-            "D:/background/wall3.jpg",
-            "D:/background/wall4.jpg", 
-            "D:/background/wall5.jpg",
-            "D:/background/wall6.jpg"
         ],
         slide_time= 3000,
-        transition="slide",
+        transition="cut",
         transition_speed= 700,
         width=1920,
         height=1080
@@ -1123,10 +1153,8 @@ def test_api_input_slideshow():
         slide_time= 2000,
         transition="slide",
         transition_speed= 500,
-        width=1920,
-        height=1080
     )
-    # my_obs.get_input_settings("slideshow")
+    # # my_obs.get_input_settings("slideshow")
     
     my_obs.add_image_to_slideshow(
         source_name = "slideshow", 
@@ -1135,18 +1163,18 @@ def test_api_input_slideshow():
             "D:/background/wall8.jpg",    
         ]
     )
-    my_obs.get_input_settings("slideshow")
+    # my_obs.get_input_settings("slideshow")
     
-    my_obs.remove_image_to_slideshow(
-        source_name = "slideshow", 
-        image_list = [
-            "D:/background/wall7.jpg",
-            "D:/background/wall8.jpg",    
-        ]
-    )
-    my_obs.get_input_settings("slideshow")
+    # my_obs.remove_image_to_slideshow(
+    #     source_name = "slideshow", 
+    #     image_list = [
+    #         "D:/background/wall7.jpg",
+    #         "D:/background/wall8.jpg",    
+    #     ]
+    # )
+    # my_obs.get_input_settings("slideshow")
     
-    my_obs.remove_input("slideshow")
+    # my_obs.remove_input("slideshow")
     
     
 
