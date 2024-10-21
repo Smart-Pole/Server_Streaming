@@ -1,4 +1,5 @@
-from flask import Flask, request, jsonify, abort,send_from_directory
+from flask import Flask, request, jsonify, abort,send_from_directory, jsonify, url_for, send_from_directory 
+
 from datetime import datetime, time, timedelta
 from OBS_Controller_oop import OBS_controller
 from mqtt import MyMQTTClient
@@ -26,10 +27,16 @@ FolderVideoPath = "/home/streamlink1/Desktop/stream_server/Server_Streaming/vide
 FolderImagePath = "D:/FP_ver2/SERVER/images/"
 OBSWidth = 1920
 OBSHeight = 1080
-UPLOAD_FOLDER = FolderVideoPath
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
-app.config['UPLOAD_FOLDER'] = FolderVideoPath
+
+UPLOAD_VIDEO_FOLDER = FolderVideoPath
+if not os.path.exists(UPLOAD_VIDEO_FOLDER):
+    os.makedirs(UPLOAD_VIDEO_FOLDER)
+app.config['UPLOAD_VIDEO_FOLDER'] = FolderVideoPath
+
+UPLOAD_IMAGES_FOLDER = FolderImagePath
+if not os.path.exists(UPLOAD_IMAGES_FOLDER):
+    os.makedirs(UPLOAD_IMAGES_FOLDER)
+app.config['UPLOAD_IMAGES_FOLDER'] = FolderImagePath
 
 my_schedulers = [
     # StreamScheduler(Stream=1, FileLog="log_thread1.txt", VideoPath=FolderVideoPath,ImagesPath=FolderImagePath, Database='task_infor.db', DataTable="thread1", OBSPass="123456", OBSPort=1131,OBSId="sctv1",OBSName="SCTV 1",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk", StreamLink="https://www.twitch.tv/gutsssssssss9", NameStream="gutsssssssss9"),
@@ -231,10 +238,10 @@ def Get_files_video_in_folder():
     file_list = get_video_name()
     return jsonify({'Video name': file_list}), 200
 
-@app.route('/get/images')
-def Get_files_images_in_folder():
-    file_list = get_images_name()
-    return jsonify({'Images name': file_list}), 200
+# @app.route('/get/images')
+# def Get_files_images_in_folder():
+#     file_list = get_images_name()
+#     return jsonify({'Images name': file_list}), 200
 
 @app.route('/get/namestream')
 def Get_NameStream():
@@ -334,36 +341,89 @@ def get_TVchannel():
     combined_channel = {**channel, **vtv_channel}
     return jsonify({'TV channel' : f'{list(combined_channel.keys())}'})
 
-@app.route('/live/slide')
+# @app.route('/live/slide')
+# def Live_Stream_Slide():
+#      # CHOOSE THE STREAM CHANEL
+#     stream  = request.args.get('stream')
+#     if not stream:
+#         return jsonify({'error':  'Wrong stream'}), 400
+#     my_scheduler = None
+#     for scheduler in my_schedulers:
+#         if scheduler.stream == int(stream):
+#             my_scheduler = scheduler
+#     if my_scheduler == None:
+#         return jsonify({'error':  'Wrong stream'}), 400
+    
+#     transition = request.args.get('transition', "slide")  # default "slide"
+#     slide_time = request.args.get('slide_time', 3000)  # default 3000
+#     transition_speed = request.args.get('transition_speed', 700)  # default 700
+#     image_list = request.args.get('image_list')
+
+#     if int(slide_time) <= 100 or int(transition_speed) <= 100:
+#         return jsonify({'stream' : f'{my_scheduler.stream}' ,'error':  'Wrong value transition_speed or slide_time'}), 400
+    
+#     if not image_list:
+#         return jsonify({'stream' : f'{my_scheduler.stream}' ,'error':  'Empty list'}), 400
+#     image_list = image_list.split(',')
+
+#     if not check_images_list(image_list):
+#         return jsonify({'stream' : f'{my_scheduler.stream}' ,'error':  'Wrong file name'}), 400
+
+#     # Call the live_slide method with the parameters
+#     if not my_scheduler.live_slide(image_list=image_list, transition=transition, slide_time=int(slide_time), transition_speed=int(transition_speed)):
+#         return jsonify({'error': 'Invalid transition type'}), 400
+
+#     return jsonify({'success': True}), 200
+
+@app.route('/live/slide', methods=['POST'])
 def Live_Stream_Slide():
-     # CHOOSE THE STREAM CHANEL
-    stream  = request.args.get('stream')
+    # CHOOSE THE STREAM CHANNEL
+    stream = request.form.get('stream')
     if not stream:
-        return jsonify({'error':  'Wrong stream'}), 400
+        return jsonify({'error': 'Empty stream'}), 400
+    
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
             my_scheduler = scheduler
-    if my_scheduler == None:
-        return jsonify({'error':  'Wrong stream'}), 400
-    
-    transition = request.args.get('transition', "slide")  # default "slide"
-    slide_time = request.args.get('slide_time', 3000)  # default 3000
-    transition_speed = request.args.get('transition_speed', 700)  # default 700
+    if my_scheduler is None:
+        return jsonify({'error': 'Wrong stream'}), 400
+
+    transition = request.form.get('transition', "slide")  # default "slide"
+    slide_time = request.form.get('slide_time', 3000)  # default 3000
+    transition_speed = request.form.get('transition_speed', 700)  # default 700
+
+    # Nhận ảnh tải lên từ người dùng (trường hợp 1: gửi ảnh trực tiếp)
+    images = request.files.getlist('upload_images')  # Lấy danh sách ảnh tải lên
+    uploaded_images = []
+    if images:
+        # Lưu ảnh vào thư mục và tạo danh sách tên ảnh
+        for image in images:
+            if image.filename == '':
+                return jsonify({'error': 'Empty filename'}), 400
+            file_path = os.path.join(app.config['UPLOAD_IMAGES_FOLDER'], image.filename)
+            image.save(file_path)  # Lưu ảnh vào thư mục
+            uploaded_images.append(image.filename)  # Thêm tên file vào danh sách
+
+    # Nhận tên ảnh từ query string (trường hợp 2: gửi danh sách tên ảnh)
     image_list = request.args.get('image_list')
+    image_list = image_list.split(',') if image_list else []  # Chuyển thành danh sách nếu có
 
-    if int(slide_time) <= 100 or int(transition_speed) <= 100:
-        return jsonify({'stream' : f'{my_scheduler.stream}' ,'error':  'Wrong value transition_speed or slide_time'}), 400
+    if not uploaded_images and not image_list:
+        return jsonify({'error': 'No images provided'}), 400
     
-    if not image_list:
-        return jsonify({'stream' : f'{my_scheduler.stream}' ,'error':  'Empty list'}), 400
-    image_list = image_list.split(',')
+    # Kết hợp cả hai danh sách: ảnh tải lên và tên ảnh từ query string
+    combined_image_list = uploaded_images + image_list  # Kết hợp cả hai
 
-    if not check_images_list(image_list):
-        return jsonify({'stream' : f'{my_scheduler.stream}' ,'error':  'Wrong file name'}), 400
+    if not combined_image_list:
+        return jsonify({'error': 'No images provided'}), 400
 
-    # Call the live_slide method with the parameters
-    if not my_scheduler.live_slide(image_list=image_list, transition=transition, slide_time=int(slide_time), transition_speed=int(transition_speed)):
+    # Kiểm tra danh sách ảnh đã kết hợp
+    if not check_images_list(combined_image_list):
+        return jsonify({'error': 'Wrong file name'}), 400
+
+    # Gọi hàm live_slide với danh sách ảnh đã kết hợp và các tham số khác
+    if not my_scheduler.live_slide(image_list=combined_image_list, transition=transition, slide_time=int(slide_time), transition_speed=int(transition_speed)):
         return jsonify({'error': 'Invalid transition type'}), 400
 
     return jsonify({'success': True}), 200
@@ -493,7 +553,6 @@ def Stop_Live_Steam():
     if my_scheduler == None:
         return jsonify({'error':  'Wrong stream'}), 400
 
-        
     my_scheduler.stop_live()
     return jsonify({'stream' : f'{my_scheduler.stream}' ,'success': {'message': 'Stop live stream'}}), 200
 
@@ -831,9 +890,6 @@ def Delete_Task():
     
 #-----------------------------------------------------------
 
-
-
-
 @app.route('/upload', methods=['POST'])
 def upload_file():
     if 'video' not in request.files:
@@ -845,7 +901,7 @@ def upload_file():
     
     if file:
         filename = file.filename
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        filepath = os.path.join(app.config['UPLOAD_VIDEO_FOLDER'], filename)
         file.save(filepath)
         return f'Video uploaded successfully and saved to {filepath}'
     
@@ -853,7 +909,35 @@ def upload_file():
 
 @app.route('/videocontent/<filename>')
 def serve_video(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    return send_from_directory(app.config['UPLOAD_VIDEO_FOLDER'], filename)
+
+
+def get_images_info():
+    image_directory = app.config['UPLOAD_IMAGES_FOLDER']  
+    images = []
+    
+    for filename in os.listdir(image_directory):
+        file_path = os.path.join(image_directory, filename)
+        if os.path.isfile(file_path):
+            image_url = url_for('serve_image', filename=filename) 
+            images.append({
+                'name': filename,
+                'url': image_url
+            })
+    
+    return images
+
+# Route to return the image details (name, size, URL)
+@app.route('/get/images', methods=['GET'])
+def get_files_images_in_folder():
+    image_info_list = get_images_info() 
+    return jsonify({'images': image_info_list}), 200  
+
+# Route to serve the actual image files
+@app.route('/image/<filename>', methods=['GET'])
+def serve_image(filename):
+    image_directory = app.config['UPLOAD_IMAGES_FOLDER']  
+    return send_from_directory(image_directory, filename) 
 
 def main():
     
