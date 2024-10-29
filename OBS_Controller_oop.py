@@ -5,6 +5,7 @@ from datetime import datetime
 import streamlink
 import requests
 import threading
+import os
 # rtmp://live.twitch.tv/app server live of twitch
 
 
@@ -154,10 +155,38 @@ class OBS_controller:
             )
         except:
             pass
+         # Bắt đầu ghi log
+        self.start_logging()
+
+    def start_logging(self):
+        log_thread = threading.Thread(target=self.log_stats, daemon=True)
+        log_thread.start()
+
+    def log_stats(self):
+        os.makedirs('log', exist_ok=True)
+        log_filename = os.path.join('log', f"{self.id}_{datetime.now().strftime('%Y-%m-%d_%H-%M.txt')}")
+
         
-        
-        
-# CHECK LINK DIE
+        with open(log_filename, "a") as log_file:
+            while True:
+                stats = self.get_stats()  # Giả sử bạn có hàm này để lấy stats
+                timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                formatted_stats = {
+                    "cpu_usage": round(stats.cpu_usage, 2),  # % CPU usage
+                    "memory_usage": round(stats.memory_usage, 2),  # Memory usage in MB
+                    "available_disk_space": round(stats.available_disk_space, 2),  # Disk space in MB
+                    "active_fps": round(stats.active_fps, 2),  # Active FPS
+                    "average_frame_render_time": round(stats.average_frame_render_time, 2),  # Time per frame in ms
+                    "render_skipped_frames": stats.render_skipped_frames,  # Skipped frames in render thread
+                    "render_total_frames": stats.render_total_frames,  # Total frames rendered
+                    "output_skipped_frames": stats.output_skipped_frames,  # Skipped frames in output thread
+                    "output_total_frames": stats.output_total_frames,  # Total frames outputted
+                    "websocket_session_incoming_messages": stats.web_socket_session_incoming_messages,  # Incoming WebSocket messages
+                    "websocket_session_outgoing_messages": stats.web_socket_session_outgoing_messages  # Outgoing WebSocket messages
+                }
+                log_file.write(f"{timestamp} - {formatted_stats}\n")
+                log_file.flush()
+                time.sleep(30)  # Đợi 30 giây trước khi ghi log tiếp theo       
 
 
     def __start_checking(self):
@@ -1121,6 +1150,27 @@ def test_transfrom():
 
             break
 
+def test_api_get_stats():
+    my_obs = OBS_controller( id="live_1127937001_mk0mXlFKsXjeqQ9UmVFroNbJAWxvxW", streamlink="https://www.twitch.tv/hehe0082", name="hehe0082", port=1133,password="123456")
+    while(1):
+        stats = my_obs.get_stats()
+        formatted_stats = {
+            "cpu_usage": round(stats.cpu_usage, 2),  # % CPU usage
+            "memory_usage": round(stats.memory_usage, 2),  # Memory usage in MB
+            "available_disk_space": round(stats.available_disk_space, 2),  # Disk space in MB
+            "active_fps": round(stats.active_fps, 2),  # Active FPS
+            "average_frame_render_time": round(stats.average_frame_render_time, 2),  # Time per frame in ms
+            "render_skipped_frames": stats.render_skipped_frames,  # Skipped frames in render thread
+            "render_total_frames": stats.render_total_frames,  # Total frames rendered
+            "output_skipped_frames": stats.output_skipped_frames,  # Skipped frames in output thread
+            "output_total_frames": stats.output_total_frames,  # Total frames outputted
+            "websocket_session_incoming_messages": stats.web_socket_session_incoming_messages,  # Incoming WebSocket messages
+            "websocket_session_outgoing_messages": stats.web_socket_session_outgoing_messages  # Outgoing WebSocket messages
+        }
+
+        # In ra kết quả
+        print(formatted_stats)
+        time.sleep(2)
 
 def test_api_input_slideshow():
     my_obs = OBS_controller( id="live_1127937001_mk0mXlFKsXjeqQ9UmVFroNbJAWxvxW", streamlink="https://www.twitch.tv/hehe0082", name="gutsssssssss9", port=1133,password="123456")
@@ -1179,9 +1229,7 @@ def test_api_input_slideshow():
     
 
 if __name__ == "__main__":
-    # test_for_failed_streamkey()
-    # test_on_stream_state_changed()
-    # test_transfrom()
-    
-    test_api_input_slideshow()
+
+    test_api_get_stats()
+
     
