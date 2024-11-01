@@ -881,7 +881,7 @@ class OBS_controller:
         self.set_size_of_source(scene_name, source_name, width, height)
     
     
-    def create_slideshow(self, scene_name, source_name , image_list, slide_time=2000, transition="slide",transition_speed = 700, width = 0, height = 0):
+    def create_slideshow(self, scene_name, source_name , image_list, slide_time=2000, transition="slide",transition_speed = 700, width = 0, height = 0, before_version_30 = True):
         """ create slide show input
 
         Args:
@@ -909,7 +909,7 @@ class OBS_controller:
             "transition_speed": transition_speed,
             "use_custom_size": f"{width}x{height}"
         }
-        input_kind="slideshow_v2"       
+        input_kind = "slideshow" if before_version_30 else "slideshow_v2"       
         scene_item_enable = True
         self.request_client.create_input(scene_name, source_name, input_kind, input_setting, scene_item_enable)        
     
