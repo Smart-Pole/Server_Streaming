@@ -137,7 +137,7 @@ class OBS_controller:
                 transition_speed= 700,
                 width=self.width,
                 height=self.height,
-                before_version_30=False
+                before_version_30=True
             )
         except:
             pass
@@ -153,7 +153,7 @@ class OBS_controller:
                 transition_speed= 700,
                 width=1920,
                 height=1080,
-                before_version_30=False
+                before_version_30=True
             )
         except:
             pass
