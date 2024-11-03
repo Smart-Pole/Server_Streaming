@@ -20,13 +20,14 @@ class TaskDatabase:
                               until TEXT,
                               start_time TEXT,
                               end_time TEXT,
-                              typetask TEXT
+                              typetask TEXT,
+                              input_type TEXT
                               )''')
         self.conn.commit()
 
     def add_task(self, task_info):
-        self.cursor.execute(f"INSERT INTO {self.table_name} ( label, days, video_name, duration, start_date, until, start_time, end_time, typetask) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                            ( task_info.label, ','.join(task_info.days), ','.join(task_info.video_name), task_info.duration, task_info.start_date, task_info.until, task_info.start_time, task_info.end_time, task_info.typetask))
+        self.cursor.execute(f"INSERT INTO {self.table_name} ( label, days, video_name, duration, start_date, until, start_time, end_time, typetask, input_type) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                            ( task_info.label, ','.join(task_info.days), ','.join(task_info.video_name), task_info.duration, task_info.start_date, task_info.until, task_info.start_time, task_info.end_time, task_info.typetask, task_info.input_type))
         self.conn.commit()
         last_row_id = self.cursor.lastrowid
         print(f"The ID of the last inserted row is: {last_row_id}")
@@ -86,6 +87,7 @@ def main():
                 print(f"Start Time: {task.start_time}")
                 print(f"End Time: {task.end_time}")
                 print(f"Type Task: {task.typetask}")
+                print(f"Input TYPE: {task.input_type}")
                 print("\n")
 
     # Đóng kết nối

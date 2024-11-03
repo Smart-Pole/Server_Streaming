@@ -4,3 +4,4 @@ test_streamlink_class.py
 testing.py
 *.log
 /log
+*.txt

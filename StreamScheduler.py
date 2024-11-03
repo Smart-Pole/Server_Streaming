@@ -224,6 +224,7 @@ class StreamScheduler:
             if (abs(datetime.now() - start_date).days) % repeatDuration != 0:
                 return False
         self.CurrentVideo = []
+        self.__my_obs.set_current_program_scene("SCHEDULE")
         cancle_link = self.get_link_video(["idle.mp4"])
         self.__my_obs.set_input_playlist(cancle_link)
         self.__set_flag_taskrunning(0)
@@ -254,9 +255,8 @@ class StreamScheduler:
                 return False
         else:
             pass
-        
-        self.CurrentVideo
-        self.CurrentTask
+
+        self.__my_obs.set_current_program_scene("SCHEDULE")
         myvideolist = self.get_link_video(taskinfor.video_name)
         self.CurrentVideo = myvideolist
         self.__my_obs.set_input_playlist(myvideolist)
@@ -309,11 +309,11 @@ class StreamScheduler:
                 return False
         else:
             pass
-
+        self.__my_obs.set_current_program_scene("SCHEDULE")
         myvideolist = self.get_link_video(taskinfor.video_name)
         self.CurrentVideo = myvideolist
         self.__my_obs.set_input_playlist(myvideolist)
-        print('Daily_task')
+        print('Daily task')
         self.__set_flag_taskrunning(1)
         self.CurrentTask = taskinfor
         if taskinfor.end_time and taskinfor.end_time != "None":
@@ -327,6 +327,44 @@ class StreamScheduler:
         self.ListTask.append(taskinfor)
         self.saveTask(1)
         self.__Start_Schedule.every().days.at(taskinfor.start_time,timezone('Asia/Ho_Chi_Minh')).until(taskinfor.until).do(self.__daily_task, taskinfor).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
+        print(self.__Start_Schedule.get_jobs())
+
+    def __daily_task_image(self,taskinfor, slide_time=1000, transition_speed=1000  ,transition = 'slide'):
+
+        if self.__get_flag_taskrunning():
+            print(f"Task id: {taskinfor.ID} has been BLOCKED")
+            return False
+        if(datetime.now() < taskinfor.start_date):
+            print("NOT RUN NOW")
+            return False
+        if taskinfor.duration:
+            if (abs(datetime.now() - taskinfor.start_date).days) % taskinfor.duration != 0:
+                return False
+            
+        if datetime.strptime(taskinfor.end_time, "%H:%M").time() > datetime.strptime(taskinfor.start_time, "%H:%M").time():
+            if datetime.now().time() >= datetime.strptime(taskinfor.end_time, "%H:%M").time():
+                print(f"DELETE TASK: {taskinfor.ID}")
+                return False
+        else:
+            pass
+        self.__my_obs.set_current_program_scene("SCHEDULE_S")
+        image_list = self.get_link_images(taskinfor.video_name)
+        self.CurrentVideo = image_list
+        self.__my_obs.set_slide_show_settings(source_name="slideshow_s", image_list=image_list, transition=transition , slide_time=slide_time, transition_speed= transition_speed)
+        print('Daily_task images')
+        self.__set_flag_taskrunning(1)
+        self.CurrentTask = taskinfor
+        if taskinfor.end_time and taskinfor.end_time != "None":
+            self.__Stop_Schedule.every().days.at(taskinfor.end_time,timezone('Asia/Ho_Chi_Minh')).until(taskinfor.until).do(self.__cancel_task,taskinfor.start_date,0).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
+
+
+
+    def daily_task_image(self,taskinfor, slide_time=1000, transition_speed=1000 ,transition = 'slide'):
+        new_ID = self.__task_db.add_task(taskinfor)
+        taskinfor.ID = new_ID
+        self.ListTask.append(taskinfor)
+        self.saveTask(1)
+        self.__Start_Schedule.every().days.at(taskinfor.start_time,timezone('Asia/Ho_Chi_Minh')).until(taskinfor.until).do(self.__daily_task_image, taskinfor, slide_time, transition_speed, transition).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
         print(self.__Start_Schedule.get_jobs())
 
 
@@ -347,7 +385,7 @@ class StreamScheduler:
                 return schedule.CancelJob
         else:
             pass
-
+        self.__my_obs.set_current_program_scene("SCHEDULE")
         myvideolist = self.get_link_video(taskinfor.video_name)
         self.CurrentVideo = myvideolist
         self.__my_obs.set_input_playlist(myvideolist)

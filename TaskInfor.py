@@ -2,7 +2,7 @@ import json
 from datetime import datetime, time, timedelta
 
 class TaskInformation:
-    def __init__(self, ID , label , days, video_name,duration,start_date,until, start_time, end_time ,typetask ):
+    def __init__(self, ID , label , days , video_name , duration , start_date , until , start_time , end_time , typetask, input_type = "video"):
         self.ID = ID
         self.label = label
         self.video_name = video_name
@@ -13,6 +13,7 @@ class TaskInformation:
         self.end_time = end_time
         self.typetask = typetask
         self.days = days
+        self.input_type = input_type
         
 
 
@@ -24,5 +25,6 @@ class TaskInformation:
     
 def test():
      pass
+
 if __name__ == "__main__":
     test()

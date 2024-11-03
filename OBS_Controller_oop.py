@@ -136,7 +136,8 @@ class OBS_controller:
                 transition="slide",
                 transition_speed= 700,
                 width=self.width,
-                height=self.height
+                height=self.height,
+                before_version_30=False
             )
         except:
             pass
@@ -151,7 +152,8 @@ class OBS_controller:
                 transition="slide",
                 transition_speed= 700,
                 width=1920,
-                height=1080
+                height=1080,
+                before_version_30=False
             )
         except:
             pass
@@ -218,7 +220,7 @@ class OBS_controller:
     def __send_streamlink_to_server(self):
         if self.id is None:
             return
-        
+        time.sleep(20)
         link_url = None
         while not link_url:
             try:

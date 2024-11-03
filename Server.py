@@ -406,11 +406,10 @@ def Live_Stream_Slide():
             uploaded_images.append(image.filename)  # Thêm tên file vào danh sách
 
     # Nhận tên ảnh từ query string (trường hợp 2: gửi danh sách tên ảnh)
-    image_list = request.args.get('image_list')
+    image_list = request.form.get('image_list')
     image_list = image_list.split(',') if image_list else []  # Chuyển thành danh sách nếu có
-
-    if not uploaded_images and not image_list:
-        return jsonify({'error': 'No images provided'}), 400
+    # if not uploaded_images and not image_list:
+    #     return jsonify({'error': 'No images provided'}), 400
     
     # Kết hợp cả hai danh sách: ảnh tải lên và tên ảnh từ query string
     combined_image_list = uploaded_images + image_list  # Kết hợp cả hai
@@ -862,6 +861,108 @@ def Add_Task_onetime():
     #     schedule.every().days.at(end_time).do(cancel_task,start_date,0).tag(f'{new_task.ID}')
 
     return jsonify({'stream' : f'{my_scheduler.stream}' ,'success': {'message': 'Create task', 'ID': new_task.ID}}), 200
+
+@app.route('/schedule/slide/daily', methods=['POST'])
+def Live_Slide_Schedule():
+    # CHỌN KÊNH STREAM
+    stream = request.form.get('stream')
+    if not stream:
+        return jsonify({'error': 'Empty stream'}), 400
+    
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler is None:
+        return jsonify({'error': 'Wrong stream'}), 400
+
+    # NHẬN THÔNG TIN THỜI GIAN, NGÀY, VÀ CÁC THÔNG SỐ KHÁC
+    start_time = request.form.get('starttime')
+    end_time = request.form.get('endtime')
+    start_date = request.form.get('startdate')
+    duration = request.form.get('duration', '1')
+    until = request.form.get('until')
+    label = request.form.get('label')
+    
+    if not label:
+        return jsonify({'error': 'Empty label'}), 400
+
+    # KIỂM TRA THỜI GIAN
+    if not start_time or not validateTimeformat(start_time):
+        return jsonify({'error': 'Invalid start time format'}), 400
+    if not end_time or not validateTimeformat(end_time):
+        return jsonify({'error': 'Invalid end time format'}), 400
+    if datetime.strptime(end_time, "%H:%M") <= datetime.strptime(start_time, "%H:%M"):
+        return jsonify({'error': 'Start time must be before end time'}), 400
+
+    # KIỂM TRA VÀ XỬ LÝ `start_date` và `until`
+    try:
+        start_date = datetime.strptime(start_date, "%Y-%m-%d") if start_date else datetime.now()
+        if until:
+            until_date = datetime.strptime(until, "%Y-%m-%d")
+            if until_date < start_date:
+                return jsonify({'error': 'Until date must be after start date'}), 400
+        else:
+            until_date = datetime(2100, 12, 31)
+    except ValueError:
+        return jsonify({'error': 'Invalid date format for startdate or until'}), 400
+
+    # XỬ LÝ `duration`
+    try:
+        duration = int(duration)
+        if duration <= 0:
+            raise ValueError("Duration must be positive")
+    except ValueError:
+        return jsonify({'error': 'Invalid duration'}), 400
+
+    # NHẬN DANH SÁCH HÌNH ẢNH
+    images = request.files.getlist('upload_images')  # Lấy danh sách ảnh tải lên
+    uploaded_images = []
+    if images:
+        for image in images:
+            if image.filename == '':
+                return jsonify({'error': 'Empty filename'}), 400
+            file_path = os.path.join(app.config['UPLOAD_IMAGES_FOLDER'], image.filename)
+            image.save(file_path)
+            uploaded_images.append(image.filename)
+    image_list = request.form.get('image_list', '')
+    image_list = image_list.split(',') if image_list else []
+    combined_image_list = uploaded_images + image_list
+
+    if not combined_image_list:
+        return jsonify({'error': 'No images provided'}), 400
+    if not check_images_list(combined_image_list):
+        return jsonify({'error': 'Invalid image file names'}), 400
+
+    # NHẬN `slide_time` và `transition_speed`
+    try:
+        transition = request.form.get('transition', "slide")  # default "slide"
+        slide_time = int(request.form.get('slide_time', 3000))
+        transition_speed = int(request.form.get('transition_speed', 700))
+    
+        # Kiểm tra transition có hợp lệ hay không
+        valid_transitions = ["cut", "fade", "swipe", "slide"]
+        if transition not in valid_transitions:
+            return jsonify({'error': 'Invalid transition type'}), 400
+    except ValueError:
+        return jsonify({'error': 'slide_time and transition_speed must be integers'}), 400
+
+    # TẠO VÀ THÊM LỊCH TRÌNH SLIDESHOW
+    new_task = TaskInformation(
+        ID=None,
+        label=label,
+        days=[],
+        video_name=combined_image_list,
+        start_date=start_date.strftime("%Y-%m-%d %H:%M:%S"),
+        duration=duration,
+        until=until_date.strftime("%Y-%m-%d %H:%M:%S"),
+        start_time=start_time,
+        end_time=end_time,
+        typetask="daily",
+        input_type="image"
+    )
+    my_scheduler.daily_task_image(new_task, slide_time=slide_time, transition_speed=transition_speed, transition = transition)
+    return jsonify({'stream': f'{my_scheduler.stream}', 'success': {'message': 'Scheduled slideshow created', 'ID': new_task.ID}}), 200
 
 
 @app.route('/schedule/deleteTask')
