@@ -27,8 +27,7 @@ class Pole_manager:
                               information TEXT,
                               area TEXT,
                               link TEXT,
-                              channel TEXT,
-                              stream_id TEXT
+                              channel TEXT 
                               )''')
         self.conn.commit()
 
@@ -61,7 +60,7 @@ class Pole_manager:
     def update_link_by_id(self, pole_ids, new_link,channel):
         # Update in the database
         for pole_id in pole_ids:
-            self.cursor.execute(f"UPDATE {self.table_name} SET link = ?, channel = ? WHERE ID = ?", (new_link, channel, pole_id))
+            self.cursor.execute(f"UPDATE {self.table_name} SET link = ?, channel = ? WHERE ID = ?", (new_link,channel, pole_id))
         self.conn.commit()
         
         # Update in self.pole_infor

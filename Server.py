@@ -71,7 +71,7 @@ vtv_channel = {
 ################## begin MQTT
 
 AIO_USERNAME = "GutD"
-AIO_KEY = "aio_dUie44q9gLk53NSZVCfG57JC89kx"
+AIO_KEY = ""
 AIO_FEED_ID = ["live-stream"]
 mqtt_client = MyMQTTClient(AIO_USERNAME, AIO_KEY, AIO_FEED_ID)
 
