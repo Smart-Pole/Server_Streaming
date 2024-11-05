@@ -137,6 +137,11 @@ class StreamScheduler:
     
     def change_stream_infor(self,id,name):
         self.__my_obs.change_id(id=id,name=name)
+    
+    def get_link_m3u8(self):
+        stream_link = self.__my_obs.streamlink_m3u8
+        return stream_link
+
     def get_stats(self):
         try:
             # Fetch stats from OBS WebSocket

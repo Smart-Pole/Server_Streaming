@@ -70,26 +70,36 @@ vtv_channel = {
 
 ################## begin MQTT
 
-# AIO_USERNAME = "GutD"
-# AIO_KEY = "aio_TNaU20Pmw9L7x41vHH4ifs3ZKSit"
-# AIO_FEED_ID = ["live-stream"]
-# mqtt_client = MyMQTTClient(AIO_USERNAME, AIO_KEY, AIO_FEED_ID)
+AIO_USERNAME = "GutD"
+AIO_KEY = "aio_dUie44q9gLk53NSZVCfG57JC89kx"
+AIO_FEED_ID = ["live-stream"]
+mqtt_client = MyMQTTClient(AIO_USERNAME, AIO_KEY, AIO_FEED_ID)
 
 
-# def publish_livestream(ID,link):
-#     mess = {
-#         "ID" : ID,
-#         "link" : link
-#     }
-#     json_mess = json.dumps(mess)
-#     mqtt_client.publish_data("live_stream",json_mess)
+def publish_livestream():
+    all_poles = []  # Tạo danh sách chứa thông tin tất cả các cột
+    
+    for pole in pole_manager.pole_infor:
+        # Tạo dictionary cho từng pole với ID và link
+        pole_info = {
+            "Pole_ID": pole.ID,
+            "Stream_ID": pole.channel
+        }
+        all_poles.append(pole_info)  # Thêm thông tin vào danh sách
+    
+    # Đóng gói tất cả các cột vào một dictionary và chuyển thành JSON
+    mess = {
+        "data": all_poles
+    }
+    json_mess = json.dumps(mess)
+    mqtt_client.publish_data("live_stream", json_mess)
 
 
 ###################################################################################
 def init():
     #start MQTT
-    # mqtt_client.start()
-    # publish_livestream([1,2,3],my_scheduler1.StreamLink)
+    mqtt_client.start()
+    publish_livestream()
     pass
     
 def validateTimeformat(time_str):
@@ -201,7 +211,7 @@ def Set_pole_stream_id():
         
     
     pole_manager.update_link_by_id(pole_ids=pole_id,new_link=my_scheduler.StreamLink,channel=my_scheduler.stream)
-    # publish_livestream(pole_id,my_scheduler.StreamLink)
+    publish_livestream()
 
     return jsonify( {'success': {'message': 'Set stream'}}), 200
 
@@ -233,6 +243,7 @@ def Set_pole_stream_area():
     return jsonify( {'success': {'message': 'Set stream'}}), 200
 ################################################################################################
 
+
 @app.route('/get/video')
 def Get_files_video_in_folder():
     file_list = get_video_name()
@@ -242,6 +253,23 @@ def Get_files_video_in_folder():
 # def Get_files_images_in_folder():
 #     file_list = get_images_name()
 #     return jsonify({'Images name': file_list}), 200
+@app.route('/get/linkm3u8')
+def Get_link_m3u8():
+    # CHOOSE THE STREAM CHANEL
+    stream  = request.args.get('stream')
+    if not stream:
+        return jsonify({'error':  'Wrong stream'}), 400
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler == None:
+        return jsonify({'error':  'Wrong stream'}), 400
+    if not my_scheduler.get_link_m3u8():
+        return jsonify({'error':  'Stream link not exits yet'}), 400
+    
+    return jsonify({'link':  f'{my_scheduler.get_link_m3u8()}'}), 200
+    
 
 @app.route('/get/namestream')
 def Get_NameStream():

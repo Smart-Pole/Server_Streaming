@@ -19,7 +19,7 @@ class OBS_controller:
             self.printJsonObject(object)
             
     def __init__(self, streamlink, id , name , host='localhost', port=4455, password='123456', width = 1920, height  = 1080) -> None:
-
+        
         self.id = id
         self.name = name
         self.streamlink = streamlink
@@ -137,7 +137,7 @@ class OBS_controller:
                 transition_speed= 700,
                 width=self.width,
                 height=self.height,
-                before_version_30=True
+                before_version_30=False
             )
         except:
             pass
@@ -153,7 +153,7 @@ class OBS_controller:
                 transition_speed= 700,
                 width=1920,
                 height=1080,
-                before_version_30=True
+                before_version_30=False
             )
         except:
             pass
@@ -212,6 +212,7 @@ class OBS_controller:
             if response.status_code == 200 and 'application/vnd.apple.mpegurl' in response.headers.get('Content-Type', ''):
                 return True
             else:
+                self.streamlink_m3u8 = None
                 return False
         except requests.exceptions.RequestException as e:
             print(f"Error: {e}")
@@ -260,6 +261,9 @@ class OBS_controller:
         self.id = id
         self.name = name
         self.__send_streamlink_to_server()
+
+    def get_stream_link(self):
+        return self.streamlink_m3u8
     # --------------------------------- setter and getter -----------------------------------
     # reconnect callback setter and getter:
     def set_on_reconnected_callback(self,func):
