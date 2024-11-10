@@ -24,7 +24,7 @@ app = Flask(__name__)
 CORS(app)
 
 FolderVideoPath = "/home/streamlink1/Desktop/stream_server/Server_Streaming/video/"
-FolderImagePath = "/home/streamlink1/Desktop/stream_server/Server_Streaming/images/"
+FolderImagePath = "D:/FP_ver2/SERVER/images/"
 OBSWidth = 1920
 OBSHeight = 1080
 
@@ -39,15 +39,15 @@ if not os.path.exists(UPLOAD_IMAGES_FOLDER):
 app.config['UPLOAD_IMAGES_FOLDER'] = FolderImagePath
 
 my_schedulers = [
-    StreamScheduler(Stream=1, FileLog="log_thread1.txt", VideoPath=FolderVideoPath,ImagesPath=FolderImagePath, Database='task_infor.db', DataTable="thread1", OBSPass="123456", OBSPort=1131,OBSId="sctv1",OBSName="SCTV 1",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk", StreamLink="https://www.twitch.tv/gutsssssssss9", NameStream="gutsssssssss9"),
-    StreamScheduler(Stream=2, FileLog="log_thread2.txt", VideoPath=FolderVideoPath,ImagesPath=FolderImagePath, Database='task_infor.db', DataTable="thread2", OBSPass="123456", OBSPort=1132,OBSId="sctv2",OBSName="SCTV 2",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1071558463_6geWoWQgWadKOjby2mqDj40qeiW9fg", StreamLink="https://www.twitch.tv/dat_live2", NameStream="dat_live2"),
+    # StreamScheduler(Stream=1, FileLog="log_thread1.txt", VideoPath=FolderVideoPath,ImagesPath=FolderImagePath, Database='task_infor.db', DataTable="thread1", OBSPass="123456", OBSPort=1131,OBSId="sctv1",OBSName="SCTV 1",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1039732177_vlmsO93WolB9ky2gidCbIfnEBMnXEk", StreamLink="https://www.twitch.tv/gutsssssssss9", NameStream="gutsssssssss9"),
+    # StreamScheduler(Stream=2, FileLog="log_thread2.txt", VideoPath=FolderVideoPath,ImagesPath=FolderImagePath, Database='task_infor.db', DataTable="thread2", OBSPass="123456", OBSPort=1132,OBSId="sctv2",OBSName="SCTV 2",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1071558463_6geWoWQgWadKOjby2mqDj40qeiW9fg", StreamLink="https://www.twitch.tv/dat_live2", NameStream="dat_live2"),
     # StreamScheduler(Stream=3, FileLog="log_thread3.txt", VideoPath=FolderVideoPath,ImagesPath=FolderImagePath, Database='task_infor.db', DataTable="thread3", OBSPass="123456", OBSPort=1133,OBSId="sctv3",OBSName="SCTV 3",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1071557915_S0GK8ydVBO5EfOREfzEmAtJNbL09fL", StreamLink="https://www.twitch.tv/dat_live1", NameStream="dat_live1"),
     # StreamScheduler(Stream=4, FileLog="log_thread4.txt", VideoPath=FolderVideoPath,ImagesPath=FolderImagePath, Database='task_infor.db', DataTable="thread4", OBSPass="123456", OBSPort=1134,OBSId="vtv4",OBSName="VTV 4",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1039740022_rGAe65XCi8xif5QyFwQLeRLdVKtX2O", StreamLink="https://www.twitch.tv/hehe0088", NameStream="hehe0088"),
     # StreamScheduler(Stream=5, FileLog="log_thread5.txt", VideoPath=FolderVideoPath,ImagesPath=FolderImagePath, Database='task_infor.db', DataTable="thread5", OBSPass="123456", OBSPort=1135,OBSId="vtv5",OBSName="VTV 5",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1125130390_vqMoTYJF7jiOtTt8uM4oBS7DANMon8", StreamLink="https://www.twitch.tv/nhanlow", NameStream="nhanlow"),
     # StreamScheduler(Stream=6, FileLog="log_thread6.txt", VideoPath=FolderVideoPath,ImagesPath=FolderImagePath, Database='task_infor.db', DataTable="thread6", OBSPass="123456", OBSPort=1136,OBSId="vtv6",OBSName="VTV 6",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1044211682_Ol34MomAqRm3Ef7s0jwrKq0KNGj3Ku", StreamLink="https://www.twitch.tv/huynhnguyenhieunhan", NameStream="huynhnguyenhieunhan"),
     # StreamScheduler(Stream=7, FileLog="log_thread7.txt", VideoPath=FolderVideoPath,ImagesPath=FolderImagePath, Database='task_infor.db', DataTable="thread7", OBSPass="123456", OBSPort=1137,OBSId="vtv7",OBSName="VTV 7",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1127937398_28e30ICQkj916Yris7ysw3wSQnjkuQ", StreamLink="https://www.twitch.tv/nhanlow_v2", NameStream="nhanlow_v2"),
     # StreamScheduler(Stream=8, FileLog="log_thread8.txt", VideoPath=FolderVideoPath,ImagesPath=FolderImagePath, Database='task_infor.db', DataTable="thread8", OBSPass="123456", OBSPort=1138,OBSId="vtv8",OBSName="VTV 8",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1127041941_YqyrJHfYVm7NBtX7EIckVEZtMjuMde", StreamLink="https://www.twitch.tv/hehe0081", NameStream="hehe0081"),
-    # StreamScheduler(Stream=1, FileLog="log_thread9.txt", VideoPath=FolderVideoPath,ImagesPath=FolderImagePath, Database='task_infor.db', DataTable="thread9", OBSPass="123456", OBSPort=1133,OBSId="film",OBSName="Xem Phim",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1127937001_mk0mXlFKsXjeqQ9UmVFroNbJAWxvxW", StreamLink="https://www.twitch.tv/hehe0082", NameStream="hehe0082"),
+    StreamScheduler(Stream=1, FileLog="log_thread9.txt", VideoPath=FolderVideoPath,ImagesPath=FolderImagePath, Database='task_infor.db', DataTable="thread9", OBSPass="123456", OBSPort=1133,OBSId="film",OBSName="Xem Phim",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1127937001_mk0mXlFKsXjeqQ9UmVFroNbJAWxvxW", StreamLink="https://www.twitch.tv/hehe0082", NameStream="hehe0082"),
 ]
 
 pole_manager = Pole_manager()
@@ -882,8 +882,6 @@ def Add_Task_onetime():
     #     return jsonify({'error': 'Wrong time format'}) ,400
     new_task = TaskInformation(ID=None,label=label ,video_name=video_list,duration=0,start_date=start_date,until=until,start_time=start_time,end_time=end_time,typetask="onetime",days=[])
     my_scheduler.onetime_task(new_task)
-    
-
 
     # if end_time:
     #     schedule.every().days.at(end_time).do(cancel_task,start_date,0).tag(f'{new_task.ID}')
@@ -992,6 +990,210 @@ def Live_Slide_Schedule():
     my_scheduler.daily_task_image(new_task, slide_time=slide_time, transition_speed=transition_speed, transition = transition)
     return jsonify({'stream': f'{my_scheduler.stream}', 'success': {'message': 'Scheduled slideshow created', 'ID': new_task.ID}}), 200
 
+@app.route('/schedule/slide/onetime', methods=['POST'])
+def Live_Slide_Schedule_Onetime():
+    # CHỌN KÊNH STREAM
+    stream = request.form.get('stream')
+    if not stream:
+        return jsonify({'error': 'Empty stream'}), 400
+    
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler is None:
+        return jsonify({'error': 'Wrong stream'}), 400
+
+    # NHẬN THÔNG TIN THỜI GIAN, NGÀY, VÀ CÁC THÔNG SỐ KHÁC
+    start_time = request.form.get('starttime')
+    end_time = request.form.get('endtime')
+    start_date = request.form.get('startdate')
+    label = request.form.get('label')
+    if not label:
+        return jsonify({'error': 'Empty label'}), 400
+
+    # KIỂM TRA THỜI GIAN
+    if not start_time or not validateTimeformat(start_time):
+        return jsonify({'error': 'Invalid start time format'}), 400
+    if not end_time or not validateTimeformat(end_time):
+        return jsonify({'error': 'Invalid end time format'}), 400
+    if datetime.strptime(end_time, "%H:%M") <= datetime.strptime(start_time, "%H:%M"):
+        return jsonify({'error': 'Start time must be before end time'}), 400
+
+    # KIỂM TRA VÀ XỬ LÝ `start_date`
+    try:
+        start_date = datetime.strptime(start_date, "%Y-%m-%d") if start_date else datetime.now()
+        end_datetime = datetime.combine(start_date, datetime.strptime(end_time, "%H:%M").time())
+        start_datetime = datetime.combine(start_date, datetime.strptime(start_time, "%H:%M").time())
+
+        # Nếu thời gian kết thúc là vào ngày hôm sau
+        if end_datetime <= start_datetime:
+            end_datetime += timedelta(days=1)
+    except ValueError:
+        return jsonify({'error': 'Invalid date format for startdate'}), 400
+
+    # NHẬN DANH SÁCH HÌNH ẢNH
+    images = request.files.getlist('upload_images')
+    uploaded_images = []
+    if images:
+        for image in images:
+            if image.filename == '':
+                return jsonify({'error': 'Empty filename'}), 400
+            file_path = os.path.join(app.config['UPLOAD_IMAGES_FOLDER'], image.filename)
+            image.save(file_path)
+            uploaded_images.append(image.filename)
+    image_list = request.form.get('image_list', '')
+    image_list = image_list.split(',') if image_list else []
+    combined_image_list = uploaded_images + image_list
+
+    if not combined_image_list:
+        return jsonify({'error': 'No images provided'}), 400
+    if not check_images_list(combined_image_list):
+        return jsonify({'error': 'Invalid image file names'}), 400
+
+    # NHẬN `slide_time` và `transition_speed`
+    try:
+        transition = request.form.get('transition', "slide")
+        slide_time = int(request.form.get('slide_time', 3000))
+        transition_speed = int(request.form.get('transition_speed', 700))
+    
+        # Kiểm tra transition có hợp lệ hay không
+        valid_transitions = ["cut", "fade", "swipe", "slide"]
+        if transition not in valid_transitions:
+            return jsonify({'error': 'Invalid transition type'}), 400
+    except ValueError:
+        return jsonify({'error': 'slide_time and transition_speed must be integers'}), 400
+
+    # TẠO VÀ THÊM TASK ONETIME
+    new_task = TaskInformation(
+        ID=None,
+        label=label,
+        days=[],
+        video_name=combined_image_list,
+        start_date=start_datetime.strftime("%Y-%m-%d %H:%M:%S"),
+        duration=0,
+        until=end_datetime.strftime("%Y-%m-%d %H:%M:%S"),
+        start_time=start_time,
+        end_time=end_time,
+        typetask="onetime",
+        input_type="image"
+    )
+    my_scheduler.onetime_task_image(new_task, slide_time=slide_time, transition_speed=transition_speed, transition=transition)
+    
+    return jsonify({'stream': f'{my_scheduler.stream}', 'success': {'message': 'One-time slideshow scheduled', 'ID': new_task.ID}}), 200
+@app.route('/schedule/slide/weekly', methods=['POST'])
+def Live_Slide_Schedule_Weekly():
+    # CHỌN KÊNH STREAM
+    stream = request.form.get('stream')
+    if not stream:
+        return jsonify({'error': 'Empty stream'}), 400
+    
+    my_scheduler = None
+    for scheduler in my_schedulers:
+        if scheduler.stream == int(stream):
+            my_scheduler = scheduler
+    if my_scheduler is None:
+        return jsonify({'error': 'Wrong stream'}), 400
+
+    # NHẬN THÔNG TIN THỜI GIAN, NGÀY, VÀ CÁC THÔNG SỐ KHÁC
+    start_time = request.form.get('starttime')
+    end_time = request.form.get('endtime')
+    start_date = request.form.get('startdate')
+    duration = request.form.get('duration', '1')
+    until = request.form.get('until')
+    label = request.form.get('label')
+    days = request.form.get('days')
+
+    if not label:
+        return jsonify({'error': 'Empty label'}), 400
+
+    # KIỂM TRA THỜI GIAN
+    if not start_time or not validateTimeformat(start_time):
+        return jsonify({'error': 'Invalid start time format'}), 400
+    if not end_time or not validateTimeformat(end_time):
+        return jsonify({'error': 'Invalid end time format'}), 400
+    if datetime.strptime(end_time, "%H:%M") <= datetime.strptime(start_time, "%H:%M"):
+        return jsonify({'error': 'Start time must be before end time'}), 400
+
+    # KIỂM TRA VÀ XỬ LÝ `start_date` và `until`
+    try:
+        start_date = datetime.strptime(start_date, "%Y-%m-%d") if start_date else datetime.now()
+        if until:
+            until_date = datetime.strptime(until, "%Y-%m-%d")
+            if until_date < start_date:
+                return jsonify({'error': 'Until date must be after start date'}), 400
+        else:
+            until_date = datetime(2100, 12, 31)
+    except ValueError:
+        return jsonify({'error': 'Invalid date format for startdate or until'}), 400
+
+    # KIỂM TRA `duration`
+    try:
+        duration = int(duration)
+        if duration <= 0:
+            raise ValueError("Duration must be positive")
+    except ValueError:
+        return jsonify({'error': 'Invalid duration'}), 400
+
+    # KIỂM TRA `days`
+    if not days:
+        return jsonify({'error': 'Empty days'}), 400
+    else:
+        days = days.split(',')
+        valid_days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+        for day in days:
+            if day not in valid_days:
+                return jsonify({'error': 'Invalid day format'}), 400
+
+    # NHẬN DANH SÁCH HÌNH ẢNH
+    images = request.files.getlist('upload_images')
+    uploaded_images = []
+    if images:
+        for image in images:
+            if image.filename == '':
+                return jsonify({'error': 'Empty filename'}), 400
+            file_path = os.path.join(app.config['UPLOAD_IMAGES_FOLDER'], image.filename)
+            image.save(file_path)
+            uploaded_images.append(image.filename)
+    image_list = request.form.get('image_list', '')
+    image_list = image_list.split(',') if image_list else []
+    combined_image_list = uploaded_images + image_list
+
+    if not combined_image_list:
+        return jsonify({'error': 'No images provided'}), 400
+    if not check_images_list(combined_image_list):
+        return jsonify({'error': 'Invalid image file names'}), 400
+
+    # NHẬN `slide_time` và `transition_speed`
+    try:
+        transition = request.form.get('transition', "slide")
+        slide_time = int(request.form.get('slide_time', 3000))
+        transition_speed = int(request.form.get('transition_speed', 700))
+    
+        # Kiểm tra transition có hợp lệ hay không
+        valid_transitions = ["cut", "fade", "swipe", "slide"]
+        if transition not in valid_transitions:
+            return jsonify({'error': 'Invalid transition type'}), 400
+    except ValueError:
+        return jsonify({'error': 'slide_time and transition_speed must be integers'}), 400
+
+    # TẠO VÀ THÊM LỊCH TRÌNH SLIDESHOW HÀNG TUẦN
+    new_task = TaskInformation(
+        ID=None,
+        label=label,
+        days=days,
+        video_name=combined_image_list,
+        start_date=start_date.strftime("%Y-%m-%d %H:%M:%S"),
+        duration=duration,
+        until=until_date.strftime("%Y-%m-%d %H:%M:%S"),
+        start_time=start_time,
+        end_time=end_time,
+        typetask="weekly",
+        input_type="image"
+    )
+    my_scheduler.weekly_task_image(new_task, slide_time=slide_time, transition_speed=transition_speed, transition=transition)
+    
+    return jsonify({'stream': f'{my_scheduler.stream}', 'success': {'message': 'Weekly slideshow scheduled', 'ID': new_task.ID}}), 200
 
 @app.route('/schedule/deleteTask')
 def Delete_Task():

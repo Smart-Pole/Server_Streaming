@@ -34,6 +34,7 @@ class StreamScheduler:
         self.VideoPath = VideoPath
         self.ImagesPath = ImagesPath
         self.NameStream = NameStream
+        self.ScheSene = "SCHEDULE"
         self.__ListWindowCapture = ["VTV1","VTV2"]
         self.ListTask = self.__task_db.get_all_tasks()
         self.__my_obs.set_current_program_scene("SCHEDULE")
@@ -216,8 +217,7 @@ class StreamScheduler:
         self.__my_obs.set_input_playlist([],source_name="live_v")
         self.__my_obs.set_input_playlist([],source_name="live_m")
         self.__my_obs.set_slide_show_settings(image_list=[], source_name="slideshow_l")
-        self.__my_obs.set_current_program_scene("SCHEDULE")
-        self.__my_obs.get_input_settings("mySource")
+        self.__my_obs.set_current_program_scene(self.ScheSene)
 
     def __cancel_task(self,start_date,repeatDuration):
         if not self.__get_flag_taskrunning():
@@ -239,7 +239,62 @@ class StreamScheduler:
             return schedule.CancelJob
         
         return True
-    
+    def __task_image(self,taskinfor, slide_time=1000, transition_speed=1000 ,transition = 'slide'):
+        if self.__get_flag_taskrunning():
+            print(f"Task id: {taskinfor.ID} has been BLOCKED")
+            return False
+        if(datetime.now() < taskinfor.start_date):
+            print("NOT RUN NOW")
+            return False
+        if taskinfor.duration:
+            value = (abs(datetime.now() - taskinfor.start_date).days )// 7
+            print("NOT RUN WEEKLY TASK NOW")
+            print(value)
+            if value % taskinfor.duration != 0:
+                return False
+            
+        if datetime.strptime(taskinfor.end_time, "%H:%M").time() > datetime.strptime(taskinfor.start_time, "%H:%M").time():
+            if datetime.now().time() >= datetime.strptime(taskinfor.end_time, "%H:%M").time():
+                print(f"DELETE TASK: {taskinfor.ID}")
+                return False
+        else:
+            pass
+        self.ScheSene = "SCHEDULE_S"
+        self.__my_obs.set_current_program_scene("SCHEDULE_S")
+        image_list = self.get_link_images(taskinfor.video_name)
+        self.CurrentVideo = image_list
+        self.__my_obs.set_slide_show_settings(source_name="slideshow_s", image_list=image_list, transition=transition , slide_time=slide_time, transition_speed= transition_speed)
+        print('WEEKLY Task')
+        self.__set_flag_taskrunning(1)
+        self.CurrentTask = taskinfor
+        if taskinfor.end_time and taskinfor.end_time != "None":
+            self.__Stop_Schedule.every().days.at(taskinfor.end_time, timezone('Asia/Ho_Chi_Minh')).until(taskinfor.until).do(self.__cancel_task,taskinfor.start_date,0).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
+
+    def __weekly_task_image(self,taskinfor, slide_time=1000, transition_speed=1000 ,transition = 'slide'):
+        days_mapping = {
+            'mon': self.__Start_Schedule.every().monday,
+            'tue': self.__Start_Schedule.every().tuesday,
+            'wed': self.__Start_Schedule.every().wednesday,
+            'thu': self.__Start_Schedule.every().thursday,
+            'fri': self.__Start_Schedule.every().friday,
+            'sat': self.__Start_Schedule.every().saturday,
+            'sun': self.__Start_Schedule.every().sunday
+        }
+        print("WEEKLY TASK")
+        print(taskinfor.days)
+        for day in taskinfor.days:
+            if day in days_mapping:
+                days_mapping[day.lower()].at(taskinfor.start_time,timezone('Asia/Ho_Chi_Minh')).until(taskinfor.until).do(self.__task_image, taskinfor, slide_time, transition_speed, transition).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
+
+    def weekly_task_image(self,taskinfor, slide_time=1000, transition_speed=1000 ,transition = 'slide'):
+        # TO DO
+        new_ID = self.__task_db.add_task(taskinfor)
+        taskinfor.ID = new_ID
+        self.ListTask.append(taskinfor)
+        self.saveTask(1)
+        self.__weekly_task_image(taskinfor,slide_time=slide_time,transition_speed=transition_speed,transition=transition)
+        print(self.__Start_Schedule.get_jobs())
+
     def __task(self,taskinfor):
         if self.__get_flag_taskrunning():
             print(f"Task id: {taskinfor.ID} has been BLOCKED")
@@ -260,7 +315,7 @@ class StreamScheduler:
                 return False
         else:
             pass
-
+        self.ScheSene = "SCHEDULE"
         self.__my_obs.set_current_program_scene("SCHEDULE")
         myvideolist = self.get_link_video(taskinfor.video_name)
         self.CurrentVideo = myvideolist
@@ -314,6 +369,7 @@ class StreamScheduler:
                 return False
         else:
             pass
+        self.ScheSene = "SCHEDULE"
         self.__my_obs.set_current_program_scene("SCHEDULE")
         myvideolist = self.get_link_video(taskinfor.video_name)
         self.CurrentVideo = myvideolist
@@ -352,6 +408,7 @@ class StreamScheduler:
                 return False
         else:
             pass
+        self.ScheSene = "SCHEDULE_S"
         self.__my_obs.set_current_program_scene("SCHEDULE_S")
         image_list = self.get_link_images(taskinfor.video_name)
         self.CurrentVideo = image_list
@@ -390,6 +447,7 @@ class StreamScheduler:
                 return schedule.CancelJob
         else:
             pass
+        self.ScheSene = "SCHEDULE"
         self.__my_obs.set_current_program_scene("SCHEDULE")
         myvideolist = self.get_link_video(taskinfor.video_name)
         self.CurrentVideo = myvideolist
@@ -409,7 +467,43 @@ class StreamScheduler:
         print(self.__Start_Schedule.get_jobs())
         self.saveTask(1)
 
+    def __onetime_task_image(self,taskinfor, slide_time=1000, transition_speed=1000 ,transition = 'slide'):
+        if self.__get_flag_taskrunning():
+            print(f"Task id: {taskinfor.ID} has been BLOCKED")
+            return False
+        if((datetime.now() - taskinfor.start_date).days > 0):
+            print(f"DELETE TASK: {taskinfor.ID}")
+            return schedule.CancelJob
+        if((datetime.now() - taskinfor.start_date).days < 0):
+            print("NOT RUN NOW")
+            return False
+        
+        if datetime.strptime(taskinfor.end_time, "%H:%M").time() > datetime.strptime(taskinfor.start_time, "%H:%M").time():
+            if datetime.now().time() >= datetime.strptime(taskinfor.end_time, "%H:%M").time():
+                print(f"DELETE TASK 2: {taskinfor.ID}")
+                return schedule.CancelJob
+        else:
+            pass
+        self.ScheSene = "SCHEDULE_S"
+        self.__my_obs.set_current_program_scene("SCHEDULE_S")
+        image_list = self.get_link_images(taskinfor.video_name)
+        self.CurrentVideo = image_list
+        self.__my_obs.set_slide_show_settings(source_name="slideshow_s", image_list=image_list, transition=transition , slide_time=slide_time, transition_speed= transition_speed)
+        print('onetime_task images')
+        self.__set_flag_taskrunning(1)
+        self.CurrentTask = taskinfor
+        if taskinfor.end_time and taskinfor.end_time != "None":
+            self.__Stop_Schedule.every().days.at(taskinfor.end_time,timezone('Asia/Ho_Chi_Minh')).do(self.__cancel_task,taskinfor.start_date,taskinfor.duration).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
+        return schedule.CancelJob
     
+    def onetime_task_image(self,taskinfor, slide_time=1000, transition_speed=1000 ,transition = 'slide'):
+        new_ID = self.__task_db.add_task(taskinfor)
+        taskinfor.ID = new_ID
+        self.ListTask.append(taskinfor)
+        self.__Start_Schedule.every().days.at(taskinfor.start_time,timezone('Asia/Ho_Chi_Minh')).do(self.__onetime_task_image,taskinfor, slide_time, transition_speed, transition).tag(f'{taskinfor.ID}',f'{taskinfor.label}')
+        print(self.__Start_Schedule.get_jobs())
+        self.saveTask(1)
+
     def delete_task(self,id = 0, label = 0):
         flag = 0
         if id == "all":
