@@ -221,16 +221,16 @@ class OBS_controller:
     def __send_streamlink_to_server(self):
         if self.id is None:
             return
-        time.sleep(20)
+        time.sleep(10)
         link_url = None
         while not link_url:
             try:
-                print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Try to get link m3u8 {self.name}")
+                # print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Try to get link m3u8 {self.name}")
                 link =   streamlink.streams(self.streamlink)
                 link_url = link.get("best").url
             except:
                 pass
-            time.sleep(2)
+            time.sleep(1)
 
         self.streamlink_m3u8 = link_url
         # header = {

@@ -7,6 +7,7 @@ from database import TaskDatabase
 from TaskInfor import TaskInformation
 from StreamScheduler import StreamScheduler
 from Pole_infor import Pole_manager
+from intergrate import IntergrateHandler
 import threading
 import schedule
 import json
@@ -71,11 +72,11 @@ vtv_channel = {
 ################## begin MQTT
 
 AIO_USERNAME = "GutD"
-AIO_KEY = ""
-AIO_FEED_ID = ["live-stream"]
+AIO_KEY = "aio_bGuw63ehyU54faTrMmITodLTDQoa"
+AIO_FEED_ID = ["live-stream", "fan"]
 mqtt_client = MyMQTTClient(AIO_USERNAME, AIO_KEY, AIO_FEED_ID)
-
-
+intergrate = IntergrateHandler("fan")   
+    
 def publish_livestream():
     all_poles = []  # Tạo danh sách chứa thông tin tất cả các cột
     
@@ -99,6 +100,7 @@ def publish_livestream():
 def init():
     #start MQTT
     mqtt_client.start()
+    mqtt_client.processMessage = intergrate.process_message
     publish_livestream()
     pass
     
@@ -135,6 +137,15 @@ def check_images_list(my_list):
             return False
     return True
 ################################################################################################################################################################
+@app.route('/get/sensor_value')
+def Get_Sensor_Value():
+    pole_id = request.args.get('pole_id')
+    # Kiểm tra nếu pole_id là số nguyên
+    if pole_id is None or not pole_id.isdigit():
+        return jsonify({"error": "Wrong pole id"}), 400
+    pole_id = int(pole_id)
+    return jsonify(intergrate.get_combined_data_by_pole_id(pole_id)), 200
+
 @app.route('/get/stats')
 def Get_Stats():
     performance_data = {}
@@ -147,8 +158,8 @@ def Get_Stats():
 def Change_stream_Info():
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream:
-        return jsonify({'error':  'Wrong stream'}), 400
+    if stream is None or stream == 'null' or not stream.isdigit():
+        return jsonify({'error': 'Invalid stream parameter'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
@@ -257,8 +268,8 @@ def Get_files_video_in_folder():
 def Get_link_m3u8():
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream:
-        return jsonify({'error':  'Wrong stream'}), 400
+    if stream is None or stream == 'null' or not stream.isdigit():
+        return jsonify({'error': 'Invalid stream parameter'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
@@ -275,8 +286,8 @@ def Get_link_m3u8():
 def Get_NameStream():
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream:
-        return jsonify({'error':  'Wrong stream'}), 400
+    if stream is None or stream == 'null' or not stream.isdigit():
+        return jsonify({'error': 'Invalid stream parameter'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
@@ -290,8 +301,8 @@ def Get_NameStream():
 def Get_Current_Task():
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream:
-        return jsonify({'error':  'Wrong stream'}), 400
+    if stream is None or stream == 'null' or not stream.isdigit():
+        return jsonify({'error': 'Invalid stream parameter'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
@@ -321,8 +332,8 @@ def Get_Current_Task():
 def Get_schedule():
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream:
-        return jsonify({'error':  'Wrong stream'}), 400
+    if stream is None or stream == 'null' or not stream.isdigit():
+        return jsonify({'error': 'Invalid stream parameter'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
@@ -347,8 +358,8 @@ def Get_schedule():
 def Get_streamkey():
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream:
-        return jsonify({'error':  'Wrong stream'}), 400
+    if stream is None or stream == 'null' or not stream.isdigit():
+        return jsonify({'error': 'Invalid stream parameter'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
@@ -407,8 +418,8 @@ def get_TVchannel():
 def Live_Stream_Slide():
     # CHOOSE THE STREAM CHANNEL
     stream = request.form.get('stream')
-    if not stream:
-        return jsonify({'error': 'Empty stream'}), 400
+    if stream is None or stream == 'null' or not stream.isdigit():
+        return jsonify({'error': 'Invalid stream parameter'}), 400
     
     my_scheduler = None
     for scheduler in my_schedulers:
@@ -459,8 +470,8 @@ def Live_Stream_Slide():
 def Live_Stream_TV():
      # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream:
-        return jsonify({'error':  'Wrong stream'}), 400
+    if stream is None or stream == 'null' or not stream.isdigit():
+        return jsonify({'error': 'Invalid stream parameter'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
@@ -502,8 +513,8 @@ def Live_Stream_TV():
 def Live_Video():
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream:
-        return jsonify({'error':  'Wrong stream'}), 400
+    if stream is None or stream == 'null' or not stream.isdigit():
+        return jsonify({'error': 'Invalid stream parameter'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
@@ -532,8 +543,8 @@ def Live_Video():
 def Live_Steam():
         # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream:
-        return jsonify({'error':  'Wrong stream'}), 400
+    if stream is None or stream == 'null' or not stream.isdigit():
+        return jsonify({'error': 'Invalid stream parameter'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
@@ -571,8 +582,8 @@ def Live_Steam():
 def Stop_Live_Steam():
         # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream:
-        return jsonify({'error':  'Wrong stream'}), 400
+    if stream is None or stream == 'null' or not stream.isdigit():
+        return jsonify({'error': 'Invalid stream parameter'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
@@ -597,8 +608,8 @@ def Add_Task_Everyweeks():
     deadline = None
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream:
-        return jsonify({'error':  'Wrong stream'}), 400
+    if stream is None or stream == 'null' or not stream.isdigit():
+        return jsonify({'error': 'Invalid stream parameter'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
@@ -712,8 +723,8 @@ def Add_Task_Everydays():
 
     # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream:
-        return jsonify({'error':  'Wrong stream'}), 400
+    if stream is None or stream == 'null' or not stream.isdigit():
+        return jsonify({'error': 'Invalid stream parameter'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
@@ -814,8 +825,8 @@ def Add_Task_onetime():
 
     # Cheking parameter
     stream  = request.args.get('stream')
-    if not stream:
-        return jsonify({'error':  'Wrong stream'}), 400
+    if stream is None or stream == 'null' or not stream.isdigit():
+        return jsonify({'error': 'Invalid stream parameter'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):
@@ -892,8 +903,8 @@ def Add_Task_onetime():
 def Live_Slide_Schedule():
     # CHỌN KÊNH STREAM
     stream = request.form.get('stream')
-    if not stream:
-        return jsonify({'error': 'Empty stream'}), 400
+    if stream is None or stream == 'null' or not stream.isdigit():
+        return jsonify({'error': 'Invalid stream parameter'}), 400
     
     my_scheduler = None
     for scheduler in my_schedulers:
@@ -954,7 +965,6 @@ def Live_Slide_Schedule():
     image_list = request.form.get('image_list', '')
     image_list = image_list.split(',') if image_list else []
     combined_image_list = uploaded_images + image_list
-
     if not combined_image_list:
         return jsonify({'error': 'No images provided'}), 400
     if not check_images_list(combined_image_list):
@@ -994,8 +1004,8 @@ def Live_Slide_Schedule():
 def Live_Slide_Schedule_Onetime():
     # CHỌN KÊNH STREAM
     stream = request.form.get('stream')
-    if not stream:
-        return jsonify({'error': 'Empty stream'}), 400
+    if stream is None or stream == 'null' or not stream.isdigit():
+        return jsonify({'error': 'Invalid stream parameter'}), 400
     
     my_scheduler = None
     for scheduler in my_schedulers:
@@ -1045,7 +1055,6 @@ def Live_Slide_Schedule_Onetime():
     image_list = request.form.get('image_list', '')
     image_list = image_list.split(',') if image_list else []
     combined_image_list = uploaded_images + image_list
-
     if not combined_image_list:
         return jsonify({'error': 'No images provided'}), 400
     if not check_images_list(combined_image_list):
@@ -1085,8 +1094,8 @@ def Live_Slide_Schedule_Onetime():
 def Live_Slide_Schedule_Weekly():
     # CHỌN KÊNH STREAM
     stream = request.form.get('stream')
-    if not stream:
-        return jsonify({'error': 'Empty stream'}), 400
+    if stream is None or stream == 'null' or not stream.isdigit():
+        return jsonify({'error': 'Invalid stream parameter'}), 400
     
     my_scheduler = None
     for scheduler in my_schedulers:
@@ -1158,8 +1167,8 @@ def Live_Slide_Schedule_Weekly():
     image_list = request.form.get('image_list', '')
     image_list = image_list.split(',') if image_list else []
     combined_image_list = uploaded_images + image_list
-
     if not combined_image_list:
+
         return jsonify({'error': 'No images provided'}), 400
     if not check_images_list(combined_image_list):
         return jsonify({'error': 'Invalid image file names'}), 400
@@ -1199,8 +1208,8 @@ def Live_Slide_Schedule_Weekly():
 def Delete_Task():
         # CHOOSE THE STREAM CHANEL
     stream  = request.args.get('stream')
-    if not stream:
-        return jsonify({'error':  'Wrong stream'}), 400
+    if stream is None or stream == 'null' or not stream.isdigit():
+        return jsonify({'error': 'Invalid stream parameter'}), 400
     my_scheduler = None
     for scheduler in my_schedulers:
         if scheduler.stream == int(stream):

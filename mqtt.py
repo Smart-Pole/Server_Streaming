@@ -30,7 +30,7 @@ class MyMQTTClient:
         sys.exit(1)
 
     def message(self, client, feed_id, payload):
-        print("Nhan du lieu: " + feed_id + ":" + payload)
+        # print("Nhan du lieu: " + feed_id + ":" + payload)
         if self.processMessage != None:
             self.processMessage(feed_id,payload)
 
