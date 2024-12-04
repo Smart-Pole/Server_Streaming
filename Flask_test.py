@@ -67,7 +67,7 @@ Stop_Schedule = schedule.Scheduler()
 ################## begin MQTT
 
 AIO_USERNAME = "GutD"
-AIO_KEY = "aio_ylYf65J1E1PHtUIuXc70qDfe3i6N"
+AIO_KEY = "_ylYf65J1E1PHtUIuXc70qDfe3i6N"
 AIO_FEED_ID = ["live-stream"]
 mqtt_client = MyMQTTClient(AIO_USERNAME, AIO_KEY, AIO_FEED_ID)
 
