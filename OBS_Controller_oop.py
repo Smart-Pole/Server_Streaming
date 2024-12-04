@@ -158,7 +158,7 @@ class OBS_controller:
         except:
             pass
          # Bắt đầu ghi log
-        self.start_logging()
+        # self.start_logging()
 
     def start_logging(self):
         log_thread = threading.Thread(target=self.log_stats, daemon=True)
@@ -171,6 +171,7 @@ class OBS_controller:
         
         with open(log_filename, "a") as log_file:
             while True:
+                time.sleep(30)  # Đợi 30 giây trước khi ghi log tiếp theo      
                 stats = self.get_stats()  # Giả sử bạn có hàm này để lấy stats
                 timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 formatted_stats = {
@@ -469,14 +470,13 @@ class OBS_controller:
         """
         request = self.request_client.get_stream_status()
         print("Stream Status")
-        print(f"\t output active: {request.output_active}")
-        print(f"\t output bytes: {request.output_bytes}")
-        print(f"\t output congestion: {request.output_congestion}")
-        print(f"\t output duration: {request.output_duration}")
-        print(f"\t output reconnecting: {request.output_reconnecting}")
-        print(f"\t output skipped frames: {request.output_skipped_frames}")
-        print(f"\t output timecode:{request.output_timecode}")
-        print(f"\t output total frames:{request.output_total_frames}")
+        # print(f"\t output bytes: {request.output_bytes}")
+        # print(f"\t output congestion: {request.output_congestion}")
+        # print(f"\t output duration: {request.output_duration}")
+        # print(f"\t output reconnecting: {request.output_reconnecting}")
+        # print(f"\t output skipped frames: {request.output_skipped_frames}")
+        # print(f"\t output timecode:{request.output_timecode}")
+        # print(f"\t output total frames:{request.output_total_frames}")
         return request
     
     def check_stream_is_active(self):

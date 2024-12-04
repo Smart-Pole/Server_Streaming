@@ -24,7 +24,7 @@ import sys
 app = Flask(__name__)
 CORS(app)
 
-FolderVideoPath = "/home/streamlink1/Desktop/stream_server/Server_Streaming/video/"
+FolderVideoPath = "D:/FP_ver2/SERVER/video/"
 FolderImagePath = "D:/FP_ver2/SERVER/images/"
 OBSWidth = 1920
 OBSHeight = 1080
@@ -46,22 +46,19 @@ my_schedulers = [
     # StreamScheduler(Stream=4, FileLog="log_thread4.txt", VideoPath=FolderVideoPath,ImagesPath=FolderImagePath, Database='task_infor.db', DataTable="thread4", OBSPass="123456", OBSPort=1134,OBSId="vtv4",OBSName="VTV 4",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1039740022_rGAe65XCi8xif5QyFwQLeRLdVKtX2O", StreamLink="https://www.twitch.tv/hehe0088", NameStream="hehe0088"),
     # StreamScheduler(Stream=5, FileLog="log_thread5.txt", VideoPath=FolderVideoPath,ImagesPath=FolderImagePath, Database='task_infor.db', DataTable="thread5", OBSPass="123456", OBSPort=1135,OBSId="vtv5",OBSName="VTV 5",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1125130390_vqMoTYJF7jiOtTt8uM4oBS7DANMon8", StreamLink="https://www.twitch.tv/nhanlow", NameStream="nhanlow"),
     # StreamScheduler(Stream=6, FileLog="log_thread6.txt", VideoPath=FolderVideoPath,ImagesPath=FolderImagePath, Database='task_infor.db', DataTable="thread6", OBSPass="123456", OBSPort=1136,OBSId="vtv6",OBSName="VTV 6",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1044211682_Ol34MomAqRm3Ef7s0jwrKq0KNGj3Ku", StreamLink="https://www.twitch.tv/huynhnguyenhieunhan", NameStream="huynhnguyenhieunhan"),
-    # StreamScheduler(Stream=7, FileLog="log_thread7.txt", VideoPath=FolderVideoPath,ImagesPath=FolderImagePath, Database='task_infor.db', DataTable="thread7", OBSPass="123456", OBSPort=1137,OBSId="vtv7",OBSName="VTV 7",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1127937398_28e30ICQkj916Yris7ysw3wSQnjkuQ", StreamLink="https://www.twitch.tv/nhanlow_v2", NameStream="nhanlow_v2"),
-    # StreamScheduler(Stream=8, FileLog="log_thread8.txt", VideoPath=FolderVideoPath,ImagesPath=FolderImagePath, Database='task_infor.db', DataTable="thread8", OBSPass="123456", OBSPort=1138,OBSId="vtv8",OBSName="VTV 8",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1127041941_YqyrJHfYVm7NBtX7EIckVEZtMjuMde", StreamLink="https://www.twitch.tv/hehe0081", NameStream="hehe0081"),
+    StreamScheduler(Stream=3, FileLog="log_thread7.txt", VideoPath=FolderVideoPath,ImagesPath=FolderImagePath, Database='task_infor.db', DataTable="thread7", OBSPass="123456", OBSPort=1132,OBSId="vtv7",OBSName="VTV 7",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1127937398_28e30ICQkj916Yris7ysw3wSQnjkuQ", StreamLink="https://www.twitch.tv/nhanlow_v2", NameStream="nhanlow_v2"),
+    StreamScheduler(Stream=2, FileLog="log_thread8.txt", VideoPath=FolderVideoPath,ImagesPath=FolderImagePath, Database='task_infor.db', DataTable="thread8", OBSPass="123456", OBSPort=1134,OBSId="vtv8",OBSName="VTV 8",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1127041941_YqyrJHfYVm7NBtX7EIckVEZtMjuMde", StreamLink="https://www.twitch.tv/hehe0081", NameStream="hehe0081"),
     StreamScheduler(Stream=1, FileLog="log_thread9.txt", VideoPath=FolderVideoPath,ImagesPath=FolderImagePath, Database='task_infor.db', DataTable="thread9", OBSPass="123456", OBSPort=1133,OBSId="film",OBSName="Xem Phim",OBSWidth=OBSWidth,OBSHeight=OBSHeight, StreamKey="live_1127937001_mk0mXlFKsXjeqQ9UmVFroNbJAWxvxW", StreamLink="https://www.twitch.tv/hehe0082", NameStream="hehe0082"),
 ]
 
 pole_manager = Pole_manager()
 
 channel = {
-           'Cartoon 1' : 'https://www.youtube.com/watch?v=Fjp2TdlTTIU',
-           'Cartoon 2' : 'https://www.youtube.com/watch?v=cOLQACygN5A',
-           'Disney 1' : 'https://www.youtube.com/watch?v=WFDbJY0eBGI',
-           'Disney 2' : 'https://www.youtube.com/watch?v=x7I9aLJ4hKo',
+           'Cartoon 1' : 'https://www.youtube.com/watch?v=lTjkFcVlypQ',
            'Nat geo WILD' : 'https://www.youtube.com/watch?v=BJ3Yv572V1A',
-           'ABC news' : 'https://www.youtube.com/watch?v=-mvUkiILTqI',
+           'ABC news' : 'https://www.youtube.com/watch?v=vOTiJkg1voo',
            'Nasa' : 'https://www.youtube.com/watch?v=0FBiyFpV__g',
-           'THVL1' : 'https://www.thvli.vn/live/thvl1-hd',}
+           'Bloomberg Originals LIVE ' : 'https://www.youtube.com/watch?v=OlUMDZchivQ',}
 vtv_channel = {
            'VTV1' : 'http://127.0.0.1:9001/',
            'VTV2' : 'http://127.0.0.1:9002/',
@@ -72,7 +69,7 @@ vtv_channel = {
 ################## begin MQTT
 
 AIO_USERNAME = "GutD"
-AIO_KEY = "aio_bGuw63ehyU54faTrMmITodLTDQoa"
+AIO_KEY = "aio_Vwjm06GuA2joBo9RrscH19uf8DfH"
 AIO_FEED_ID = ["live-stream", "fan"]
 mqtt_client = MyMQTTClient(AIO_USERNAME, AIO_KEY, AIO_FEED_ID)
 intergrate = IntergrateHandler("fan")   

@@ -229,7 +229,10 @@ class StreamScheduler:
             if (abs(datetime.now() - start_date).days) % repeatDuration != 0:
                 return False
         self.CurrentVideo = []
-        self.__my_obs.set_current_program_scene("SCHEDULE")
+        if not self.__get_flag_live():
+            self.__my_obs.set_current_program_scene("SCHEDULE")
+        else:
+            self.ScheSene = "SCHEDULE"
         cancle_link = self.get_link_video(["idle.mp4"])
         self.__my_obs.set_input_playlist(cancle_link)
         self.__set_flag_taskrunning(0)
