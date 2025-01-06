@@ -2,6 +2,8 @@
 
 ## Overview
 Xin chào mọi người, đây là đồ án tốt nghiệp của nhóm mình. Tuy rằng đống code này là một mớ hỗn độn, nhưng cũng là thành quả 1 năm của bọn mình. Mình khá chắc sẽ không có ai tiếp tục bảo trì và phát triển tiếp sản phẩm này. Vì thế nếu có bất kì thắc mắc, hãy mail cho mình ở ntdat0103@gmail.com. 
+
+
 This API provides endpoints for managing tasks related to streaming, such as retrieving video files, setting stream keys, scheduling live streams, and managing scheduled tasks.
 ## Install
 
