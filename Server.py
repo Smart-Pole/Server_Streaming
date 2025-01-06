@@ -70,7 +70,7 @@ vtv_channel = {
 ################## begin MQTT
 
 AIO_USERNAME = "GutD"
-AIO_KEY = "aio_vaCt91k8BFKpu4CsXRyCsrdZN2Dm"
+AIO_KEY = ""
 AIO_FEED_ID = ["live-stream", "fan"]
 mqtt_client = MyMQTTClient(AIO_USERNAME, AIO_KEY, AIO_FEED_ID)
 intergrate = IntergrateHandler("fan")   
