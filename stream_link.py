@@ -7,7 +7,7 @@ import streamlink.stream
 
 
 # url = "https://www.youtube.com/live/MLxwCqRvJiw"
-url = "https://www.youtube.com/watch?v=mKCieTImjvU"
+url = "https://www.youtube.com/watch?v=J2i0cZWCdq4"
 # url = "https://www.youtube.com/watch?v=iCpX7Y2zCbg"
 stream = streamlink.streams(url)
 # print(stream)zzz

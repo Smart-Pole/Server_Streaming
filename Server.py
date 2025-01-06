@@ -55,25 +55,26 @@ pole_manager = Pole_manager()
 
 channel = {
            'Cartoon 1' : 'https://www.youtube.com/watch?v=lTjkFcVlypQ',
-           'Nat geo WILD' : 'https://www.youtube.com/watch?v=BJ3Yv572V1A',
+           'Lofi chill' : 'https://www.youtube.com/watch?v=jfKfPfyJRdk',
            'ABC news' : 'https://www.youtube.com/watch?v=vOTiJkg1voo',
            'Nasa' : 'https://www.youtube.com/watch?v=0FBiyFpV__g',
            'Bloomberg Originals LIVE ' : 'https://www.youtube.com/watch?v=OlUMDZchivQ',}
 vtv_channel = {
-           'VTV1' : 'http://127.0.0.1:9001/',
-           'VTV2' : 'http://127.0.0.1:9002/',
-           'VTV3' : 'http://127.0.0.1:9003/',
-           'VTV4' : 'http://127.0.0.1:9004/',
-           'VTV5' : 'http://127.0.0.1:9005/',}
+        #    'VTV1' : 'http://127.0.0.1:9001/',
+        #    'VTV2' : 'http://127.0.0.1:9002/',
+        #    'VTV3' : 'http://127.0.0.1:9003/',
+        #    'VTV4' : 'http://127.0.0.1:9004/',
+        #    'VTV5' : 'http://127.0.0.1:9005/',
+           }
 
 ################## begin MQTT
 
 AIO_USERNAME = "GutD"
-AIO_KEY = "aio_Vwjm06GuA2joBo9RrscH19uf8DfH"
+AIO_KEY = "aio_vaCt91k8BFKpu4CsXRyCsrdZN2Dm"
 AIO_FEED_ID = ["live-stream", "fan"]
 mqtt_client = MyMQTTClient(AIO_USERNAME, AIO_KEY, AIO_FEED_ID)
 intergrate = IntergrateHandler("fan")   
-    
+
 def publish_livestream():
     all_poles = []  # Tạo danh sách chứa thông tin tất cả các cột
     

@@ -43,7 +43,7 @@ class MyMQTTClient:
 
 if __name__ == "__main__":
     AIO_USERNAME = "GutD"
-    AIO_KEY = ""
+    AIO_KEY = "aio_vaCt91k8BFKpu4CsXRyCsrdZN2Dm"
     AIO_FEED_ID = ["pump", "fan", "temperature", "humidity", "lux"]
 
     mqtt_client = MyMQTTClient(AIO_USERNAME, AIO_KEY, AIO_FEED_ID)
